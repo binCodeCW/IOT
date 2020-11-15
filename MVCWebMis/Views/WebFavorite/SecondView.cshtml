@@ -1,0 +1,254 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+    ViewBag.Title = "收藏夹";
+}
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+<script src="~/Content/JQueryTools/Sortable/Sortable.min.js"></script>
+<script src="~/Content/JQueryTools/Sortable/jquery.binding.js"></script>
+
+<!-- BEGIN 表格数据-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-cogs"></i>
+            数据列表
+        </div>
+        <div class="tools">
+            <button type="button" onclick="Favorite()" class="btn btn-circle red">
+                <i class="fa fa-plus"></i>
+                维护收藏夹
+            </button>
+            <button type="button" onclick="Refresh()" class="btn btn-circle btn-sm green-meadow" data-toggle="modal">
+                <i class="fa fa-refresh"></i>
+                刷新
+            </button>
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <div class="portlet-body">
+            <div>
+                <span>每页显示</span>
+                <select id="rows" onchange="ChangeRows()">
+                    <option>10</option>
+                    <option selected>50</option>
+                    <option>100</option>
+                    <option>1000</option>
+                </select>
+                <span>条记录</span>&nbsp;&nbsp;
+                <span>共有记录：</span><span id='totalCount' class="label label-success">0</span>条，总页数：<span id='totalPageCount' class="label label-success">0</span>页。
+            </div>
+            <hr />
+            <div id="grid_body" class='list-group'></div>
+
+            <div class="paging-toolbar">
+                <ul id='grid_paging'></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footerScript {
+
+<script type="text/javascript">
+        var currentPage = 1, rows = 50; //分页参数：当前页，记录数
+
+        var isAddOrEdit = 'add';//标识是新增还是编辑对话框弹出，用于删除附件的操作
+        var url;//新增或者更新的连接
+        var ID;//ID值，新增为空，编辑或者查看为具体ID
+
+        //页面初始化
+        $(function () {
+            Search(currentPage);//初始化第一页数据
+            
+        });
+
+        //初始化列表
+        function initList() {
+            // List with handle
+            var grid_body = document.getElementById('grid_body');
+            new Sortable(grid_body, {
+                handle: '.glyphicon-move',
+                filter: ".js-remove",
+                animation: 150,
+                onFilter: function (evt) {
+                    var item = evt.item,
+                        ctrl = evt.target;
+                    if (Sortable.utils.is(ctrl, ".js-remove")) {  // Click on remove button
+                        showDelete(function () {
+                            item.parentNode.removeChild(item); // remove sortable item
+                            var obj = Sortable.utils.closest(item, ".list-group-item").children[1];
+                            //console.log(obj);
+                            //console.log(obj.id + ',' + obj.href + ',' + obj.text);
+
+                            var url = "/WebFavorite/RemoveItem";
+                            var postData = { id: obj.id };
+                            $.post(url, postData, function (json) {
+                                var data = $.parseJSON(json);
+                                if (data.Success) {
+                                    //Refresh();//刷新页面数据
+                                }
+                                else {
+                                    showTips(data.ErrorMessage);
+                                }
+                            });
+                        });
+                    }
+                },
+                onUpdate: function (/**Event*/evt) {
+                    var list = [];//构造集合对象
+                    $('.list-group div a').each(function (i, item) {
+                        //console.log(item.innerHTML.replace(/<.+?>/gim, '').replace(/^\s*|\s*$/g, ""));
+                        //console.log(item.id + ',' + item.href + ',' + item.text);
+                        list.push({ 'Text': item.text, 'Value': item.href });
+                    });
+
+                    var url = "/WebFavorite/EditFavorite";
+                    var postData = { list: list };
+                    $.post(url, postData, function (json) {
+                        var data = $.parseJSON(json);
+                        if (data.Success) {
+                            //showTips("操作成功");
+                            Refresh();//刷新页面数据
+                        }
+                        else {
+                            showTips(data.ErrorMessage);
+                        }
+                    });
+                },
+            });
+        }
+
+        //根据条件查询并绑定结果
+        function Search(page) {
+            //根据控件Name属性获取表单预设条件
+            var condition = '';
+
+            //根据需要加上一些特殊条件
+            //condition += "&WHC_Age=" + $("#WHC_Age").val() + "~" + $("#WHC_Age2").val(); //数值范围
+            //condition += "&WHC_BirthDate=" + $("#WHC_BirthDate").val() + "~" + $("#WHC_BirthDate2").val(); //日期范围
+
+            SearchCondition(page, condition);
+        }
+        function SearchCondition(page, condition) {
+            //获取Json对象集合，并生成数据显示内容
+            url = "/WebFavorite/FindWithPager?r="+ Math.random() + "&page=" + page + "&rows=" + rows;
+            $.getJSON(url + "&" + condition, function (data) {
+                $("#totalCount").text(data.total);
+                $("#totalPageCount").text(Math.ceil(data.total / rows));
+
+                $("#grid_body").html("");
+                $.each(data.rows, function (i, item) {
+                    var tr = "<div class='list-group-item'>";
+                    tr += "<span class='glyphicon glyphicon-move' aria-hidden='true'></span>";
+                    tr += "<a class='btn btn-sm blue' id='" + item.ID + "' href='" + item.Url + "'>" + item.Title + "</a>";
+                    tr += "<i class='js-remove'>✖</i>";
+
+                    tr += "</div>";
+                    $("#grid_body").append(tr);
+                });
+                initList();
+
+                //设置分页属性及处理
+                var element = $('#grid_paging');
+                if(data.total > 0) {
+                    var options = {
+                        bootstrapMajorVersion: 3,
+                        currentPage: page,
+                        numberOfPages: rows,
+                        totalPages: Math.ceil(data.total / rows),
+                        onPageChanged: function (event, oldPage, newPage) {
+                            SearchCondition(newPage, condition);  //页面变化时触发内容更新
+                        }
+                    }
+                    element.bootstrapPaginator(options);
+                } else {
+                    element.html("");
+                }
+            });
+        }
+
+        //设置一页显示多少条
+        function ChangeRows() {
+            rows = $("#rows").val();
+            Refresh();
+        }
+
+        //刷新列表
+        function Refresh() {
+            Search(currentPage);
+        }
+
+        function Favorite() {
+            location.href = '/WebFavorite/index';
+        }
+
+        //实现删除数据的方法
+        function Delete() {
+            var ids = "";//得到用户选择的数据的ID
+            $("[name='checkbox']").each(function () {
+                if ($(this).is(':checked')) {
+                    ids += $(this).val() + ",";
+                }
+            });
+
+            DeleteByIds(ids);
+        }
+
+        //删除指定的记录
+        function DeleteByIds(ids) {
+            if (ids != "") {
+                showDelete(function () {
+                    //最后去掉最后的逗号,
+                    ids = ids.replace(/,\s*$/, '');
+
+                    //然后发送异步请求的信息到后台删除数据
+                    var postData = { ids: ids };
+                    $.post("/WebFavorite/DeletebyIds", postData, function (json) {
+                        var data = $.parseJSON(json);
+                        if (data.Success) {
+                            showTips("删除选定的记录成功");
+                            Refresh();//刷新页面数据
+                        }
+                        else {
+                            showTips(data.ErrorMessage);
+                        }
+                    });
+                });
+            } else {
+                showTips("请选择你要删除的数据");
+            }
+    }
+
+        var UpDownUrl = "/WebFavorite/UpDown"
+        function Up(id) {
+            var postData = { id: id, up: true };
+            $.post(UpDownUrl, postData, function (json) {
+                var data = $.parseJSON(json);
+                if (data.Success) {
+                    showTips("向上移动成功");
+                    Refresh();//刷新页面数据
+                }
+                else {
+                    showTips(data.ErrorMessage);
+                }
+            });
+        }
+        function Down(id) {
+            var postData = { id: id, up: false };
+            $.post(UpDownUrl, postData, function (json) {
+                var data = $.parseJSON(json);
+                if (data.Success) {
+                    showTips("向下移动成功");
+                    Refresh();//刷新页面数据
+                }
+                else {
+                    showTips(data.ErrorMessage);
+                }
+            });
+        }
+
+    </script>
+
+}

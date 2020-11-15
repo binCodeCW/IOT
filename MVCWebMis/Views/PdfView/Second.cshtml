@@ -1,0 +1,76 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="utf-8" />
+    <title>云平台管理系统</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <title>PDF查看</title>
+
+    @*此处添加一些Jquery相关的脚本，方便开发时刻自定义脚本的智能提示*@
+    <script src="~/Content/metronic/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+    <script src="~/Content/metronic/assets/global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
+    <script src="~/Content/metronic/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="/Content/metronic/assets/global/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <link href="~/Content/metronic/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/metronic/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" />
+    <link href="~/Content/metronic/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+
+    <script src="~/Content/JqueryTools/pdfjs/build/pdf.js"></script>
+    <script src="~/Content/JQueryTools/PDFObject/pdfobject.min.js"></script>
+
+    <!-- END THEME STYLES -->
+    <link rel="shortcut icon" href="~/favicon.ico" />
+    <script>
+        //页面初始化
+        $(function () {
+            PDFObject.embed("../Content/Template/fapiao3.pdf", "#documentViewer");
+        });
+    </script>
+
+    <style>
+        .pdfobject-container {
+            height: 600px;
+        }
+
+        .pdfobject {
+            border: 1px solid #666;
+        }
+    </style>
+</head>
+<body>
+    <!--------------------------数据查询及分页处理---------------------------->
+    <div class="portlet box col-md-10">
+        <div class="portlet box green-meadow">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-cogs"></i>
+                    PDF预览
+                </div>
+            </div>
+            <div class="portlet-body flip-scroll">
+                <div class="portlet-body">
+                    <div style="height:300px;width:auto">
+                        <a href="/Content/JQueryTools/pdfjs/web/viewer.html?file=/Content/Template/fapiao.pdf" title="在线查看PDF">在线查看PDF</a>
+                        <a href="/PdfView/index2?filename=fapiao.pdf" target="_blank" style="color:red" title="单击下载发票PDF">下载发票PDF</a>
+                        <p></p>
+                        <div id="documentViewer" class="flexpaper_viewer" style="min-height:300px;width:auto"></div>
+                        <div id="documentViewer2" class="flexpaper_viewer" style="min-height:300px;width:auto"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,6 @@
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\IOT.NA\bin\Release\IOT.NA.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\IOT.NA\bin\Release\IOT.NA.pdb
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\IOT.NA\bin\Release\Newtonsoft.Json.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\IOT.NA\obj\Release\IOT.NA.csprojResolveAssemblyReference.cache
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\IOT.NA\obj\Release\IOT.NA.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\IOT.NA\obj\Release\IOT.NA.pdb

@@ -1,0 +1,15 @@
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\YH.Framework.Commons\bin\Release\YH.Framework.Commons.xml
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\YH.Framework.Commons\bin\Release\YH.Framework.Commons.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\YH.Framework.Commons\bin\Release\YH.Framework.Commons.pdb
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\YH.Framework.Commons\bin\Release\YH.Framework.Language.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\YH.Framework.Commons\bin\Release\Newtonsoft.Json.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\YH.Framework.Commons\bin\Release\YH.Framework.Language.pdb
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\YH.Framework.Commons\obj\Release\YH.Framework.Commons.csprojResolveAssemblyReference.cache
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\YH.Framework.Commons\obj\Release\YH.Framework.Commons.csproj.ResolveComReference.cache
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\YH.Framework.Commons\obj\Release\YH.Framework.Commons.CoolPrintPreviewDialog.resources
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\YH.Framework.Commons\obj\Release\YH.Framework.Commons.DragAndDropListView.resources
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\YH.Framework.Commons\obj\Release\YH.Framework.Commons.PrintOptions.resources
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\YH.Framework.Commons\obj\Release\YH.Framework.Commons.QueryInputDialog.resources
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\YH.Framework.Commons\obj\Release\YH.Framework.Commons.csproj.GenerateResource.Cache
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\YH.Framework.Commons\obj\Release\YH.Framework.Commons.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\YH.Framework.Commons\obj\Release\YH.Framework.Commons.pdb

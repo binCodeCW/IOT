@@ -1,0 +1,295 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E434DD88-5467-40A4-995F-590B807BFDDD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WHC.WorkflowLite.Core</RootNamespace>
+    <AssemblyName>WHC.WorkflowLite.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\Lib\WHC.WorkflowLite.Core.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\WHC.WorkflowLite.Core.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\WHC.WorkflowLite.Core.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>..\Lib\WHC.WorkflowLite.Core.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Aspose.Cells">
+      <HintPath>..\Reference\Aspose.Cells.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\Reference\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=3.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Reference\EnterpriseLibrary\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Reference\EnterpriseLibrary\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BLL\AdminApply.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\Apply.cs" />
+    <Compile Include="BLL\ApplyDraft.cs" />
+    <Compile Include="BLL\Asset.cs" />
+    <Compile Include="BLL\AssetCheck.cs" />
+    <Compile Include="BLL\AssetCheckDetail.cs" />
+    <Compile Include="BLL\AssetCz.cs" />
+    <Compile Include="BLL\AssetCzDetail.cs" />
+    <Compile Include="BLL\AssetLy.cs" />
+    <Compile Include="BLL\AssetLyDetail.cs" />
+    <Compile Include="BLL\AssetZy.cs" />
+    <Compile Include="BLL\AssetZyDetail.cs" />
+    <Compile Include="BLL\BusinessTrip.cs" />
+    <Compile Include="BLL\CarUsage.cs" />
+    <Compile Include="BLL\ContractApproval.cs" />
+    <Compile Include="BLL\Cost.cs" />
+    <Compile Include="BLL\FormFlow.cs" />
+    <Compile Include="BLL\Form.cs" />
+    <Compile Include="BLL\ApplyFlow.cs" />
+    <Compile Include="BLL\ApplyLog.cs" />
+    <Compile Include="BLL\ApplyRead.cs" />
+    <Compile Include="BLL\ApplySign.cs" />
+    <Compile Include="BLL\ApplyUser.cs" />
+    <Compile Include="BLL\FormProc.cs" />
+    <Compile Include="BLL\AssignWork.cs" />
+    <Compile Include="BLL\CommonOpinion.cs" />
+    <Compile Include="BLL\ApplyFlowlog.cs" />
+    <Compile Include="BLL\GoodsReceive.cs" />
+    <Compile Include="BLL\Leave.cs" />
+    <Compile Include="BLL\Maintenance.cs" />
+    <Compile Include="BLL\MeetingRoom.cs" />
+    <Compile Include="BLL\Overtime.cs" />
+    <Compile Include="BLL\Payment.cs" />
+    <Compile Include="BLL\PurchaseApproval.cs" />
+    <Compile Include="BLL\Reimbursement.cs" />
+    <Compile Include="BLL\ReimbursementDetail.cs" />
+    <Compile Include="BLL\StampUsage.cs" />
+    <Compile Include="BLL\StoreAddress.cs" />
+    <Compile Include="DAL\DALSQL\Apply.cs" />
+    <Compile Include="DAL\DALSQL\ApplyDraft.cs" />
+    <Compile Include="DAL\DALSQL\Asset.cs" />
+    <Compile Include="DAL\DALSQL\AssetCheck.cs" />
+    <Compile Include="DAL\DALSQL\AssetCheckDetail.cs" />
+    <Compile Include="DAL\DALSQL\AssetCz.cs" />
+    <Compile Include="DAL\DALSQL\AssetCzDetail.cs" />
+    <Compile Include="DAL\DALSQL\AssetLy.cs" />
+    <Compile Include="DAL\DALSQL\AssetLyDetail.cs" />
+    <Compile Include="DAL\DALSQL\AssetZy.cs" />
+    <Compile Include="DAL\DALSQL\AssetZyDetail.cs" />
+    <Compile Include="DAL\DALSQL\BusinessTrip.cs" />
+    <Compile Include="DAL\DALSQL\CarUsage.cs" />
+    <Compile Include="DAL\DALSQL\ContractApproval.cs" />
+    <Compile Include="DAL\DALSQL\Cost.cs" />
+    <Compile Include="DAL\DALSQL\FormFlow.cs" />
+    <Compile Include="DAL\DALSQL\Form.cs" />
+    <Compile Include="DAL\DALSQL\ApplyFlow.cs" />
+    <Compile Include="DAL\DALSQL\ApplyLog.cs" />
+    <Compile Include="DAL\DALSQL\ApplyRead.cs" />
+    <Compile Include="DAL\DALSQL\ApplySign.cs" />
+    <Compile Include="DAL\DALSQL\ApplyUser.cs" />
+    <Compile Include="DAL\DALSQL\FormProc.cs" />
+    <Compile Include="DAL\DALSQL\AssignWork.cs" />
+    <Compile Include="DAL\DALSQL\CommonOpinion.cs" />
+    <Compile Include="DAL\DALSQL\ApplyFlowlog.cs" />
+    <Compile Include="DAL\DALSQL\GoodsReceive.cs" />
+    <Compile Include="DAL\DALSQL\Leave.cs" />
+    <Compile Include="DAL\DALSQL\Maintenance.cs" />
+    <Compile Include="DAL\DALSQL\MeetingRoom.cs" />
+    <Compile Include="DAL\DALSQL\Overtime.cs" />
+    <Compile Include="DAL\DALSQL\Payment.cs" />
+    <Compile Include="DAL\DALSQL\PurchaseApproval.cs" />
+    <Compile Include="DAL\DALSQL\Reimbursement.cs" />
+    <Compile Include="DAL\DALSQL\ReimbursementDetail.cs" />
+    <Compile Include="DAL\DALSQL\StampUsage.cs" />
+    <Compile Include="DAL\DALSQL\StoreAddress.cs" />
+    <Compile Include="Entity\ApplyDraftInfo.cs" />
+    <Compile Include="Entity\ApplyInfo.cs" />
+    <Compile Include="Entity\AssetCheckDetailInfo.cs" />
+    <Compile Include="Entity\AssetCheckInfo.cs" />
+    <Compile Include="Entity\AssetCzDetailInfo.cs" />
+    <Compile Include="Entity\AssetCzInfo.cs" />
+    <Compile Include="Entity\AssetInfo.cs" />
+    <Compile Include="Entity\AssetLyDetailInfo.cs" />
+    <Compile Include="Entity\AssetLyInfo.cs" />
+    <Compile Include="Entity\AssetZyDetailInfo.cs" />
+    <Compile Include="Entity\AssetZyInfo.cs" />
+    <Compile Include="Entity\BusinessTripInfo.cs" />
+    <Compile Include="Entity\CarUsageInfo.cs" />
+    <Compile Include="Entity\ContractApprovalInfo.cs" />
+    <Compile Include="Entity\CostInfo.cs" />
+    <Compile Include="Entity\FormFlowInfo.cs" />
+    <Compile Include="Entity\FormInfo.cs" />
+    <Compile Include="Entity\ApplyFlowInfo.cs" />
+    <Compile Include="Entity\ApplyLogInfo.cs" />
+    <Compile Include="Entity\ApplyReadInfo.cs" />
+    <Compile Include="Entity\ApplySignInfo.cs" />
+    <Compile Include="Entity\ApplyUserInfo.cs" />
+    <Compile Include="Entity\FormProcInfo.cs" />
+    <Compile Include="Entity\AssignWorkInfo.cs" />
+    <Compile Include="Entity\CommonOpinionInfo.cs" />
+    <Compile Include="Entity\ApplyFlowlogInfo.cs" />
+    <Compile Include="Entity\FormEnum.cs" />
+    <Compile Include="Entity\GoodsReceiveInfo.cs" />
+    <Compile Include="Entity\LeaveInfo.cs" />
+    <Compile Include="Entity\MaintenanceInfo.cs" />
+    <Compile Include="Entity\MeetingRoomInfo.cs" />
+    <Compile Include="Entity\MyPagerInfo.cs" />
+    <Compile Include="Entity\OvertimeInfo.cs" />
+    <Compile Include="Entity\PaymentInfo.cs" />
+    <Compile Include="Entity\PurchaseApprovalInfo.cs" />
+    <Compile Include="Entity\ReimbursementDetailInfo.cs" />
+    <Compile Include="Entity\ReimbursementInfo.cs" />
+    <Compile Include="Entity\StampUsageInfo.cs" />
+    <Compile Include="Entity\StoreAddressInfo.cs" />
+    <Compile Include="IDAL\IApply.cs" />
+    <Compile Include="IDAL\IApplyDraft.cs" />
+    <Compile Include="IDAL\IAsset.cs" />
+    <Compile Include="IDAL\IAssetCheck.cs" />
+    <Compile Include="IDAL\IAssetCheckDetail.cs" />
+    <Compile Include="IDAL\IAssetCz.cs" />
+    <Compile Include="IDAL\IAssetCzDetail.cs" />
+    <Compile Include="IDAL\IAssetLy.cs" />
+    <Compile Include="IDAL\IAssetLyDetail.cs" />
+    <Compile Include="IDAL\IAssetZy.cs" />
+    <Compile Include="IDAL\IAssetZyDetail.cs" />
+    <Compile Include="IDAL\IBusinessTrip.cs" />
+    <Compile Include="IDAL\ICarUsage.cs" />
+    <Compile Include="IDAL\IContractApproval.cs" />
+    <Compile Include="IDAL\ICost.cs" />
+    <Compile Include="IDAL\IFormFlow.cs" />
+    <Compile Include="IDAL\IForm.cs" />
+    <Compile Include="IDAL\IApplyFlow.cs" />
+    <Compile Include="IDAL\IApplyLog.cs" />
+    <Compile Include="IDAL\IApplyRead.cs" />
+    <Compile Include="IDAL\IApplySign.cs" />
+    <Compile Include="IDAL\IApplyUser.cs" />
+    <Compile Include="IDAL\IFormProc.cs" />
+    <Compile Include="IDAL\IAssignWork.cs" />
+    <Compile Include="IDAL\ICommonOpinion.cs" />
+    <Compile Include="IDAL\IApplyFlowlog.cs" />
+    <Compile Include="IDAL\IGoodsReceive.cs" />
+    <Compile Include="IDAL\ILeave.cs" />
+    <Compile Include="IDAL\IMaintenance.cs" />
+    <Compile Include="IDAL\IMeetingRoom.cs" />
+    <Compile Include="IDAL\IOvertime.cs" />
+    <Compile Include="IDAL\IPayment.cs" />
+    <Compile Include="IDAL\IPurchaseApproval.cs" />
+    <Compile Include="IDAL\IReimbursement.cs" />
+    <Compile Include="IDAL\IReimbursementDetail.cs" />
+    <Compile Include="IDAL\IStampUsage.cs" />
+    <Compile Include="IDAL\IStoreAddress.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YH.Framework.Commons\YH.Framework.Commons.csproj">
+      <Project>{53ac195e-dcff-47c4-bc02-7e0241ff520c}</Project>
+      <Name>YH.Framework.Commons</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YH.Framework.ControlUtil\YH.Framework.ControlUtil.csproj">
+      <Project>{d1d3850b-206f-49a9-ba9f-eac0c39de3dd}</Project>
+      <Name>YH.Framework.ControlUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YH.Pager.Entity\YH.Pager.Entity.csproj">
+      <Project>{8d58654e-3fdb-4f5f-921a-7832db994dce}</Project>
+      <Name>YH.Pager.Entity</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

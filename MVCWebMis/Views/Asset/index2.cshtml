@@ -1,0 +1,1764 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+    ViewBag.Title = "实物资产表";
+}
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+
+<!-- BEGIN 数据查询-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption"> <i class="fa fa-filter"></i>
+            查询内容
+        </div>
+        <div class="tools">
+            <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="Refresh()">
+                <i class="fa fa-search"></i>
+                查 询
+            </button>
+            <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="ShowImport()">
+                <i class="fa fa-file-excel-o"></i>
+                导 入
+            </button>
+            <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="ShowExport()">
+                <i class="fa fa-file-excel-o"></i>
+                导 出
+            </button>
+            <a href="javascript:;" class="collapse" title="折叠内容"></a>
+        </div>
+    </div>
+
+    <div class="portlet-body flip-scroll">
+        <div class="row">
+            <form class="form-horizontal" id="ffSearch">
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">资产编码</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Code" name="WHC_Code" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">资产类别</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Name" name="WHC_Name" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">类别名称</label>
+                        <div class="col-md-8">
+                            <input id="WHC_ClassName" name="WHC_ClassName" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">使用部门</label>
+                        <div class="col-md-8">
+                            <input id="WHC_CurrDept" name="WHC_CurrDept" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">管理部门</label>
+                        <div class="col-md-8">
+                            <input id="WHC_ChargeDept" name="WHC_ChargeDept" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">增加方式</label>
+                        <div class="col-md-8">
+                            <input id="WHC_AddMethod" name="WHC_AddMethod" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">使用状况</label>
+                        <div class="col-md-8">
+                            <input id="WHC_UseStatus" name="WHC_UseStatus" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-6 col-sm-6 col-xs-6">
+                        <label class="control-label col-md-2">购置日期</label>
+                        <div class=" input-group col-md-10">
+                            <input id="WHC_PurchaseDate" name="WHC_PurchaseDate" type="date" class="form-control"/>                
+                            <span class="input-group-addon">~</span>
+                            <input id="WHC_PurchaseDate2" name="WHC_PurchaseDate" type="date" class="form-control"/>
+                        </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">使用人</label>
+                        <div class="col-md-8">
+                            <input id="WHC_UsePerson" name="WHC_UsePerson" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">规格型号</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Spec" name="WHC_Spec" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">存放地点</label>
+                        <div class="col-md-8">
+                            <input id="WHC_KeepAddr" name="WHC_KeepAddr" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <label class="control-label col-md-4">数量</label>
+                    <div class=" input-group">
+                        <input id="WHC_Qty" name="WHC_Qty" type="text" class="form-control"/>
+                        <span class="input-group-addon">~</span>
+                        <input id="WHC_Qty2" name="WHC_Qty" type="text" class="form-control"/>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">备注</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Remark" name="WHC_Remark" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">计量单位</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Unit" name="WHC_Unit" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <label class="control-label col-md-4">本币原值</label>
+                    <div class=" input-group">
+                        <input id="WHC_OriginValue" name="WHC_OriginValue" type="text" class="form-control"/>
+                        <span class="input-group-addon">~</span>
+                        <input id="WHC_OriginValue2" name="WHC_OriginValue" type="text" class="form-control"/>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <label class="control-label col-md-4">使用年限</label>
+                    <div class=" input-group">
+                        <input id="WHC_LimitYears" name="WHC_LimitYears" type="text" class="form-control"/>
+                        <span class="input-group-addon">~</span>
+                        <input id="WHC_LimitYears2" name="WHC_LimitYears" type="text" class="form-control"/>
+                    </div>
+                </div>
+                 <div class="col-md-6 col-sm-6 col-xs-6">
+                        <label class="control-label col-md-2">使用到期日</label>
+                        <div class=" input-group col-md-10">
+                            <input id="WHC_DueDate" name="WHC_DueDate" type="date" class="form-control"/>                
+                            <span class="input-group-addon">~</span>
+                            <input id="WHC_DueDate2" name="WHC_DueDate" type="date" class="form-control"/>
+                        </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">已使用年数</label>
+                        <div class="col-md-8">
+                            <input id="WHC_UseYears" name="WHC_UseYears" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">是否超年限</label>
+                        <div class="col-md-8">
+                            <input id="WHC_IsAge" name="WHC_IsAge" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">资产动态</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Status" name="WHC_Status" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">在用类型</label>
+                        <div class="col-md-8">
+                            <input id="WHC_UseType" name="WHC_UseType" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">保管人</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Keeper" name="WHC_Keeper" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">盘点状态</label>
+                        <div class="col-md-8">
+                            <input id="WHC_InvStatus" name="WHC_InvStatus" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">盘点日期</label>
+                        <div class="col-md-8">
+                            <input id="WHC_InvDate" name="WHC_InvDate" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">盘点人</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Inventory" name="WHC_Inventory" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">财务对账</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Account" name="WHC_Account" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">对账日期</label>
+                        <div class="col-md-8">
+                            <input id="WHC_AccDate" name="WHC_AccDate" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">核对人</label>
+                        <div class="col-md-8">
+                            <input id="WHC_AccHolder" name="WHC_AccHolder" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">用户账号</label>
+                        <div class="col-md-8">
+                            <input id="WHC_UserName" name="WHC_UserName" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">自定义1</label>
+                        <div class="col-md-8">
+                            <input id="WHC_UserDef1" name="WHC_UserDef1" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">自定义2</label>
+                        <div class="col-md-8">
+                            <input id="WHC_UserDef2" name="WHC_UserDef2" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">自定义3</label>
+                        <div class="col-md-8">
+                            <input id="WHC_UserDef3" name="WHC_UserDef3" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">备注</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Note" name="WHC_Note" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">操作人</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Operator" name="WHC_Operator" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-6 col-sm-6 col-xs-6">
+                        <label class="control-label col-md-2">操作日期</label>
+                        <div class=" input-group col-md-10">
+                            <input id="WHC_OperateDate" name="WHC_OperateDate" type="date" class="form-control"/>                
+                            <span class="input-group-addon">~</span>
+                            <input id="WHC_OperateDate2" name="WHC_OperateDate" type="date" class="form-control"/>
+                        </div>
+                </div>
+  
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END 数据查询-->
+
+<!-- BEGIN 表格数据-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-cogs"></i>
+            数据列表
+        </div>
+        <div class="tools">
+            <button type="button" onclick="Add()" class="btn btn-circle btn-sm green-meadow">
+                <i class="fa fa-plus"></i>
+                新增
+            </button>
+            <button type="button" onclick="EditView()" class="btn btn-circle btn-sm green-meadow">
+                <i class="fa fa-pencil"></i>
+                修改
+            </button>
+            <button type="button" onclick="EditView('view')" class="btn btn-circle btn-sm green-meadow">
+                <i class="fa fa-table"></i>
+                查看
+            </button>
+            <button type="button" onclick="Delete()" class="btn btn-circle btn-sm green-meadow">
+                <i class="fa fa-minus"></i>
+                删除
+            </button>
+            <button type="button" onclick="Refresh()" class="btn btn-circle btn-sm green-meadow" data-toggle="modal">
+                <i class="fa fa-refresh"></i>
+                刷新
+            </button>
+            <button type="button" class="fullscreen btn btn-circle btn-sm green-meadow" data-original-title="全屏">
+                <i class="icon-size-fullscreen"></i>
+            </button>
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <div class="portlet-body">
+            <div>
+                <span>每页显示</span>
+                <select id="rows" onchange="ChangeRows()">
+                    <option>10</option>
+                    <option>50</option>
+                    <option>100</option>
+                    <option>1000</option>
+                </select>
+                <span>条记录</span>&nbsp;&nbsp;
+                <span>共有记录：</span><span id='totalCount' class="label label-success">0</span>条，总页数：<span id='totalPageCount' class="label label-success">0</span>页。
+            </div>
+            <hr />
+            <table id="grid" class="table table-striped table-bordered table-hover" cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+                <thead id="grid_head">
+                    <tr>
+                        <th class="table-checkbox" style="width:40px"><input class="group-checkable" type="checkbox" onclick="selectAll(this)"></th>
+                         <th>资产编码</th>
+                         <th>资产类别</th>
+                         <th>类别名称</th>
+                         <th>使用部门</th>
+                         <th>管理部门</th>
+                         <th>增加方式</th>
+                         <th>使用状况</th>
+                         <th>购置日期</th>
+                         <th>使用人</th>
+                         <th>规格型号</th>
+                         <th>存放地点</th>
+                         <th>数量</th>
+                         <th>备注</th>
+                         <th>计量单位</th>
+                         <th>本币原值</th>
+                         <th>使用年限</th>
+                         <th>使用到期日</th>
+                         <th>已使用年数</th>
+                         <th>是否超年限</th>
+                         <th>资产动态</th>
+                         <th>在用类型</th>
+                         <th>保管人</th>
+                         <th>盘点状态</th>
+                         <th>盘点日期</th>
+                         <th>盘点人</th>
+                         <th>财务对账</th>
+                         <th>对账日期</th>
+                         <th>核对人</th>
+                         <th>用户账号</th>
+                         <th>自定义1</th>
+                         <th>自定义2</th>
+                         <th>自定义3</th>
+                         <th>备注</th>
+                         <th>操作人</th>
+                         <th>操作日期</th>
+  
+                        <th style="width:120px">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="grid_body"></tbody>
+            </table>
+            <div class="paging-toolbar">
+                <ul id='grid_paging'></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--------------------------添加/修改信息的弹出层---------------------------->
+<div id="add"  class="modal fade bs-modal-lg"tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-pencil"></i>
+                    <span id="lblAddTitle" style="font-weight:bold">添加信息</span>
+                </h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffAdd" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row">
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">资产编码</label>
+                                <div class="col-md-8">
+                                    <input id="Code" name="Code" type="text" class="form-control" placeholder="资产编码..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">资产类别</label>
+                                <div class="col-md-8">
+                                    <input id="Name" name="Name" type="text" class="form-control" placeholder="资产类别..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">类别名称</label>
+                                <div class="col-md-8">
+                                    <input id="ClassName" name="ClassName" type="text" class="form-control" placeholder="类别名称..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">使用部门</label>
+                                <div class="col-md-8">
+                                    <input id="CurrDept" name="CurrDept" type="text" class="form-control" placeholder="使用部门..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">管理部门</label>
+                                <div class="col-md-8">
+                                    <input id="ChargeDept" name="ChargeDept" type="text" class="form-control" placeholder="管理部门..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">增加方式</label>
+                                <div class="col-md-8">
+                                    <input id="AddMethod" name="AddMethod" type="text" class="form-control" placeholder="增加方式..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">使用状况</label>
+                                <div class="col-md-8">
+                                    <input id="UseStatus" name="UseStatus" type="text" class="form-control" placeholder="使用状况..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">购置日期</label>
+                                <div class="col-md-8">
+                                    <input id="PurchaseDate" name="PurchaseDate" type="date" class="form-control" placeholder="购置日期..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">使用人</label>
+                                <div class="col-md-8">
+                                    <input id="UsePerson" name="UsePerson" type="text" class="form-control" placeholder="使用人..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">规格型号</label>
+                                <div class="col-md-8">
+                                    <input id="Spec" name="Spec" type="text" class="form-control" placeholder="规格型号..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">存放地点</label>
+                                <div class="col-md-8">
+                                    <input id="KeepAddr" name="KeepAddr" type="text" class="form-control" placeholder="存放地点..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">数量</label>
+                                <div class="col-md-8">
+                                    <input id="Qty" name="Qty" type="number" class="form-control" placeholder="数量..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">备注</label>
+                                <div class="col-md-8">
+                                    <input id="Remark" name="Remark" type="text" class="form-control" placeholder="备注..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">计量单位</label>
+                                <div class="col-md-8">
+                                    <input id="Unit" name="Unit" type="text" class="form-control" placeholder="计量单位..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">本币原值</label>
+                                <div class="col-md-8">
+                                    <input id="OriginValue" name="OriginValue" type="number" class="form-control" placeholder="本币原值..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">使用年限</label>
+                                <div class="col-md-8">
+                                    <input id="LimitYears" name="LimitYears" type="number" class="form-control" placeholder="使用年限..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">使用到期日</label>
+                                <div class="col-md-8">
+                                    <input id="DueDate" name="DueDate" type="date" class="form-control" placeholder="使用到期日..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">已使用年数</label>
+                                <div class="col-md-8">
+                                    <input id="UseYears" name="UseYears" type="text" class="form-control" placeholder="已使用年数..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">是否超年限</label>
+                                <div class="col-md-8">
+                                    <input id="IsAge" name="IsAge" type="text" class="form-control" placeholder="是否超年限..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">资产动态</label>
+                                <div class="col-md-8">
+                                    <input id="Status" name="Status" type="text" class="form-control" placeholder="资产动态..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">在用类型</label>
+                                <div class="col-md-8">
+                                    <input id="UseType" name="UseType" type="text" class="form-control" placeholder="在用类型..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">保管人</label>
+                                <div class="col-md-8">
+                                    <input id="Keeper" name="Keeper" type="text" class="form-control" placeholder="保管人..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">盘点状态</label>
+                                <div class="col-md-8">
+                                    <input id="InvStatus" name="InvStatus" type="text" class="form-control" placeholder="盘点状态..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">盘点日期</label>
+                                <div class="col-md-8">
+                                    <input id="InvDate" name="InvDate" type="text" class="form-control" placeholder="盘点日期..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">盘点人</label>
+                                <div class="col-md-8">
+                                    <input id="Inventory" name="Inventory" type="text" class="form-control" placeholder="盘点人..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">财务对账</label>
+                                <div class="col-md-8">
+                                    <input id="Account" name="Account" type="text" class="form-control" placeholder="财务对账..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">对账日期</label>
+                                <div class="col-md-8">
+                                    <input id="AccDate" name="AccDate" type="text" class="form-control" placeholder="对账日期..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">核对人</label>
+                                <div class="col-md-8">
+                                    <input id="AccHolder" name="AccHolder" type="text" class="form-control" placeholder="核对人..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">用户账号</label>
+                                <div class="col-md-8">
+                                    <input id="UserName" name="UserName" type="text" class="form-control" placeholder="用户账号..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">自定义1</label>
+                                <div class="col-md-8">
+                                    <input id="UserDef1" name="UserDef1" type="text" class="form-control" placeholder="自定义1..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">自定义2</label>
+                                <div class="col-md-8">
+                                    <input id="UserDef2" name="UserDef2" type="text" class="form-control" placeholder="自定义2..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">自定义3</label>
+                                <div class="col-md-8">
+                                    <input id="UserDef3" name="UserDef3" type="text" class="form-control" placeholder="自定义3..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">备注</label>
+                                <div class="col-md-8">
+                                    <textarea id="Note" name="Note" class="form-control" placeholder="备注..."></textarea>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">操作人</label>
+                                <div class="col-md-8">
+                                    <input id="Operator" name="Operator" type="text" class="form-control" placeholder="操作人..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">操作日期</label>
+                                <div class="col-md-8">
+                                    <input id="OperateDate" name="OperateDate" type="date" class="form-control" placeholder="操作日期..."/>
+
+                                </div>
+                            </div>
+                        </div>
+  
+                    </div>
+                </div>
+                <div class="modal-footer bg-info">
+                    <input type="hidden" id="ID" name="ID" />
+                    <button type="submit" class="btn blue">确定</button>
+                    <button type="button" class="btn green" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--------------------------查看信息的弹出层---------------------------->
+<div id="view" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-book-open"></i>
+                    <span style="font-weight:bold">查看信息</span>
+                </h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffView" action="">
+                <div class="modal-body">                    
+                    <div class="row">
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">资产编码</label>
+                                <div class="col-md-8">
+                                    <label id="Code2" name="Code" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">资产类别</label>
+                                <div class="col-md-8">
+                                    <label id="Name2" name="Name" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">类别名称</label>
+                                <div class="col-md-8">
+                                    <label id="ClassName2" name="ClassName" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">使用部门</label>
+                                <div class="col-md-8">
+                                    <label id="CurrDept2" name="CurrDept" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">管理部门</label>
+                                <div class="col-md-8">
+                                    <label id="ChargeDept2" name="ChargeDept" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">增加方式</label>
+                                <div class="col-md-8">
+                                    <label id="AddMethod2" name="AddMethod" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">使用状况</label>
+                                <div class="col-md-8">
+                                    <label id="UseStatus2" name="UseStatus" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">购置日期</label>
+                                <div class="col-md-8">
+                                    <label id="PurchaseDate2" name="PurchaseDate" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">使用人</label>
+                                <div class="col-md-8">
+                                    <label id="UsePerson2" name="UsePerson" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">规格型号</label>
+                                <div class="col-md-8">
+                                    <label id="Spec2" name="Spec" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">存放地点</label>
+                                <div class="col-md-8">
+                                    <label id="KeepAddr2" name="KeepAddr" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">数量</label>
+                                <div class="col-md-8">
+                                    <label id="Qty2" name="Qty" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">备注</label>
+                                <div class="col-md-8">
+                                    <label id="Remark2" name="Remark" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">计量单位</label>
+                                <div class="col-md-8">
+                                    <label id="Unit2" name="Unit" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">本币原值</label>
+                                <div class="col-md-8">
+                                    <label id="OriginValue2" name="OriginValue" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">使用年限</label>
+                                <div class="col-md-8">
+                                    <label id="LimitYears2" name="LimitYears" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">使用到期日</label>
+                                <div class="col-md-8">
+                                    <label id="DueDate2" name="DueDate" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">已使用年数</label>
+                                <div class="col-md-8">
+                                    <label id="UseYears2" name="UseYears" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">是否超年限</label>
+                                <div class="col-md-8">
+                                    <label id="IsAge2" name="IsAge" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">资产动态</label>
+                                <div class="col-md-8">
+                                    <label id="Status2" name="Status" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">在用类型</label>
+                                <div class="col-md-8">
+                                    <label id="UseType2" name="UseType" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">保管人</label>
+                                <div class="col-md-8">
+                                    <label id="Keeper2" name="Keeper" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">盘点状态</label>
+                                <div class="col-md-8">
+                                    <label id="InvStatus2" name="InvStatus" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">盘点日期</label>
+                                <div class="col-md-8">
+                                    <label id="InvDate2" name="InvDate" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">盘点人</label>
+                                <div class="col-md-8">
+                                    <label id="Inventory2" name="Inventory" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">财务对账</label>
+                                <div class="col-md-8">
+                                    <label id="Account2" name="Account" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">对账日期</label>
+                                <div class="col-md-8">
+                                    <label id="AccDate2" name="AccDate" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">核对人</label>
+                                <div class="col-md-8">
+                                    <label id="AccHolder2" name="AccHolder" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">用户账号</label>
+                                <div class="col-md-8">
+                                    <label id="UserName2" name="UserName" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">自定义1</label>
+                                <div class="col-md-8">
+                                    <label id="UserDef12" name="UserDef1" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">自定义2</label>
+                                <div class="col-md-8">
+                                    <label id="UserDef22" name="UserDef2" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">自定义3</label>
+                                <div class="col-md-8">
+                                    <label id="UserDef32" name="UserDef3" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">备注</label>
+                                <div class="col-md-8">
+                                    <label id="Note2" name="Note" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">操作人</label>
+                                <div class="col-md-8">
+                                    <label id="Operator2" name="Operator" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">操作日期</label>
+                                <div class="col-md-8">
+                                    <label id="OperateDate2" name="OperateDate" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+  
+                    </div>
+                </div>
+                <div class="modal-footer bg-info">
+                    <input id="ID2" name="ID" type="hidden" value="">
+                    <button type="button" class="btn green" data-dismiss="modal">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!--导入数据操作层-->
+<div id="import" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">文件导入</h4>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:right;padding:5px">
+                    <a href="~/Content/Template/Asset-模板.xls" onclick="javascript:Preview();">
+                        <img alt="文件导入-模板" src="~/Content/images/ico_excel.png" />
+                        <span style="font-size:larger;font-weight:200;color:red">Asset-模板.xls</span>
+                    </a>
+                </div>
+                <hr/>
+                <form id="ffImport" method="post">
+                    <div title="Excel导入操作" style="padding: 5px" data-options="iconCls:'icon-key'">
+                        <input class="easyui-validatebox" type="hidden" id="AttachGUID" name="AttachGUID" />    
+                        <input id="file_upload" name="file_upload" type="file" multiple="multiple">                    
+                        <a href="javascript:;" class="btn btn-primary" id="btnUpload" onclick="javascript: $('#file_upload').uploadify('upload', '*')">上传</a>
+                        <a href="javascript:;" class="btn btn-default" id="btnCancelUpload" onclick="javascript: $('#file_upload').uploadify('cancel', '*')">取消</a>
+
+                        <div id="fileQueue" class="fileQueue"></div>
+                        <br />                    
+                        <hr style="width:98%" />                    
+                        <div id="div_files"></div>
+                        <br />                    
+                    </div>
+                </form>
+
+                <!--数据显示表格-->
+                <table id="gridImport" class="table table-striped table-bordered table-hover" cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+                    <thead id="gridImport_head">
+                        <tr>
+                            <th class="table-checkbox" style="width:40px"><input class="group-checkable" type="checkbox" onclick="selectAll(this)"></th>
+                             <th>资产编码</th>
+                             <th>资产类别</th>
+                             <th>类别名称</th>
+                             <th>使用部门</th>
+                             <th>管理部门</th>
+                             <th>增加方式</th>
+                             <th>使用状况</th>
+                             <th>购置日期</th>
+                             <th>使用人</th>
+                             <th>规格型号</th>
+                             <th>存放地点</th>
+                             <th>数量</th>
+                             <th>备注</th>
+                             <th>计量单位</th>
+                             <th>本币原值</th>
+                             <th>使用年限</th>
+                             <th>使用到期日</th>
+                             <th>已使用年数</th>
+                             <th>是否超年限</th>
+                             <th>资产动态</th>
+                             <th>在用类型</th>
+                             <th>保管人</th>
+                             <th>盘点状态</th>
+                             <th>盘点日期</th>
+                             <th>盘点人</th>
+                             <th>财务对账</th>
+                             <th>对账日期</th>
+                             <th>核对人</th>
+                             <th>用户账号</th>
+                             <th>自定义1</th>
+                             <th>自定义2</th>
+                             <th>自定义3</th>
+                             <th>备注</th>
+                             <th>操作人</th>
+                             <th>操作日期</th>
+  
+                        </tr>
+                    </thead>
+                    <tbody id="gridImport_body"></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="SaveImport()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section footerScript {
+
+<script type="text/javascript">
+        var currentPage = 1, rows = 10; //分页参数：当前页，记录数
+
+        var isAddOrEdit = 'add';//标识是新增还是编辑对话框弹出，用于删除附件的操作
+        var url;//新增或者更新的连接
+        var ID;//ID值，新增为空，编辑或者查看为具体ID
+
+        //页面初始化
+        $(function () {
+            InitStyle();        //设置控件的样式
+            BindEvent();        //绑定事件处理
+            Search(currentPage);//初始化第一页数据
+            InitDictItem();     //初始化字典信息
+        });
+
+
+        //设置控件的样式
+        function InitStyle() {
+            
+            //统一设置icheck控件的样式
+            $('input[class=icheck]').iCheck({
+                checkboxClass: 'icheckbox_square-red',
+                radioClass: 'iradio_square-red',
+            });
+
+            //增加数值的调整按钮样式
+            // $("#Age").TouchSpin({
+            //     buttondown_class: 'btn blue',
+            //     buttonup_class: 'btn blue',
+            //     min: 0,
+            //     max: 120,
+            //     stepinterval: 1,
+            //     maxboostedstep: 10,
+            //     prefix: ''
+            // });
+                         
+            //初始化fileinput控件（第一次初始化）
+            //initFileInput("file-Portrait", "/Asset/EditPortrait");
+        }
+
+        //根据条件查询并绑定结果
+        function Search(page) {
+            //根据控件Name属性获取表单预设条件
+            var condition = $("#ffSearch").serialize();
+
+            //根据需要加上一些特殊条件
+            //condition += "&WHC_Age=" + $("#WHC_Age").val() + "~" + $("#WHC_Age2").val(); //数值范围
+            //condition += "&WHC_BirthDate=" + $("#WHC_BirthDate").val() + "~" + $("#WHC_BirthDate2").val(); //日期范围
+
+            SearchCondition(page, condition);
+        }
+        function SearchCondition(page, condition) {
+            //获取Json对象集合，并生成数据显示内容
+            url = "/Asset/FindWithPager?r="+ Math.random() + "&page=" + page + "&rows=" + rows;
+            $.getJSON(url + "&" + condition, function (data) {
+                $("#totalCount").text(data.total);
+                $("#totalPageCount").text(Math.ceil(data.total / rows));
+
+                $("#grid_body").html("");
+
+                $.each(data.rows, function (i, item) {
+                    var tr = "<tr>";
+                    tr += "<td><input class='checkboxes' type=\"checkbox\" name=\"checkbox\" value=" + item.ID + "></td>";
+                     tr += "<td>" + item.Code + "</td>";
+                     tr += "<td>" + item.Name + "</td>";
+                     tr += "<td>" + item.ClassName + "</td>";
+                     tr += "<td>" + item.CurrDept + "</td>";
+                     tr += "<td>" + item.ChargeDept + "</td>";
+                     tr += "<td>" + item.AddMethod + "</td>";
+                     tr += "<td>" + item.UseStatus + "</td>";
+                     tr += "<td>" + item.PurchaseDate + "</td>";
+                     tr += "<td>" + item.UsePerson + "</td>";
+                     tr += "<td>" + item.Spec + "</td>";
+                     tr += "<td>" + item.KeepAddr + "</td>";
+                     tr += "<td>" + item.Qty + "</td>";
+                     tr += "<td>" + item.Remark + "</td>";
+                     tr += "<td>" + item.Unit + "</td>";
+                     tr += "<td>" + item.OriginValue + "</td>";
+                     tr += "<td>" + item.LimitYears + "</td>";
+                     tr += "<td>" + item.DueDate + "</td>";
+                     tr += "<td>" + item.UseYears + "</td>";
+                     tr += "<td>" + item.IsAge + "</td>";
+                     tr += "<td>" + item.Status + "</td>";
+                     tr += "<td>" + item.UseType + "</td>";
+                     tr += "<td>" + item.Keeper + "</td>";
+                     tr += "<td>" + item.InvStatus + "</td>";
+                     tr += "<td>" + item.InvDate + "</td>";
+                     tr += "<td>" + item.Inventory + "</td>";
+                     tr += "<td>" + item.Account + "</td>";
+                     tr += "<td>" + item.AccDate + "</td>";
+                     tr += "<td>" + item.AccHolder + "</td>";
+                     tr += "<td>" + item.UserName + "</td>";
+                     tr += "<td>" + item.UserDef1 + "</td>";
+                     tr += "<td>" + item.UserDef2 + "</td>";
+                     tr += "<td>" + item.UserDef3 + "</td>";
+                     tr += "<td>" + item.Note + "</td>";
+                     tr += "<td>" + item.Operator + "</td>";
+                     tr += "<td>" + item.OperateDate + "</td>";
+  
+                    tr += getActionHtml(item.ID); //获取查看、编辑、删除操作代码
+
+                    tr += "</tr>";
+                    $("#grid_body").append(tr);
+                });
+
+                //设置分页属性及处理
+                var element = $('#grid_paging');
+                if(data.total > 0) {
+                    var options = {
+                        bootstrapMajorVersion: 3,
+                        currentPage: page,
+                        numberOfPages: rows,
+                        totalPages: Math.ceil(data.total / rows),
+                        onPageChanged: function (event, oldPage, newPage) {
+                            SearchCondition(newPage, condition);  //页面变化时触发内容更新
+                        }
+                    }
+                    element.bootstrapPaginator(options);
+                } else {
+                    element.html("");
+                }
+            });
+        }
+
+        //设置一页显示多少条
+        function ChangeRows() {
+            rows = $("#rows").val();
+            Refresh();
+        }
+
+        //刷新列表
+        function Refresh() {
+            Search(currentPage);
+        }
+
+        //初始化字典信息（下拉列表）
+        function InitDictItem() {
+            //部分赋值参考
+            
+            //绑定字典
+            //BindDictItem("Rank", "职务");            
+            //绑定树列表
+            //BindSelect("PID", "/Menu/GetDictJson");
+            
+            //绑定可选多个Tag
+            // $("#Hobby").val({
+            //     tags: ["旅游", "爬山", "篮球", "足球", "乒乓球"]
+            // }).trigger("change");
+            
+            //绑定添加界面的公司、部门（联动处理）
+            // BindSelect("Company_ID", "/User/GetMyCompanyDictJson?userId="+@Session["UserId"]);
+            // $("#Company_ID").on("change", function (e) {
+            //     var companyid = $("#Company_ID").val();
+            //     BindSelect("Dept_ID", "/User/GetDeptDictJson?parentId="+ companyid);
+            // });
+        }
+
+        //实现删除数据的方法
+        function Delete() {
+            var ids = "";//得到用户选择的数据的ID
+            $("[name='checkbox']").each(function () {
+                if ($(this).is(':checked')) {
+                    ids += $(this).val() + ",";
+                }
+            });
+
+            DeleteByIds(ids);
+        }
+
+        //删除指定的记录
+        function DeleteByIds(ids) {
+            if (ids != "") {
+                showDelete(function () {
+                    //最后去掉最后的逗号,
+                    ids = ids.replace(/,\s*$/, '');
+
+                    //然后发送异步请求的信息到后台删除数据
+                    var postData = { ids: ids };
+                    $.post("/Asset/DeletebyIds", postData, function (json) {
+                        var data = $.parseJSON(json);
+                        if (data.Success) {
+                            showTips("删除选定的记录成功");
+                            Refresh();//刷新页面数据
+                        }
+                        else {
+                            showTips(data.ErrorMessage);
+                        }
+                    });
+                });
+            } else {
+                showTips("请选择你要删除的数据");
+            }
+        }
+
+        //初始化图像信息
+        function initPortrait(ctrlName, id) {
+            var control = $('#' + ctrlName); 
+            var imageurl = '/Asset/GetPortrait?id=' + id +'&r=' + Math.random();
+
+            //重要，需要更新控件的附加参数内容，以及图片初始化显示
+            control.fileinput('refresh', {
+                uploadExtraData: { id: id },
+                initialPreview: [ //预览图片的设置
+                    "<img src='" + imageurl + "' class='file-preview-image' alt='肖像图片' title='肖像图片'>",
+                ],
+             });
+        }
+
+        //弹出新增对话框
+        function Add() {
+            isAddOrEdit = 'add';//新增对话框标识
+            //CKEDITOR.instances.Content.setData('');  //清空编辑器的数据
+            $("#ffAdd")[0].reset();//清空上次输入
+            $('#ffAdd').validate().resetForm();//去除验证信息
+
+            //增加记录前，赋值ID
+            url = '/Asset/Insert';
+            $.get("/Asset/NewGuid?r=" + Math.random(), function (result) {
+                $("#ID").val(result);
+                ID = result;
+
+            });
+
+            //初始化部分控件
+            //$('input[name="Gender"][value="男"]').iCheck('check');
+            //$("#PID").val("").trigger("change");
+            //$("#Hobby").val(null).trigger("change");//清空下拉框
+
+            $("#lblAddTitle").text("添加信息");
+            $("#add").modal("show");
+        }
+
+        //修改或查看明细信息（绑定显示数据）
+        function EditView(view) {
+            ID = "";//重置ID的值
+            $("[name='checkbox']").each(function () {
+                if ($(this).is(':checked')) {
+                    ID = $(this).val();//首先取出来用户选择的数据的ID
+                }
+            });
+            
+            EditViewById(ID, view);
+        }
+
+        //编辑或者查看指定记录
+        function EditViewById(ID, view) {
+            if (ID == "") {
+                showTips("请选择一条记录");
+                return;
+            }
+
+            if (view == null) {
+                //处理修改的信息
+                $("#lblAddTitle").text("修改信息");
+                $("#add").modal("show");
+                url = '/Asset/Update?ID=' + ID;
+                //绑定修改详细信息的方法
+                BindEditInfo(ID);
+            }
+            else {
+                //处理查看详细
+                $("#view").modal("show");
+                //绑定查看详细信息方法
+                BindViewInfo(ID);
+            }
+        }
+
+        //绑定编辑详细信息的方法
+        function BindEditInfo(ID) {
+            //使用同步方式，使得联动的控件正常显示
+            $.ajaxSettings.async = false;
+
+            $('#ffAdd').validate().resetForm();//去除验证信息
+
+            //首先用户发送一个异步请求去后台实现方法
+            $.getJSON("/Asset/FindByID?r=" + Math.random() + "&id=" + ID, function (info) {
+                 $("#Code").val(info.Code);
+                 $("#Name").val(info.Name);
+                 $("#ClassName").val(info.ClassName);
+                 $("#CurrDept").val(info.CurrDept);
+                 $("#ChargeDept").val(info.ChargeDept);
+                 $("#AddMethod").val(info.AddMethod);
+                 $("#UseStatus").val(info.UseStatus);
+                 $("#PurchaseDate").val(getDateStr(info.PurchaseDate));
+                 $("#UsePerson").val(info.UsePerson);
+                 $("#Spec").val(info.Spec);
+                 $("#KeepAddr").val(info.KeepAddr);
+                 $("#Qty").val(info.Qty);
+                 $("#Remark").val(info.Remark);
+                 $("#Unit").val(info.Unit);
+                 $("#OriginValue").val(info.OriginValue);
+                 $("#LimitYears").val(info.LimitYears);
+                 $("#DueDate").val(getDateStr(info.DueDate));
+                 $("#UseYears").val(info.UseYears);
+                 $("#IsAge").val(info.IsAge);
+                 $("#Status").val(info.Status);
+                 $("#UseType").val(info.UseType);
+                 $("#Keeper").val(info.Keeper);
+                 $("#InvStatus").val(info.InvStatus);
+                 $("#InvDate").val(info.InvDate);
+                 $("#Inventory").val(info.Inventory);
+                 $("#Account").val(info.Account);
+                 $("#AccDate").val(info.AccDate);
+                 $("#AccHolder").val(info.AccHolder);
+                 $("#UserName").val(info.UserName);
+                 $("#UserDef1").val(info.UserDef1);
+                 $("#UserDef2").val(info.UserDef2);
+                 $("#UserDef3").val(info.UserDef3);
+                 $("#Note").val(info.Note);
+                 $("#Operator").val(info.Operator);
+                 $("#OperateDate").val(getDateStr(info.OperateDate));
+  
+                //参考赋值
+                //$("#Company_ID1").val(info.Company_ID).trigger("change");//联动
+                //$("#PID1").val(info.PID).trigger("change");//普通Select2
+                // var array = [info.Hobby];
+                // $("#Hobby").val(array).trigger("change"); //集合
+
+                // $("input[name='Gender']").iCheck('uncheck');
+                // $("input[name='Gender'][value='" + info.Gender + "']").iCheck('check');
+                // $("#BirthDate").val(getDateStr(info.BirthDate));
+
+                $("#ID").val(info.ID);
+                isAddOrEdit = 'edit';//新增对话框标识
+            });
+
+        }
+
+        //绑定查看详细信息的方法
+        function BindViewInfo(ID) {
+            //发送请求
+            $.getJSON("/Asset/FindByID?r=" + Math.random() + "&id=" + ID, function (info) {
+                $("#ID2").val(info.ID);
+
+                 $("#Code2").text(info.Code);
+                 $("#Name2").text(info.Name);
+                 $("#ClassName2").text(info.ClassName);
+                 $("#CurrDept2").text(info.CurrDept);
+                 $("#ChargeDept2").text(info.ChargeDept);
+                 $("#AddMethod2").text(info.AddMethod);
+                 $("#UseStatus2").text(info.UseStatus);
+                 $("#PurchaseDate2").text(info.PurchaseDate);
+                 $("#UsePerson2").text(info.UsePerson);
+                 $("#Spec2").text(info.Spec);
+                 $("#KeepAddr2").text(info.KeepAddr);
+                 $("#Qty2").text(info.Qty);
+                 $("#Remark2").text(info.Remark);
+                 $("#Unit2").text(info.Unit);
+                 $("#OriginValue2").text(info.OriginValue);
+                 $("#LimitYears2").text(info.LimitYears);
+                 $("#DueDate2").text(info.DueDate);
+                 $("#UseYears2").text(info.UseYears);
+                 $("#IsAge2").text(info.IsAge);
+                 $("#Status2").text(info.Status);
+                 $("#UseType2").text(info.UseType);
+                 $("#Keeper2").text(info.Keeper);
+                 $("#InvStatus2").text(info.InvStatus);
+                 $("#InvDate2").text(info.InvDate);
+                 $("#Inventory2").text(info.Inventory);
+                 $("#Account2").text(info.Account);
+                 $("#AccDate2").text(info.AccDate);
+                 $("#AccHolder2").text(info.AccHolder);
+                 $("#UserName2").text(info.UserName);
+                 $("#UserDef12").text(info.UserDef1);
+                 $("#UserDef22").text(info.UserDef2);
+                 $("#UserDef32").text(info.UserDef3);
+                 $("#Note2").text(info.Note);
+                 $("#Operator2").text(info.Operator);
+                 $("#OperateDate2").text(info.OperateDate);
+  
+                //$.getJSON("/User/GetFullNameByID?userid=" + info.Creator, function (result) {
+                //    $("#Creator2").text(result);
+                //});
+                //$.getJSON("/User/GetFullNameByID?userid=" + info.Editor, function (result) {
+                //    $("#Editor2").text(result);
+                //});
+                //
+                
+                //列表框赋值
+                // $('#lbxOUs2').empty();
+                // $.getJSON("/Ou/GetOUsByUser?r=" + Math.random() + "&userid=" + info.ID, function (json) {
+                //     $.each(json, function (i, item) {
+                //         $('#lbxOUs2').append('<option value="' + item.ID + '">' + item.Name + '</option>');
+                //     });
+                // });
+
+                //图片显示
+                // var imageUrl = '/User/GetPortrait?id=' + ID +'&r=' + Math.random();
+                // $("#Portrait2").attr('src', imageUrl);
+
+                //树形控件
+                // var treeUrl = '/Function/GetFunctionJsTreeJsonByUser?userId=' + info.ID;
+                // bindJsTree("jstree_function2", treeUrl);
+            });
+        }
+
+        //显示导入界面
+        function ShowImport() {
+            $("#import").modal("show");
+        }
+
+        //导出Excel数据
+        function ShowExport() {
+            var url = "/Asset/Export";
+            var condition = $("#ffSearch").serialize();//获取条件
+
+            executeExport(url, condition);//执行导出
+        }
+
+        //绑定相关事件
+        function BindEvent() {
+            //添加、编辑记录的窗体处理
+            formValidate("ffAdd", function (form) {
+                $("#add").modal("hide");
+                //构造参数发送给后台
+                var postData = $("#ffAdd").serializeArray();
+                $.post(url, postData, function (json) {
+                    var data = $.parseJSON(json);
+                    if (data.Success) {
+                        //可增加其他处理
+
+                        //保存成功  1.关闭弹出层，2.刷新表格数据
+                        showTips("保存成功");
+                        Refresh();
+                    }
+                    else {
+                        showError("保存失败:" + data.ErrorMessage, 3000);
+                    }
+                }).error(function () {
+                    showTips("您未被授权使用该功能，请联系管理员进行处理。");
+                });
+            });
+        }
+
+    </script>
+
+<!--添加对uploadify控件的支持-->
+<script type="text/javascript">
+        $(function () {
+
+            //添加界面的附件管理
+            $('#file_upload').uploadify({
+                'swf': '/Content/JQueryTools/uploadify/uploadify.swf',  //FLash文件路径
+                'buttonText': '浏  览',                                 //按钮文本
+                'uploader': '/FileUpload/Upload',                       //处理ASHX页面
+                'queueID': 'fileQueue',                        //队列的ID
+                'queueSizeLimit': 1,                          //队列最多可上传文件数量，默认为999
+                'auto': false,                                 //选择文件后是否自动上传，默认为true
+                'multi': false,                                 //是否为多选，默认为true
+                'removeCompleted': true,                       //是否完成后移除序列，默认为true
+                'fileSizeLimit': '10MB',                       //单个文件大小，0为无限制，可接受KB,MB,GB等单位的字符串值
+                'fileTypeDesc': 'Excel Files',                 //文件描述
+                'fileTypeExts': '*.xls',  //上传的文件后缀过滤器
+                'onQueueComplete': function (event, data) {    //所有队列完成后事件
+
+                    var guid = $("#AttachGUID").val();
+                    ViewUpFiles(guid, "div_files");
+
+                    //提示用户Excel格式是否正常，如果正常加载数据
+                    $.ajax({
+                        url: '/Asset/CheckExcelColumns?guid=' + guid,
+                        type: 'get',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.Success) {
+                                InitGrid(); //重新刷新表格数据
+                                showToast("文件已上传，数据加载完毕！");
+                            }
+                            else {
+                                showToast("上传的Excel文件检查不通过。请根据页面右上角的Excel模板格式进行数据录入。", "error");
+                            }
+                        }
+                    });
+                },
+                'onUploadStart': function (file) {
+                    InitUpFile();//上传文件前 ，重置GUID，每次不同
+                    $("#file_upload").uploadify("settings", 'formData', { 'folder': '数据导入文件', 'guid': $("#AttachGUID").val() }); //动态传参数
+                },
+                'onUploadError': function (event, queueId, fileObj, errorObj) {
+                    //alert(errorObj.type + "：" + errorObj.info);
+                }
+            });
+        });
+
+        var attachguid = "";//用来记录附件组的ID，方便更新
+        function InitUpFile() {
+            //新增的时候，绑定附件显示
+            var guid = newGuid();
+            $("#AttachGUID").val(guid);
+            attachguid = guid;
+            ViewUpFiles(attachguid, "div_files");//更新列表
+        }
+
+        //删除指定的附件后，对附件组进行更新
+        function deleteAttach(id) {
+            DeleteAndRefreshAttach(id, attachguid, "div_files");
+        }
+
+        //根据条件查询并绑定结果
+        function InitGrid() {
+            var guid = $("#AttachGUID").val();
+            var url = "/Asset/GetExcelData?guid=" + guid;
+            $.getJSON(url, function (data) {
+                $("#gridImport_body").html("");
+
+                $.each(data.rows, function (i, item) {
+                    var tr = "<tr>";
+                    tr += "<td><input class='checkboxes' type=\"checkbox\" name=\"checkbox\" value=" + item.ID + "></td>";
+                     tr += "<td>" + item.Code + "</td>";
+                     tr += "<td>" + item.Name + "</td>";
+                     tr += "<td>" + item.ClassName + "</td>";
+                     tr += "<td>" + item.CurrDept + "</td>";
+                     tr += "<td>" + item.ChargeDept + "</td>";
+                     tr += "<td>" + item.AddMethod + "</td>";
+                     tr += "<td>" + item.UseStatus + "</td>";
+                     tr += "<td>" + item.PurchaseDate + "</td>";
+                     tr += "<td>" + item.UsePerson + "</td>";
+                     tr += "<td>" + item.Spec + "</td>";
+                     tr += "<td>" + item.KeepAddr + "</td>";
+                     tr += "<td>" + item.Qty + "</td>";
+                     tr += "<td>" + item.Remark + "</td>";
+                     tr += "<td>" + item.Unit + "</td>";
+                     tr += "<td>" + item.OriginValue + "</td>";
+                     tr += "<td>" + item.LimitYears + "</td>";
+                     tr += "<td>" + item.DueDate + "</td>";
+                     tr += "<td>" + item.UseYears + "</td>";
+                     tr += "<td>" + item.IsAge + "</td>";
+                     tr += "<td>" + item.Status + "</td>";
+                     tr += "<td>" + item.UseType + "</td>";
+                     tr += "<td>" + item.Keeper + "</td>";
+                     tr += "<td>" + item.InvStatus + "</td>";
+                     tr += "<td>" + item.InvDate + "</td>";
+                     tr += "<td>" + item.Inventory + "</td>";
+                     tr += "<td>" + item.Account + "</td>";
+                     tr += "<td>" + item.AccDate + "</td>";
+                     tr += "<td>" + item.AccHolder + "</td>";
+                     tr += "<td>" + item.UserName + "</td>";
+                     tr += "<td>" + item.UserDef1 + "</td>";
+                     tr += "<td>" + item.UserDef2 + "</td>";
+                     tr += "<td>" + item.UserDef3 + "</td>";
+                     tr += "<td>" + item.Note + "</td>";
+                     tr += "<td>" + item.Operator + "</td>";
+                     tr += "<td>" + item.OperateDate + "</td>";
+  
+                    tr += "</tr>";
+                    $("#gridImport_body").append(tr);
+                });
+            });
+        }
+
+        //保存导入的数据
+        function SaveImport() {
+            
+            var list = [];//构造集合对象
+            var i = 0;
+            var bodyTag = "#gridImport_body";
+            $(bodyTag +" tr").each(function() {
+                //判断是否选中，选中的记录才导入数据库
+                var checkbox = $(this).find("td").find(".checkboxes");
+
+                if (checkbox!=undefined && $(checkbox).is(':checked')) {                    
+                    //遍历每个TD，获取内容，并添加进列表
+                    var rows = [];
+                    $(this).find('td:not(:first-child)').each (function() {
+                        rows.push($(this).text());
+                        // alert($(this).text());
+                    });    
+
+                    list.push({ 'Code': rows[0],'Name': rows[1],'ClassName': rows[2],'CurrDept': rows[3],'ChargeDept': rows[4],'AddMethod': rows[5],'UseStatus': rows[6],'PurchaseDate': rows[7],'UsePerson': rows[8],'Spec': rows[9],'KeepAddr': rows[10],'Qty': rows[11],'Remark': rows[12],'Unit': rows[13],'OriginValue': rows[14],'LimitYears': rows[15],'DueDate': rows[16],'UseYears': rows[17],'IsAge': rows[18],'Status': rows[19],'UseType': rows[20],'Keeper': rows[21],'InvStatus': rows[22],'InvDate': rows[23],'Inventory': rows[24],'Account': rows[25],'AccDate': rows[26],'AccHolder': rows[27],'UserName': rows[28],'UserDef1': rows[29],'UserDef2': rows[30],'UserDef3': rows[31],'Note': rows[32],'Operator': rows[33],'OperateDate': rows[34] });
+                    i++;
+                }
+            });
+
+            if (list.length == 0) {
+                showToast("请选择一条记录", "warning");
+                return;
+            }
+
+            var postData = { 'list': list };//可以增加其他参数，如{ 'list': list, 'Rucanghao': $("#Rucanghao").val() };
+            postData = JSON.stringify(postData);
+
+            $.ajax({
+                url: '/Asset/SaveExcelData',
+                type: 'post',
+                dataType: 'json',
+                contentType: 'application/json;charset=utf-8',
+                traditional: true,
+                success: function (data) {
+                    if (data.Success) {
+                        //保存成功  1.关闭弹出层，2.清空记录显示 3.刷新主列表
+                        showToast("保存成功");
+
+                        $("#import").modal("hide");
+                        $(bodyTag).html("");
+                        Refresh();
+                    }
+                    else {
+                        showToast("保存失败:" + data.ErrorMessage, "error");
+                    }
+                },
+                data: postData
+            });
+        }
+</script>
+
+}

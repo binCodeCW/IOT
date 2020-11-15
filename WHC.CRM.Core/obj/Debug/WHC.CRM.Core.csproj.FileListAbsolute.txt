@@ -1,0 +1,5 @@
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\WHC.CRM.Core.dll
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\WHC.CRM.Core.pdb
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\WHC.CRM.Core\obj\Debug\WHC.CRM.Core.csprojResolveAssemblyReference.cache
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\WHC.CRM.Core\obj\Debug\WHC.CRM.Core.dll
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\WHC.CRM.Core\obj\Debug\WHC.CRM.Core.pdb

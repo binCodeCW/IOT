@@ -1,0 +1,72 @@
+﻿<link href="~/Content/metronic/assets/pages/css/login-5.css" rel="stylesheet" type="text/css" />
+
+<body class=" login" >
+    <!-- BEGIN : LOGIN PAGE 5-1 -->
+    <div class="user-login-5">
+        <div class="row bs-reset">
+            <div class="col-md-6 bs-reset mt-login-5-bsfix">
+                <div class="login-bg" style="background-image:url(../content/metronic/assets/pages/img/login/bg1.jpg)">
+                    @*<img class="login-logo" src="../content/metronic/assets/pages/img/login/logo.png" />*@
+                </div>
+            </div>
+            <div class="col-md-6 login-container bs-reset mt-login-5-bsfix">
+                <div class="login-content">
+                    <div class="logo">
+                        <a href="/login/index">
+                            <img src="~/Content/images/loginlogo.png" alt="" />
+                        </a>
+                    </div>
+                    <form id="form1" class="login-form">
+                        <div class="alert alert-danger display-hide">
+                            <button class="close" data-close="alert"></button>
+                            <span>请输入用户账号和密码 </span>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="用户名" id="UserName" required />
+                            </div>
+                            <div class="col-xs-6">
+                                <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="密码" id="Password" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="rem-password">
+                                    <label class="rememberme mt-checkbox mt-checkbox-outline">
+                                        <input type="checkbox" name="remember" value="1"/> 记住账号
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-8 text-right">
+                                <div class="forgot-password">
+                                    @*<a href="javascript:;" id="forget-password" class="forget-password">忘记密码?</a>*@
+                                </div>
+                                <input id="btnLogin" type="button" class="btn green uppercase" value="登录" />
+                                <input id="btnReset" type="button" class="btn red uppercase" value="重置" onclick='doReset()' />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="login-footer">
+                    <div class="row bs-reset">
+                        <div class="bs-reset">
+                            <div class="login-copyright text-right">
+                                <p>版权所有  2019  <a href="http://www.yh-medical.com/">安徽养和医疗器械设备有限公司</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END : LOGIN PAGE 5-1 -->
+
+    <!--[if lt IE 9]>
+    <script src="../assets/global/plugins/respond.min.js"></script>
+    <script src="../assets/global/plugins/excanvas.min.js"></script>
+    <script src="../assets/global/plugins/ie8.fix.min.js"></script>
+    <![endif]-->
+
+</body>

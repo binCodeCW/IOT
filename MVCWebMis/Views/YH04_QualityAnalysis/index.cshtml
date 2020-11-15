@@ -1,0 +1,316 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "卡式仪器数据分析";
+}
+
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+
+<!-- BEGIN 数据查询-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-filter"></i>
+            查询内容
+        </div>
+        <div class="tools">
+            <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="Refresh()">
+                <i class="fa fa-search"></i>
+                查 询
+            </button>
+            <a href="javascript:;" class="collapse" title="折叠内容"></a>
+        </div>
+    </div>
+
+    <div class="portlet-body flip-scroll">
+        <div class="row">
+            <form class="form-horizontal" id="ffSearch">
+                <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class=" input-group input-daterange">
+                        <input id="startTime" name="startTime" class="form-control" placeholder="消息记录时间(起)" value="2020-03-13 00:00:00" />
+                        <span class="input-group-addon">~</span>
+                        <input id="endTime" name="endTime" class="form-control" placeholder="消息记录时间(止)" value="2020-05-01 00:00:00" />
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">仪器编号</label>
+                        <div class="col-md-8">
+                            <input id="deviceNo" name="deviceNo" type="text" class="form-control" value="40200001" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">服务ID</label>
+                        <div class="col-md-8">
+                            <input id="serviceId" name="serviceId" type="text" class="form-control" value="ADAPTIVE" />
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">服务ID</label>
+                            <div class="col-md-8">
+                                <label id="Serviceid2" name="Serviceid" class="form-control"></label>
+                            </div>
+                        </div>
+                    </div>*@
+
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END 数据查询-->
+
+<div class="portlet-body flip-scroll">
+    <div class="row">
+        <div id="container" style="min-width: 310px; height: 400px;"></div>
+    </div>
+</div>
+
+<script src="~/Content/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="~/Content/libs/highcharts/8.0.4/highcharts.js"></script>
+<script src="~/Content/js/dayjs.min.js"></script>
+<script type="text/javascript">
+    function Refresh() {
+        console.log("刷新");
+        var startTime = document.getElementById("startTime").value;
+        var endTime = document.getElementById("endTime").value;
+        var deviceNo = document.getElementById("deviceNo").value;
+        var serviceId = document.getElementById("serviceId").value;
+        console.log(startTime);
+        //var url = "/YH08_DeviceInfoRec/DeviceInfo1?deviceNo=".concat(deviceNo).concat("&startTime=").concat(startTime).concat("&endTime=").concat(endTime);
+        var url = "/YH04_DeviceInfoRec/DeviceInfo1?deviceNo=".concat(deviceNo).concat("&serviceId=").concat(serviceId).concat("&startTime=").concat(startTime).concat("&endTime=").concat(endTime);
+        var data = [
+            { "name": "左通道本底", data: [] },
+            { "name": "右通道本底", data: [] }
+
+            //{ "name": "质控第三次DOB", data: [] },
+            //{ "name": "质控第四次DOB", data: [] },
+            //{ "name": "质控第五次DOB", data: [] }
+        ];
+        $.ajaxSettings.async = false;
+        $.getJSON(url, function (res) {
+            console.log("初始加载的数据: %o", res);
+            $.each(res || [], function (index, item) {
+                //console.log("时间戳: " + dayjs(item.stamptime).valueOf());
+                data[0].data.push({ x: dayjs(item.stamptime).valueOf(), y: parseFloat(item.bendiL) });
+                data[1].data.push({ x: dayjs(item.stamptime).valueOf(), y: parseFloat(item.bendiR) });
+
+                //data[2].data.push({ x: dayjs(item.stamptime).valueOf(), y: parseFloat(item.DOB2) });
+                //data[3].data.push({ x: dayjs(item.stamptime).valueOf(), y: parseFloat(item.DOB3) });
+                //data[4].data.push({ x: dayjs(item.stamptime).valueOf(), y: parseFloat(item.DOB4) });
+            })
+            console.log("初始加载处理后的数据: %o", data);
+            return data;
+        })
+        chart.update({
+            series: data
+        });
+    }
+
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+    var max = 6;
+    var chart = Highcharts.chart('container', {
+        chart: {
+            type: 'spline',
+            animation: Highcharts.svg,
+            events: {
+                load: function () {
+                    // 加载后续数据
+
+                }
+            }
+        },
+        title: {
+            text: '数据监控'
+        },
+        xAxis: [
+            {
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    day: '%Y-%m-%d %H:%M:%S'
+                },
+                tickPixelInterval: 120
+            }
+        ],
+        yAxis: [
+            {
+                title: {
+                    text: '质控DOB',
+                    style: {
+                        color: '#3E576F'
+                    }
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            {
+                title: {
+                    text: '质控DOB',
+                    style: {
+                        color: '#00AA00'
+                    }
+                }, opposite: true,
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            }
+        ],
+        plotOptions: {
+            series: {
+                marker: {
+                    enabled: true,
+                    radius: 4, //曲线点半径，默认是4
+                    symbol: 'circle' //曲线点类型：”circle”, “square”, “diamond”, “triangle”,”triangle-down”，默认是”circle”
+                }
+            },
+            area: {
+                pointStart: 1940,
+                marker: {
+                    enabled: true,
+                    symbol: 'circle',
+                    radius: 2,
+                    states: {
+                        hover: {
+                            enabled: true
+                        }
+                    }
+                }
+            }
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.series.name + '</b><br/>' +
+                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                    Highcharts.numberFormat(this.y, 2);
+            }
+        },
+        legend: {
+            enabled: true
+        },
+        exporting: {
+            enabled: false
+        },
+        series: (function () {
+            //var url = "/YH08_DeviceInfoRec/FindWithPager?rows=10&page=1&sortOrder=asc&WHC_DeviceNo=210412625";
+            //var url = "/YH08_DeviceInfoRec/FindWithPager?WHC_DeviceNo=210412625&WHC_Recordtime%5B%5D=2020-04-01&rows=10&page=1&sortOrder=asc";
+            //var url = "/YH08_DeviceInfoRec/DeviceInfo1?deviceNo=210412625&startTime=2020-04-01%2000:00:00&endTime=2020-05-01%2000:00:00";
+            //var url = "/YH08_DeviceInfoRec/DeviceInfo1?deviceNo=".concat(deviceNo).concat("&startTime=").concat(startTime).concat("&endTime=").concat(endTime);
+            var startTime = document.getElementById("startTime").value;
+            var endTime = document.getElementById("endTime").value;
+            var deviceNo = document.getElementById("deviceNo").value;
+            var serviceId = document.getElementById("serviceId").value;
+            var url = "/YH04_DeviceInfoRec/DeviceInfo1?deviceNo=".concat(deviceNo).concat("&serviceId=").concat(serviceId).concat("&startTime=").concat(startTime).concat("&endTime=").concat(endTime);
+            var data = [
+                { "name": "左通道本底", data: [] },
+                { "name": "右通道本底", data: [] },
+
+                //{ "name": "质控第三次DOB", data: [] },
+                //{ "name": "质控第四次DOB", data: [] },
+                //{ "name": "质控第五次DOB", data: [] }
+            ];
+            $.ajaxSettings.async = false;
+            $.getJSON(url, function (res) {
+                console.log("初始加载的数据: %o", res);
+                $.each(res || [], function (index, item) {
+                    //console.log("时间戳: " + dayjs(item.stamptime).valueOf());
+                    data[0].data.push({ x: dayjs(item.stamptime).valueOf(), y: parseFloat(item.bendiL) });
+                    data[1].data.push({ x: dayjs(item.stamptime).valueOf(), y: parseFloat(item.bendiR) });
+
+                    //data[2].data.push({ x: dayjs(item.stamptime).valueOf(), y: parseFloat(item.DOB2) });
+                    //data[3].data.push({ x: dayjs(item.stamptime).valueOf(), y: parseFloat(item.DOB3) });
+                    //data[4].data.push({ x: dayjs(item.stamptime).valueOf(), y: parseFloat(item.DOB4) });
+                })
+                console.log("初始加载处理后的数据: %o", data);
+                return data;
+            })
+            return data;
+        }()),
+        seriess: [
+            {
+                name: '总请求数',
+                data: [{ x: 1535549581766, y: 8.255385961269337 },
+                { x: 1535549582766, y: 8.522856658860768 },
+                { x: 1583282645000, y: 8.85224288300491 },
+                { x: 1535549584766, y: 8.203602150586137 },
+                { x: 1535549585766, y: 8.830985714653746 },
+                { x: 1535549586766, y: 8.648804185628615 },
+                { x: 1535549587766, y: 8.54365631703881 },
+                { x: 1535549588766, y: 8.183473493411935 },
+                { x: 1535549589766, y: 8.107250381815213 },
+                { x: 1535549590766, y: 8.674642595370756 },
+                { x: 1535549591766, y: 8.875834458275218 },
+                { x: 1535549592766, y: 8.104192236371079 },
+                { x: 1535549593766, y: 8.273510688961343 },
+                { x: 1535549594766, y: 8.698645044397763 },
+                { x: 1535549595766, y: 8.630132546505347 },
+                { x: 1535549596766, y: 8.19276234585974 },
+                { x: 1535549597766, y: 8.202379301534918 },
+                { x: 1535549598766, y: 8.888758703470918 },
+                { x: 1535549599766, y: 8.840359577742495 },
+                { x: 1535551504135, y: 8.965286133918756 }]
+            },
+            {
+                name: '错误请求数',
+                data: [{ x: 1535549581768, y: 5.631470025269889 },
+                { x: 1535549582768, y: 5.80833150333066 },
+                { x: 1535549583768, y: 5.615057046709662 },
+                { x: 1535549584768, y: 5.608928585842969 },
+                { x: 1535549585768, y: 5.153605115523144 },
+                { x: 1535549586768, y: 5.438982653534119 },
+                { x: 1535549587768, y: 5.434254193425316 },
+                { x: 1535549588768, y: 5.233764563045739 },
+                { x: 1535549589768, y: 5.066078696056088 },
+                { x: 1535549590768, y: 5.402066058377414 },
+                { x: 1535549591768, y: 5.115167367142142 },
+                { x: 1535549592768, y: 5.569563848237927 },
+                { x: 1535549593768, y: 5.3771521799030895 },
+                { x: 1535549594768, y: 5.557674673748734 },
+                { x: 1535549595768, y: 5.779198450582005 },
+                { x: 1535549596768, y: 5.024568401355755 },
+                { x: 1535549597768, y: 5.999943168524271 },
+                { x: 1535549598768, y: 5.3633974314345725 },
+                { x: 1535549599768, y: 5.152136232686349 },
+                { x: 1535549600768, y: 5.497676337112302 }]
+            },
+            {
+                name: '平均响应时间',
+                yAxis: 1,
+                data: [{ x: 1535549581770, y: 2.9063965576357296 },
+                { x: 1535549582770, y: 2.115102850799488 },
+                { x: 1535549583770, y: 2.295125026581167 },
+                { x: 1535549584770, y: 2.5839580878751627 },
+                { x: 1535549585770, y: 2.41973580817432 },
+                { x: 1535549586770, y: 2.2324255066003476 },
+                { x: 1535549587770, y: 2.877080909195574 },
+                { x: 1535549588770, y: 2.670387619876992 },
+                { x: 1535549589770, y: 2.8328323536321003 },
+                { x: 1535549590770, y: 2.4492166897167564 },
+                { x: 1535549591770, y: 2.2960889540892544 },
+                { x: 1535549592770, y: 2.4254398993593957 },
+                { x: 1535549593770, y: 2.9139794370919248 },
+                { x: 1535549594770, y: 2.2363677342947907 },
+                { x: 1535549595770, y: 2.7774917450101677 },
+                { x: 1535549596770, y: 2.8122490928540937 },
+                { x: 1535549597770, y: 2.3611332533125644 },
+                { x: 1535549598770, y: 2.2739320663864726 },
+                { x: 1535549599770, y: 2.9702427114600276 },
+                { x: 1535549600770, y: 2.470969458860716 }]
+            }
+        ]
+    });
+</script>

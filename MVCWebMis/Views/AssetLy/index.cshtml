@@ -1,0 +1,425 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+    ViewBag.Title = "资产领用单";
+}
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+
+<!-- BEGIN 数据查询-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption"> <i class="fa fa-filter"></i>
+            查询内容
+        </div>
+        <div class="tools">
+            <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="Refresh()">
+                <i class="fa fa-search"></i>
+                查 询
+            </button>
+            <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="ShowExport()">
+                <i class="fa fa-file-excel-o"></i>
+                导 出
+            </button>
+            <a href="javascript:;" class="collapse" title="折叠内容"></a>
+        </div>
+    </div>
+
+    <div class="portlet-body flip-scroll">
+        <div class="row">
+            <form class="form-horizontal" id="ffSearch">
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">领用单号</label>
+                        <div class="col-md-8">
+                            <input id="WHC_BillNo" name="WHC_BillNo" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">领用资产</label>
+                        <div class="col-md-8">
+                            <input id="WHC_AssetDesc" name="WHC_AssetDesc" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>      
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END 数据查询-->
+
+<!-- BEGIN 表格数据-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-cogs"></i>
+            数据列表
+        </div>
+        <div class="tools">
+            <button type="button" onclick="Add()" class="btn btn-circle btn-sm green-meadow">
+                <i class="fa fa-plus"></i>
+                新增
+            </button>
+            <button type="button" onclick="EditView('view')" class="btn btn-circle btn-sm green-meadow">
+                <i class="fa fa-table"></i>
+                查看
+            </button>
+            <button type="button" onclick="Refresh()" class="btn btn-circle btn-sm green-meadow" data-toggle="modal">
+                <i class="fa fa-refresh"></i>
+                刷新
+            </button>
+            <button type="button" class="fullscreen btn btn-circle btn-sm green-meadow" data-original-title="全屏">
+                <i class="icon-size-fullscreen"></i>
+            </button>
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <div class="portlet-body">
+            <div>
+                <table id="grid" class="table table-hover"></table>			
+            </div>
+        </div>
+    </div>
+</div>
+@section footerScript {
+
+<script type="text/javascript">
+        var currentPage = 1, rows = 10; //分页参数：当前页，记录数
+        var isAddOrEdit = 'add';//标识是新增还是编辑对话框弹出，用于删除附件的操作
+        var url;//新增或者更新的连接
+        var ID;//ID值，新增为空，编辑或者查看为具体ID
+
+        //页面初始化
+        $(function () {
+            InitStyle();        //设置控件的样式
+            BindEvent();        //绑定事件处理
+            InitDictItem();     //初始化字典信息	
+            Search(currentPage);//初始化Table
+        });
+
+        //设置控件的样式
+        function InitStyle() {            
+            //统一设置icheck控件的样式
+            $('input[class=icheck]').iCheck({
+                checkboxClass: 'icheckbox_square-red',
+                radioClass: 'iradio_square-red',
+            });
+			//设置日期样式
+            $('.input-daterange input').each(function () {
+                $(this).datepicker({
+                    language: 'zh-CN', //语言
+                    autoclose: true, //选择后自动关闭
+                    clearBtn: true,//清除按钮
+                    format: "yyyy-mm-dd"//日期格式
+                });
+            });
+            $('.input-date input').each(function () {
+                $(this).datepicker({
+                    language: 'zh-CN', //语言
+                    autoclose: true, //选择后自动关闭
+                    clearBtn: true,//清除按钮
+                    format: "yyyy-mm-dd"//日期格式
+                });
+            });
+        }
+		
+        var $table;
+		var queryUrl;
+        //初始化bootstrap-table的内容
+        function Search (page) {
+            //记录页面bootstrap-table全局变量$table，方便应用
+            queryUrl = '/AssetLy/FindWithPager?rnd=' + Math.random()
+            $table = $('#grid').bootstrapTable({
+                url: queryUrl,                   	//请求后台的URL（*）
+                method: 'GET',                      //请求方式（*）
+                //toolbar: '#toolbar',              //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: true,                     //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: page,                      //初始化加载第一页，默认第一页,并记录
+                pageSize: rows,                     //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                search: false,                      //是否显示表格搜索
+                strictSearch: true,
+                showColumns: true,                  //是否显示所有的列（选择显示的列）
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+                //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+                showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                  //是否显示父子表
+                //得到查询的参数
+                queryParams : function (params) {
+                    //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+					
+                    //var temp = {   
+                    //    rows: params.limit,                         //页面大小
+                    //    page: (params.offset / params.limit) + 1,   //页码
+                    //    sort: params.sort,      //排序列名  
+                    //    sortOrder: params.order //排位命令（desc，asc） 
+                    //};
+                    //return temp;
+
+                    var temp = $("#ffSearch").serializeJsonObject();
+                    temp["rows"] = params.limit;                        //页面大小
+                    temp["page"] = (params.offset / params.limit) + 1;  //页码
+                    temp["sort"] = params.sort;                         //排序列名
+                    temp["sortOrder"] = params.order;                   //排位命令（desc，asc） 
+
+                    //特殊格式的条件处理					
+       
+                    //申请单日期条件
+                    //temp["WHC_ApplyDate"] = $("#WHC_ApplyDate").val() + "~" + $("#WHC_ApplyDate2").val();
+     
+                    //创建时间条件
+                    //temp["WHC_CreateTime"] = $("#WHC_CreateTime").val() + "~" + $("#WHC_CreateTime2").val();
+  
+                    //编辑时间条件
+                    //temp["WHC_EditTime"] = $("#WHC_EditTime").val() + "~" + $("#WHC_EditTime2").val();
+                      return temp;
+                },
+                columns: [{
+                    checkbox: true,  
+                    visible: true                  //是否显示复选框  
+                }, 
+                 { title: '领用单号', field: 'BillNo' /*, width: 80, sortable: true */ },
+                 { title: '领用资产', field: 'AssetDesc' /*, width: 80, sortable: true */ },
+                 { title: '资产使用部门（单位）', field: 'LyDept' /*, width: 80, sortable: true */ },
+                 { title: '资产管理部门（单位）', field: 'ChargeDept' /*, width: 80, sortable: true */ },
+                 { title: '使用部门资产管理员', field: 'DeptAdmin' /*, width: 80, sortable: true */ },
+                 { title: '申请单日期', field: 'ApplyDate' /*, width: 80, sortable: true */ },
+                 { title: '申请部门', field: 'ApplyDept' /*, width: 80, sortable: true */ },
+                 { title: '备注信息', field: 'Note' /*, width: 80, sortable: true */ },
+                 { title: '申请单状态', field: 'Status', width: 80, formatter: statusFormatter },
+                 { title: '操作', field:'ID', width: 80, align: 'center', valign: 'middle', formatter: actionFormatter}, 
+				],
+                onLoadSuccess: function () {
+                    currentPage = page;//存储当前页码
+                },
+                onLoadError: function () {
+                    showTips("数据加载失败！");
+                },
+                onDblClickRow: function (row, $element) {
+                    var id = row.ID;
+                    EditViewById(id, 'view');
+                },
+            });
+        };
+
+        //图片格式化
+        function imageFormatter(value, row, index) {
+            return "<img src='" + value + "' style='width:50px; height:50px;' />";
+        }
+        //日期字段格式化
+        function dateFormatter(value, row, index) {
+            return getDateStr(value);
+        }
+        //连接字段格式化
+        function linkFormatter(value, row, index) {
+            return "<a href='" + value + "' title='单击打开连接' target='_blank'>" + value + "</a>";
+        }
+        //Email字段格式化
+        function emailFormatter(value, row, index) {
+            return "<a href='mailto:" + value + "' title='单击打开连接'>" + value + "</a>";
+        }
+        //性别字段格式化
+        function sexFormatter(value) {
+            if (value == "女") { color = 'Red'; }
+            else if (value == "男") { color = 'Green'; }
+            else { color = 'Yellow'; }
+
+            return '<div  style="color: ' + color + '">' + value + '</div>';
+        }
+        //操作栏的格式化
+        function actionFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + id + "', view='view')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
+            //result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"DeleteByIds('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+
+            return result;
+        }
+        function statusFormatter(value, row, index) {
+            var result = "";
+            if (value == "处理中") {
+                result = "<spanc class='label' style='background:#57B756'> " + value + " </span>";
+            }
+            else if (value == "已完成") {
+                result = "<span class='label label-primary'> " + value + " </span>";
+            }
+            else if (value == "已退回") {
+                result = "<span class='label label-warning'> " + value + " </span>";
+            }
+            else if (value == "已撤消") {
+                result = "<span class='label label-danger'> " + value + " </span>";
+            }
+            return result;
+        }
+        
+        //自定义函数处理queryParams的批量增加
+        $.fn.serializeJsonObject = function () {
+            var json = {};
+            var form = this.serializeArray();
+            $.each(form, function () {
+                if (json[this.name]) {
+                    if (!json[this.name].push) {
+                        json[this.name] = [json[this.name]];
+                    }
+                    json[this.name].push();
+                } else {
+                    json[this.name] = this.value || '';
+                }
+            });
+            return json;
+        }
+
+        //刷新列表
+        function Refresh() {
+			//Search(currentPage);
+            $table.bootstrapTable('refresh');
+        }
+
+        //初始化字典信息（下拉列表）
+        function InitDictItem() {
+            //部分赋值参考
+            
+            //绑定字典
+            //BindDictItem("WHC_PayType", "付款方式");
+            //绑定树列表
+            //BindSelect("PID", "/Menu/GetDictJson");
+            
+            //绑定可选多个Tag
+            // $("#Hobby").val({
+            //     tags: ["旅游", "爬山", "篮球", "足球", "乒乓球"]
+            // }).trigger("change");
+            
+            //绑定添加界面的公司、部门（联动处理）
+            // BindSelect("Company_ID", "/User/GetMyCompanyDictJson?userId="+@Session["UserId"]);
+            // $("#Company_ID").on("change", function (e) {
+            //     var companyid = $("#Company_ID").val();
+            //     BindSelect("Dept_ID", "/User/GetDeptDictJson?parentId="+ companyid);
+            // });
+        }
+
+        //实现删除数据的方法
+        function Delete() {
+            var ids = "";//得到用户选择的数据的ID
+            var rows = $table.bootstrapTable('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                ids += rows[i].ID + ',';
+            }
+            ids = ids.substring(0, ids.length - 1);
+
+            DeleteByIds(ids);
+        }
+
+        //删除指定的记录
+        function DeleteByIds(ids) {
+            if (ids != "") {
+                showDelete(function () {
+                    //最后去掉最后的逗号,
+                    ids = ids.replace(/,\s*$/, '');
+
+                    //然后发送异步请求的信息到后台删除数据
+                    var postData = { ids: ids };
+                    $.post("/AssetLy/DeletebyIds", postData, function (json) {
+                        var data = $.parseJSON(json);
+                        if (data.Success) {
+                            showTips("删除选定的记录成功");
+                            Refresh();//刷新页面数据
+                        }
+                        else {
+                            showTips(data.ErrorMessage);
+                        }
+                    });
+                });
+            } else {
+                showTips("请选择你要删除的数据");
+            }
+        }
+
+        //弹出新增对话框
+        function Add() {
+            isAddOrEdit = 'add';//新增对话框标识
+
+            var formId = "b616935a-1545-4bef-ada0-b10303a06c7a";//硬编码指定你的表单ID
+
+			if(formId == ''){
+				showTips("请设置表单ID:formId");
+				return;
+			}
+            //定位到创建页面
+            url = '/AssetLy/Create?formid=' + formId;
+            window.location.href = url;
+        }
+
+        //修改或查看明细信息（绑定显示数据）
+        function EditView(view) {
+            ID = "";//重置ID的值
+            var rows = $table.bootstrapTable('getSelections');
+            if (rows.length > 0) {
+                ID = rows[0].ID;
+            }
+            
+            EditViewById(ID, view);
+        }
+
+        //编辑或者查看指定记录
+        function EditViewById(ID, view) {
+            if (ID == "") {
+                showTips("请选择一条记录");
+                return;
+            }
+
+            //获取表单的查看明细URL，然后组合URL跳转到查看
+            $.getJSON("/AssetLy/FindByID?r=" + Math.random() + "&id=" + ID, function (info) {
+                $.getJSON("/Apply/FindByID?r=" + Math.random() + "&id=" + info.Apply_ID, function (applyInfo) {
+                    var formId = applyInfo.FormId;
+
+                    $.getJSON("/Form/FindByID?r=" + Math.random() + "&id=" + formId, function (formInfo) {
+                        var ApplyUrl2 = formInfo.ApplyUrl2;
+                        if (ApplyUrl2 != null && ApplyUrl2 != '') {
+                            var viewUrl = ApplyUrl2 + '?id=' + info.Apply_ID;
+                            window.location.href = viewUrl;
+                        }
+                    });
+                });
+            });
+        }
+
+        //导出Excel数据
+        function ShowExport() {
+            var url = "/AssetLy/Export";
+            var condition = $("#ffSearch").serialize();//获取条件
+
+            executeExport(url, condition);//执行导出
+        }
+
+        //绑定相关事件
+        function BindEvent() {
+            //回车进行查询
+            if (document.addEventListener) {
+                //如果是Firefox  
+                document.getElementById("ffSearch").addEventListener("keypress", enterEvent, true);
+            } else {
+                //如果是IE
+                document.getElementById("ffSearch").attachEvent("onkeypress", enterEvent);
+            }
+        }
+        //按下Enter搜索
+        function enterEvent(evt) {
+            if (evt.keyCode == 13) {
+                //$("#btnSearch").click();
+                Refresh();        
+                evt.preventDefault();  //阻止事件冒泡
+            }
+        }
+    </script>
+}

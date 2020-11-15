@@ -1,0 +1,245 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "查看资产转移单";
+}
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+<script src="~/Content/JQueryTools/printThis/printThis.js"></script>
+
+<!--此处放置业务表单的数据呈现，方便隔离，减少复杂性-->
+@RenderPage("~/Views/Apply/ViewDetail.cshtml", new { applyId = Request["id"] })
+
+<!--定义子表单数据呈现-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-cogs"></i>
+            资产转移单-表单数据
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <div class="portlet-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">转移单号</label>
+                        <div class="col-md-8">
+                            <label id="BillNo2" name="BillNo" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">转移资产</label>
+                        <div class="col-md-8">
+                            <label id="AssetDesc2" name="AssetDesc" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">资产转出部门（单位）</label>
+                        <div class="col-md-8">
+                            <label id="OutDept2" name="OutDept" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">资产转入部门（单位）</label>
+                        <div class="col-md-8">
+                            <label id="InDept2" name="InDept" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">资产管理部门（单位）</label>
+                        <div class="col-md-8">
+                            <label id="ChargeDept2" name="ChargeDept" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">转出部门资产管理员</label>
+                        <div class="col-md-8">
+                            <label id="DeptAdmin2" name="DeptAdmin" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">备注信息</label>
+                        <div class="col-md-8">
+                            <label id="Note2" name="Note" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">附件组别ID</label>
+                        <div class="col-md-8">
+                            <input id="AttachGUID2" name="AttachGUID" type="hidden" />
+                            <div id="div_files"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="portlet light portlet-fit ">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="icon-settings font-red"></i>
+                                <span class="caption-subject font-red sbold uppercase">明细清单</span>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <table class="table table-striped table-hover table-bordered" id="grid"></table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <!--记录重要参数-->
+                    <input type="hidden" id="ID2" name="ID" />
+                </div>
+                <div class="col-md-12" style="text-align:right">
+                    <button type="button" class="btn red" onclick="BackToList()">返回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section footerScript {
+    <script>
+    //页面初始化
+    $(function () {
+        LoadSubData();
+    })
+
+    function LoadSubData() {
+        //具体业务表单数据
+        var applyId = '@Request["id"]';
+        $.getJSON("/AssetZy/FindByApplyId?r=" + Math.random() + "&applyId=" + applyId, function (info) {
+            $("#BillNo2").text(info.BillNo);
+            $("#AssetDesc2").text(info.AssetDesc);
+            $("#OutDept2").text(info.OutDept);
+            $("#InDept2").text(info.InDept);
+            $("#ChargeDept2").text(info.ChargeDept);
+            $("#DeptAdmin2").text(info.DeptAdmin);
+            $("#Note2").text(info.Note);
+
+            //转义ID为名称
+            $.getJSON("/OU/GetDeptNameByID?deptId=" + info.OutDept, function (result) {
+                $("#OutDept2").text(result);
+            });
+            $.getJSON("/OU/GetDeptNameByID?deptId=" + info.InDept, function (result) {
+                $("#InDept2").text(result);
+            });
+            $.getJSON("/OU/GetDeptNameByID?deptId=" + info.ChargeDept, function (result) {
+                $("#ChargeDept2").text(result);
+            });
+            $.getJSON("/User/GetFullNameByID?userid=" + info.DeptAdmin, function (result) {
+                $("#DeptAdmin2").text(result);
+            });
+
+       
+            //附件处理
+            $("#ID2").val(info.ID);
+            $("#AttachGUID2").text(info.AttachGUID);
+            ViewUpFiles(info.AttachGUID, "div_files");
+
+            //获取明细
+            Search(currentPage, info.BillNo);
+        });
+    };
+
+    function BackToList() {
+       history.go(-1);
+    }
+
+     var currentPage = 1, rows = 10; //分页参数：当前页，记录数
+        var $table;
+        var queryUrl;
+        //初始化bootstrap-table的内容
+        function Search(page, BillNo) {
+            //记录页面bootstrap-table全局变量$table，方便应用
+            queryUrl = '/AssetZyDetail/FindWithPager?rnd=' + Math.random() + "&WHC_BillNo=" + BillNo;
+            $table = $('#grid').bootstrapTable({
+                url: queryUrl,                   	//请求后台的URL（*）
+                method: 'GET',                      //请求方式（*）
+                //toolbar: '#toolbar',              //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: true,                     //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: page,                      //初始化加载第一页，默认第一页,并记录
+                pageSize: rows,                     //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                search: false,                      //是否显示表格搜索
+                strictSearch: true,
+                showColumns: true,                  //是否显示所有的列（选择显示的列）
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+                //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+                showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                  //是否显示父子表
+                //得到查询的参数
+                queryParams: function (params) {
+                    //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+                    var temp = {};//$("#ffSearch").serializeJsonObject();
+                    temp["rows"] = params.limit;                        //页面大小
+                    temp["page"] = (params.offset / params.limit) + 1;  //页码
+                    temp["sort"] = params.sort;                         //排序列名
+                    temp["sortOrder"] = params.order;                   //排位命令（desc，asc） 
+
+                    return temp;
+                },
+                columns: [{
+                    checkbox: true,
+                    visible: false                  //是否显示复选框  
+                },
+                { title: '资产名称', field: 'AssetName' /*, width: 80, sortable: true */ },
+                { title: '原使用人', field: 'OldUser' /*, width: 80, sortable: true */ },
+                { title: '原存放地点', field: 'OldAddr' /*, width: 80, sortable: true */ },
+                { title: '现使用人', field: 'CurrUser' /*, width: 80, sortable: true */ },
+                { title: '现存放地点', field: 'CurrAddr' /*, width: 80, sortable: true */ },
+                { title: '单位', field: 'Unit' /*, width: 80, sortable: true */ },
+                { title: '单价', field: 'Price' /*, width: 80, sortable: true */ },
+                { title: '数量', field: 'TotalQty' /*, width: 80, sortable: true */ },
+                { title: '金额', field: 'TotalAmount' /*, width: 80, sortable: true */ },
+                { title: '备注', field: 'Note' /*, width: 80, sortable: true */ },
+                ],
+                onLoadSuccess: function () {
+                    currentPage = page;//存储当前页码
+                },
+                onLoadError: function () {
+                    showTips("数据加载失败！");
+                },
+                onDblClickRow: function (row, $element) {
+                    //var id = row.ID;
+                    //EditViewById(id, 'view');
+                },
+            });
+        };        
+
+        //审批处理后的执行操作
+        //该操作一般发生在申请单完成后，需要修改业务表单数据的情况
+        function ToCompletedForm() {
+            var applyId = '@Request["id"]';
+            var postData = { applyId: applyId };
+            var url = "/AssetZy/ToCompletedForm";
+            $.post(url, postData, function (json) {
+                var data = $.parseJSON(json);
+                console.log(data.Success ? "处理表单数据成功" : "处理表单数据失败:");
+            });
+        }
+    </script>
+}

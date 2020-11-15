@@ -1,0 +1,486 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "创建会议室预定申请单";
+}
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+
+<!-- BEGIN 表格数据-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-cogs"></i>            
+            <span id="lblAddTitle" style="font-weight:bold">创建会议室预定申请单</span>
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <div class="portlet-body">
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffAdd" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">流程标题</label>
+                                <div class="col-md-10">
+                                    <input id="Title" type="text" class="form-control" placeholder="流程标题..." required readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                         <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">会议室名称</label>
+                                <div class="col-md-4">
+                                    <select id="RoomName" name="RoomName" type="text" class="form-control" placeholder="会议室名称..."></select>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">开始时间</label>
+                                <div class="col-md-8 input-date">
+                                    <input id="StartTime" name="StartTime" class="form-control" placeholder="开始时间..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">结束时间</label>
+                                <div class="col-md-8 input-date">
+                                    <input id="EndTime" name="EndTime"  class="form-control" placeholder="结束时间..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                             <div class="form-group">
+                                 <label class="control-label col-md-4">时长</label>
+                                 <div class="col-md-4">
+                                     <input id="Duration" name="Duration" type="text" class="form-control" placeholder="时长..." />
+                                 </div>
+                                 <label class="control-label">小时</label>
+                             </div>
+                        </div>
+                         <div class="col-md-6">
+                             <div class="form-group">
+                                 <label class="control-label col-md-4">参会人数</label>
+                                 <div class="col-md-4">
+                                     <input id="MeetingPersonNumber" name="MeetingPersonNumber" type="number" class="form-control" placeholder="参会人数..." />
+                                 </div>
+                                 <label class="control-label">小时</label>
+                             </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">参会人</label>
+                                <div class="col-md-8">
+                                    <input id="MeetingPerson" name="MeetingPerson" type="text" class="form-control" placeholder="参会人..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                            <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">备注信息</label>
+                                <div class="col-md-10">
+                                    <textarea id="Note" name="Note" class="form-control" placeholder="备注信息..." style="height:100px"></textarea>
+
+                                </div>
+                            </div>
+                        </div>
+       
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">附件</label>
+                                <div class="col-md-10">
+                                    <input id="AttachGUID" name="AttachGUID" type="hidden" />
+                                    <input id="excelFile" type="file" multiple="multiple">
+                                    <div id="div_files"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="portlet box col-md-12">
+                            <input name="tags" id="tags" value="" />
+                            <button type="button" class="btn green" id="btnSelectUser" onclick="SelectUsers()">选择流程处理人[需选择1人]</button>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer bg-info">
+                    <input type="hidden" id="ID" name="ID" />
+                    <input type="hidden" id="Apply_ID" name="Apply_ID" />
+                    <button type="button" class="btn red" onclick="SaveDraft()" style="float:left">
+                        <span class="glyphicon glyphicon-floppy-saved"></span>
+                        存为草稿
+                    </button>
+                    <button type="submit" class="btn blue">确定</button>
+                    <button type="button" class="btn green" onclick="BackToList()">取消</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+@RenderPage("~/Views/Apply/SelectUser.cshtml")
+@section footerScript {
+
+    <script type="text/javascript">
+        //定义保存业务表单的URL
+        var saveDataUrl = "/MeetingRoom/Insert";
+
+        //页面初始化
+        $(function () {
+            InitStyle();        //设置控件的样式
+            BindEvent();        //绑定事件处理
+            InitDictItem();     //初始化字典信息
+            LoadData();         //加载数据
+        });
+
+        //子页面选中用户后，调用的方法
+        function OnSelectUser(json) {
+            ProcUserJson = json;//存储到ProcUserJson，方便下次打开界面初始化数据
+            if (json != '') {
+                var dict = JSON.parse(json);
+                if (dict != null) {
+                    $('#tags').importTags('');
+                    for (var key in dict) {
+                        var display = dict[key];
+                        $('#tags').addTag(display);  //加上已选择用户的信息
+                    };
+                }
+            }
+        }
+
+        //设置控件的样式
+        function InitStyle() {
+            //统一设置icheck控件的样式
+            $('input[class=icheck]').iCheck({
+                checkboxClass: 'icheckbox_square-red',
+                radioClass: 'iradio_square-red',
+            });
+
+            $('.input-date input').each(function () {
+                $(this).datetimepicker({
+                    language: 'zh-CN', //语言
+                    autoclose: true, //选择后自动关闭
+                    clearBtn: true,//清除按钮 
+                    todayBtn: true,
+                    format: 'yyyy-mm-dd hh:ii',//日期格式
+                });
+            });
+            //初始化标签控件
+            $('#tags').tagsInput({
+                width: 'auto',
+                height: '60px',
+                onRemoveTag: function (tag) {
+                    var i = addDisplayList.indexOf(tag);
+                    var id = addKeyList[i];
+                    removeUser(id, tag);
+
+                    procuserid = "";//移除则清空流程处理人
+                },
+                interactive: false
+            });
+
+            InitExcelFile();    //初始化Excel上传
+        }
+
+        //初始化字典信息（下拉列表）
+        function InitDictItem() {
+            //部分赋值参考
+
+            //绑定字典
+            BindDictItem("RoomName", "会议室");
+
+            //绑定树列表
+            //BindSelect("PID", "/Menu/GetDictJson");
+
+            //绑定可选多个Tag
+            // $("#Hobby").val({
+            //     tags: ["旅游", "爬山", "篮球", "足球", "乒乓球"]
+            // }).trigger("change");
+
+            //绑定添加界面的公司、部门（联动处理）
+            // BindSelect("Company_ID", "/User/GetMyCompanyDictJson?userId="+@Session["UserId"]);
+            // $("#Company_ID").on("change", function (e) {
+            //     var companyid = $("#Company_ID").val();
+            //     BindSelect("Dept_ID", "/User/GetDeptDictJson?parentId="+ companyid);
+            // });
+        }
+
+        //初始化数据
+        function LoadData() {
+            $("#ffAdd")[0].reset();//清空上次输入
+            $('#ffAdd').validate().resetForm();//去除验证信息
+
+            //共同部分
+            $("#ID").val(newGuid());
+            $("#Apply_ID").val(newGuid());//申请单需要提前指定
+
+            var applyid = '@Request["applyid"]';//记录申请单ID（已有）
+            var draftid = "@Request["draftid"]"; //获取草稿ID
+            var formId = "@Request["formid"]";//记录FormID
+            var title = "会议室预定申请单";
+            if (applyid != '') {
+                $("#lblAddTitle").text("重新修改-" + title);
+
+                //如果是从已有申请单过来，则加载信息
+                $.getJSON("/Apply/FindById?id=" + applyid, function (info) {
+                    if (info != null) {
+                        $("#Title").val(info.Title);//申请单标题
+                        $("#Apply_ID").val(info.ID);//修改为已有ID
+                    }
+                });
+                $.getJSON("/MeetingRoom/FindByApplyId?applyid=" + applyid, function (info) {
+                    SetInfo(info);//设置内容
+                });
+            }
+            else if (draftid != '') {
+                //如果是从草稿页面过来，则加载草稿信息
+                $.getJSON("/ApplyDraft/FindByID?id=" + draftid, function (draftInfo) {
+
+                    $("#Title").val(draftInfo.Title);
+                    var info = $.parseJSON(draftInfo.BizDraftJson);
+                    SetInfo(info);//设置内容
+                });
+
+            } else {
+                //新建表单初始化
+                var applytitle = "@ViewBag.FullName" + "的" + title + "【" + GetCurrentDate() + "】";
+                $("#Title").val(applytitle);
+                $("#PayDate").val(GetCurrentDate());
+            }
+
+            //初始化部分控件
+            //$('input[name="Gender"][value="男"]').iCheck('check');
+            //$("#PID").val("").trigger("change");
+            //$("#Hobby").val(null).trigger("change");//清空下拉框
+        }
+
+        //统一设置界面控件内容
+        function SetInfo(info) {
+            if (info != null) {
+                 $("#RoomName").val(info.RoomName);
+                 $("#StartTime").val(getDateStr(info.StartTime));
+                 $("#EndTime").val(getDateStr(info.EndTime));
+                 $("#Duration").val(info.Duration);
+                 $("#MeetingPersonNumber").val(info.MeetingPersonNumber);
+                 $("#MeetingPerson").val(info.MeetingPerson);
+                    $("#Note").val(info.Note);
+       
+                //附件处理
+                $("#AttachGUID").val(info.AttachGUID);
+                attachguid = $("#AttachGUID").val();//记录业务的附件字段GUID，用作更新显示附件列表
+                ShowUpFiles(attachguid, "div_files");
+
+                //参考赋值
+                //$("#Company_ID1").val(info.Company_ID).trigger("change");//联动
+                //$("#PID1").val(info.PID).trigger("change");//普通Select2
+                // var array = [info.Hobby];
+                // $("#Hobby").val(array).trigger("change"); //集合
+
+                // $("input[name='Gender']").iCheck('uncheck');
+                // $("input[name='Gender'][value='" + info.Gender + "']").iCheck('check');
+                // $("#BirthDate").val(getDateStr(info.BirthDate));
+            }
+        }
+
+        //自定义函数处理queryParams的批量增加
+        $.fn.serializeJsonObject = function () {
+            var json = {};
+            var form = this.serializeArray();
+            $.each(form, function () {
+                if (json[this.name]) {
+                    if (!json[this.name].push) {
+                        json[this.name] = [json[this.name]];
+                    }
+                    json[this.name].push();
+                } else {
+                    json[this.name] = this.value || '';
+                }
+            });
+            return json;
+        }
+
+        //保存草稿
+        function SaveDraft() {
+            var title = $("#Title").val();
+            if (title == '') {
+                showTips("标题不能为空");
+                return;
+            }
+
+            //var postData = $("#ffAdd").serializeArray();
+            var jsonObj = $("#ffAdd").serializeJsonObject();
+            var mainJson = JSON.stringify(jsonObj);//将JavaScript值转换为JSON字符串
+            var postData = {
+                formId: '@Request["formid"]',
+                title: title,
+                draftId: '@Request["draftid"]',
+                mainJson: mainJson,
+                detailJson: null,
+                detailJson2: null,
+                detailJson3: null,
+            };
+            postData = JSON.stringify(postData);//转换为JSON数据，以POST提交
+            var url = "/ApplyDraft/SaveDraft";
+            $.post(url, postData, function (json) {
+                var data = $.parseJSON(json);
+                if (data.Success) {
+                    //可增加其他处理
+
+                    //保存成功 
+                    showTips("保存成功");
+                    setTimeout(function () { window.location.href = "/ApplyDraft/index" }, 3000);
+                }
+                else {
+                    showError("保存失败:" + data.ErrorMessage, 3000);
+                }
+            }).error(function () {
+                showTips("您未被授权使用该功能，请联系管理员进行处理。");
+            });
+        }
+
+        //返回上级页面
+        function BackToList() {
+            history.go(-1);
+        }
+
+        //绑定相关事件
+        function BindEvent() {
+            //判断表单的信息是否通过验证
+            formValidate("ffAdd", function (form) {
+                if (addKeyList.length == 0) {
+                    showTips("请选择流程处理人");
+                    return;
+                } else if (addKeyList.length > 1) {
+                    showTips("只能选择一个流程处理人");
+                    return;
+                }
+
+                //解析流程处理人
+                var dict = JSON.parse(ProcUserJson);
+                if (dict != null) {
+                    for (var key in dict) {
+                        procuserid = key;//加上已选择用户的信息
+                    };
+                }
+                if (procuserid == '') {
+                    showTips("流程处理人不能为空");
+                    return;
+                }
+
+                //构造参数发送给后台,写入业务数据
+                var postData = $("#ffAdd").serializeArray();
+                $.post(saveDataUrl, postData, function (json) {
+                    var data = $.parseJSON(json);
+                    if (data.Success) {
+                        //录入业务表单数据后，继续保存通用申请单数据
+                        SendApply(postData);
+                        RefreshExcel();
+
+                        //保存成功  定时返回我的申请单
+                        showTips("保存成功");
+                        setTimeout(function () { window.location.href = "/Apply/index" }, 3000);
+                    }
+                    else {
+                        showError("保存失败:" + data.ErrorMessage, 3000);
+                    }
+                });
+            });
+        }
+
+        //录入业务表单数据后，继续保存通用申请单数据
+        var procuserid = "";
+        function SendApply(data) {
+            var postData = {
+                //也可以使用data.pop('Apply_ID').value
+                applyid: '@Request["applyid"]',//如果是已有的申请单，则applyid不为空
+                newapplyid: $('#Apply_ID').val(),//新建的时候，使用newapplyid
+                formid: '@Request["formid"]',
+                draftid: '@Request["draftid"]',
+                title: $('#Title').val(),
+                note: $('#Note').val(),
+                procuserid: procuserid,
+            };
+
+            postData = JSON.stringify(postData);
+            var url = "/Apply/SendApply";
+            $.post(url, postData, function (json) {
+                var data = $.parseJSON(json);
+                if (data.Success) {
+
+                    //保存成功 
+                    showTips("保存通用申请单数据成功");
+                }
+                else {
+                    showError("保存通用申请单数据失败:" + data.ErrorMessage, 3000);
+                }
+            });
+        }
+
+        //初始化Excel导入的文件
+        function InitExcelFile() {
+            //记录GUID
+            $("#AttachGUID").val(newGuid());
+
+            $("#excelFile").fileinput({
+                uploadUrl: "/FileUpload/Upload",//上传的地址
+                uploadAsync: true,              //异步上传
+                language: "zh",                 //设置语言
+                showCaption: true,              //是否显示标题
+                showUpload: true,               //是否显示上传按钮
+                showRemove: true,               //是否显示移除按钮
+                showPreview : true,             //是否显示预览按钮
+                browseClass: "btn btn-primary", //按钮样式
+                dropZoneEnabled: false,         //是否显示拖拽区域
+                allowedFileExtensions: null, //接收的文件后缀
+                maxFileCount: 3,                        //最大上传文件数限制
+                previewFileIcon: '<i class="glyphicon glyphicon-file"></i>',
+                allowedPreviewTypes: null,
+                previewFileIconSettings: null,
+                uploadExtraData: {  //上传的时候，增加的附加参数
+                    folder: '工作流文件', guid: $("#AttachGUID").val()
+                }
+            })  //文件上传完成后的事件
+           .on('fileuploaded', function (event, data, previewId, index) {
+                var form = data.form, files = data.files, extra = data.extra,
+                    response = data.response, reader = data.reader;
+
+                var res = data.response; //返回结果
+                if (res.Success) {
+                    attachguid = $("#AttachGUID").val();//记录业务的附件字段GUID，用作更新显示附件列表
+                    ShowUpFiles(attachguid, "div_files");
+
+                    $('#file_upload').fileinput('clear');//清空所有文件
+                    showToast("上传完毕！");
+                }
+                else {
+                    showTips('上传失败');
+                }
+           });
+        }
+
+        var attachguid = "";//用来记录附件组的ID，方便更新
+        function deleteAttach(id) {
+            //id 代表附件列表的单个记录ID attachguid代表业务表的附件字段ID
+            DeleteAndRefreshAttach(id, attachguid, "div_files");
+        }
+
+        //重新更新GUID的值，并清空文件
+        function RefreshExcel() {
+            $("#AttachGUID").val(newGuid());
+            $('#excelFile').fileinput('clear');//清空所有文件
+
+            //附加参数初始化后一直不会变化，如果需要发生变化，则需要使用refresh进行更新
+            $('#excelFile').fileinput('refresh', {
+                uploadExtraData: { folder: '工作流文件', guid: $("#AttachGUID").val() },
+            });
+        }
+    </script>
+
+}

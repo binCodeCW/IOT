@@ -1,0 +1,5 @@
+D:\web\NFine_VS2105\project\NFine.Iotna\bin\Debug\NFine.Iotna.dll
+D:\web\NFine_VS2105\project\NFine.Iotna\bin\Debug\NFine.Iotna.pdb
+D:\web\NFine_VS2105\project\NFine.Iotna\obj\Debug\NFine.Iotna.csprojResolveAssemblyReference.cache
+D:\web\NFine_VS2105\project\NFine.Iotna\obj\Debug\NFine.Iotna.dll
+D:\web\NFine_VS2105\project\NFine.Iotna\obj\Debug\NFine.Iotna.pdb

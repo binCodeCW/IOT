@@ -1,0 +1,6 @@
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\YH.Dictionary.Core.xml
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\YH.Dictionary.Core.dll
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\YH.Dictionary.Core.pdb
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\YH.Dictionary.Core\obj\Debug\YH.Dictionary.Core.csprojResolveAssemblyReference.cache
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\YH.Dictionary.Core\obj\Debug\YH.Dictionary.Core.dll
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\YH.Dictionary.Core\obj\Debug\YH.Dictionary.Core.pdb

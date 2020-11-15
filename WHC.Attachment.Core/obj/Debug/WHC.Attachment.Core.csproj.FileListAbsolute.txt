@@ -1,0 +1,6 @@
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\WHC.Attachment.Core.XML
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\WHC.Attachment.Core.dll
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\WHC.Attachment.Core.pdb
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\WHC.Attachment.Core\obj\Debug\WHC.Attachment.Core.csprojResolveAssemblyReference.cache
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\WHC.Attachment.Core\obj\Debug\WHC.Attachment.Core.dll
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\WHC.Attachment.Core\obj\Debug\WHC.Attachment.Core.pdb

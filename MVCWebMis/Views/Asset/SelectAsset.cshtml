@@ -1,0 +1,276 @@
+﻿<!--选择资产的弹出层-->
+<div id="selectAsset" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-pencil"></i>
+                    <span id="lblSelectAssetTitle" style="font-weight:bold">选择资产</span>
+                </h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffSelectAssets" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="portlet box green-meadow col-md-4">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-filter"></i>资产分类
+                            </div>
+                        </div>
+                        <div class="portlet-body flip-scroll">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#tab_1_1" data-toggle="tab">按类别名称查看</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade active in" id="tab_1_1">
+                                    <div class="row" style="padding-left:20px">
+                                        <div id="Assettree_div"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet box col-md-8">
+                        <div class="portlet-body flip-scroll" style="width:99%">
+                            <!-- BEGIN 表格数据-->
+                            <div class="portlet box green-meadow">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-cogs"></i>数据列表
+                                    </div>
+                                </div>
+                                <div class="portlet-body flip-scroll">
+                                    <div class="portlet-body">
+                                        <div class="row">
+                                            <div class="col-md-5 col-sm-5 col-xs-5">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">资产名称</label>
+                                                    <div class="col-md-8">
+                                                        <input name="WHC_Name" type="text" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5 col-sm-5 col-xs-5">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">资产编码</label>
+                                                    <div class="col-md-8">
+                                                        <input name="WHC_Code" type="text" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-2 col-xs-2">
+                                                <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="RefreshAssets()">
+                                                    <i class="fa fa-search"></i>
+                                                    查 询
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <table id="gridAssets" class="table table-hover"></table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-info">
+                    <button type="button" class="btn green-meadow" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <!--添加对选择用户弹出框的功能支持-->
+    <script type="text/javascript">
+        //已选择的信息
+        var ProcAssetJson = "";
+
+        //弹出选择用户页面初始化
+        $(function () {
+            initAssetTreeview(); //初始化树
+            SearchAssets(currentPageAssets);//初始化第一页数据
+
+            //初始化选择资产的表单处理
+            formValidate("ffSelectAssets", function (form) {
+                SelectResult();
+            });
+        });
+
+        //选择结果
+        function SelectResult() {
+            var dict = {};
+            addAssetKeyList.forEach(function (key, index, array) {
+                var display = addAssetDisplayList[index];
+                dict[key] = display;
+            });
+
+            //转换选择为JSON字符串
+            var json = JSON.stringify(dict);
+            $("#selectAsset").modal("hide");
+
+            //留给调用的界面实现这个函数，实现数据的返回出来
+            ProcAssetJson = json;
+            OnSelectAsset(json);
+
+            InitAssetArray();//返回后清空选择集合
+        }
+
+        //放置滞留，选择后清空
+        function InitAssetArray() {
+            addAssetKeyList = new Array();//键的集合
+            addAssetDisplayList = new Array();//值的集合
+        }
+
+        var addAssetKeyList = new Array();//键的集合
+        var addAssetDisplayList = new Array();//值的集合
+        function addAsset(key, name) {
+            if ($.inArray(key, addAssetKeyList) == -1) {
+                addAssetKeyList.push(key);
+                addAssetDisplayList.push(name);
+            }
+
+            SelectResult();//返回结果
+        }
+        function removeAsset(key, name) {
+            if ($.inArray(key, addAssetKeyList) != -1) {
+                addAssetKeyList.pop(key);
+                addAssetDisplayList.pop(name);
+            }
+        }
+
+        //初始化组织机构列表
+        function initAssetTreeview() {
+            var treeUrl = '/Asset/GetClassName';
+            bindJsTree("Assettree_div", treeUrl, false);
+
+            //树控件的变化事件处理
+            $('#Assettree_div').on("click.jstree", function (e, data) {
+                var nodeid = $(e.target).parents('li').attr('id');
+                //console.log(nodeid)
+                if (nodeid != 'undefined') {
+                    loadDataByType(nodeid);
+                }
+            });
+        }
+
+        //加载指定的对象数据
+        var clickId = "";
+        var where = {};//树列表条件
+        function loadDataByType(id) {
+            where = {};//清空
+            where["CustomedCondition"] = 'ClassName=\'' +id + '\'';//使用自定义条件
+            //修改条件后需要重新刷新
+            $assetTable.bootstrapTable('refresh', { url: assetQueryUrl, pageNumber: 1 });
+            clickId = id;
+        }
+
+    var currentPageAssets = 1, rowsAssets = 10; //分页参数：当前页，记录数
+    var $assetTable;
+    var assetQueryUrl;
+    //初始化bootstrap-table的内容
+    function SearchAssets (page) {
+        //记录页面bootstrap-table全局变量$assetTable，方便应用
+        assetQueryUrl = '/Asset/FindWithPager?rnd=' + Math.random()
+        $assetTable = $('#gridAssets').bootstrapTable({
+            url: assetQueryUrl,                      //请求后台的URL（*）
+            method: 'GET',                      //请求方式（*）
+            //toolbar: '#toolbar',              //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: true,                   //是否显示分页（*）
+            sortable: true,                     //是否启用排序
+            sortOrder: "asc",                   //排序方式
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber: page,                      //初始化加载第一页，默认第一页,并记录
+            pageSize: rowsAssets,                     //每页的记录行数（*）
+            pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+            search: false,                      //是否显示表格搜索
+            strictSearch: true,
+            showColumns: true,                  //是否显示所有的列（选择显示的列）
+            showRefresh: true,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+            //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+            showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,                  //是否显示父子表
+            //得到查询的参数
+            queryParams : function (params) {
+                //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+                var temp = $("#ffSelectAssets").serializeJsonObject();
+                temp["rows"] = params.limit;                        //页面大小
+                temp["page"] = (params.offset / params.limit) + 1;  //页码
+                temp["sort"] = params.sort;                         //排序列名
+                temp["sortOrder"] = params.order;                   //排位命令（desc，asc）
+
+                //如果自定义条件费用，加入条件
+                $.each(where, function (item) {
+                    //console.log(item, where[item]);
+                    temp[item] = where[item];
+                });
+                
+                //temp["WHC_Age"] = $("#WHC_Age").val() + "~" + $("#WHC_Age2").val();
+                //temp["WHC_BirthDate"] = $("#WHC_BirthDate").val() + "~" + $("#WHC_BirthDate2").val();
+
+                return temp;
+            },
+            columns: [{
+                checkbox: true,
+                visible: false                  //是否显示复选框
+            },
+                { title: '资产编码', field: 'Code', visible: false /*, width: 80, sortable: true */ },
+                { title: '资产名称', field: 'Name' , width: 180, sortable: true },
+                { title: '单位', field: 'Unit' /*, width: 80, sortable: true */ },
+                { title: '数量', field: 'Qty' /*, width: 80, sortable: true */ },
+                { title: '使用人', field: 'UsePerson' /*, width: 80, sortable: true */ },
+                { title: '使用地点', field: 'KeepAddr' /*, width: 80, sortable: true */ },
+                { title: '操作', field: 'ID', width: 60, align: 'center', valign: 'middle', formatter: actionAssetFormatter },
+            ],
+            onLoadSuccess: function () {
+                currentPage = page;//存储当前页码
+            },
+            onLoadError: function () {
+                showTips("数据加载失败！");
+            },
+            onDblClickRow: function (row, $element) {
+                var id = row.Code;
+                var name = row.Name
+                //console.log(id + ":" + name);
+                addAsset(id, name);
+            }
+        });
+    };
+        //操作栏的格式化
+        function actionAssetFormatter(value, row, index) {
+            var id = row.Code;
+            var name = row.Name
+            //console.log(id + ":" + name);
+            var result = "";
+            result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"addAsset('" + id + "', '" + name +"')\" title='选择资产'><span class='fa fa-check-square-o '></span></a>";
+            return result;
+        }
+
+        //设置一页显示多少条
+        function ChangeRowsAssets() {
+            rowsAssets = $("#rowsAssets").val();
+            RefreshAssets();
+        }
+        //刷新列表
+        function RefreshAssets() {
+            where = {};//置空树形条件，使用查询框条件
+            $assetTable.bootstrapTable('refresh');
+        }
+
+        //显示资产选择对话框
+        var assetInput;
+        function SelectAssets(obj) {
+            assetInput = $(obj);
+            $("#selectAsset").modal("show");
+        }
+    </script>

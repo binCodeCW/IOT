@@ -1,0 +1,2155 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "流程模板";
+}
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+<script src="~/Scripts/Dictionary.js"></script>
+<script src="~/Content/JQueryTools/Sortable/Sortable.min.js"></script>
+<script src="~/Content/JQueryTools/Sortable/jquery.binding.js"></script>
+
+<div class="portlet box green-meadow col-md-2">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-filter"></i>业务分类
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <div class="row" style="padding-left:10px">
+            <div id="jstree_div"></div>
+        </div>
+    </div>
+</div>
+
+<div class="portlet box col-md-10">
+    <!-- BEGIN 数据查询-->
+    <div class="portlet box green-meadow">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-filter"></i>
+                查询内容
+            </div>
+            <div class="tools">
+                <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="Refresh()">
+                    <i class="fa fa-search"></i>
+                    查 询
+                </button>
+                <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="ShowImport()">
+                    <i class="fa fa-file-excel-o"></i>
+                    导 入
+                </button>
+                <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="ShowExport()">
+                    <i class="fa fa-file-excel-o"></i>
+                    导 出
+                </button>
+                <a href="javascript:;" class="collapse" title="折叠内容"></a>
+            </div>
+        </div>
+
+        <div class="portlet-body flip-scroll">
+            <div class="row">
+                <form class="form-horizontal" id="ffSearch">
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">模板名称</label>
+                            <div class="col-md-8">
+                                <input id="WHC_FormName" name="WHC_FormName" type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">表单标识</label>
+                            <div class="col-md-8">
+                                <input id="WHC_FormFlag" name="WHC_FormFlag" type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                        <label class="control-label col-md-4">是否禁用</label>
+                        <div class=" input-group">
+                            <select id="WHC_Forbid" name="WHC_Forbid" type="text" class="form-control"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">备注信息</label>
+                            <div class="col-md-8">
+                                <input id="WHC_Remark" name="WHC_Remark" type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- END 数据查询-->
+    <!-- BEGIN 表格数据-->
+    <div class="portlet box green-meadow">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-cogs"></i>
+                数据列表
+            </div>
+            <div class="tools">
+                <button type="button" onclick="Add()" class="btn btn-circle btn-sm green-meadow">
+                    <i class="fa fa-plus"></i>
+                    新增
+                </button>
+                <button type="button" onclick="EditView()" class="btn btn-circle btn-sm green-meadow">
+                    <i class="fa fa-pencil"></i>
+                    修改
+                </button>
+                <button type="button" onclick="EditView('view')" class="btn btn-circle btn-sm green-meadow">
+                    <i class="fa fa-table"></i>
+                    查看
+                </button>
+                <button type="button" onclick="Delete()" class="btn btn-circle btn-sm green-meadow">
+                    <i class="fa fa-minus"></i>
+                    删除
+                </button>
+                <button type="button" onclick="Refresh()" class="btn btn-circle btn-sm green-meadow" data-toggle="modal">
+                    <i class="fa fa-refresh"></i>
+                    刷新
+                </button>
+                <button type="button" class="fullscreen btn btn-circle btn-sm green-meadow" data-original-title="全屏">
+                    <i class="icon-size-fullscreen"></i>
+                </button>
+            </div>
+        </div>
+        <div class="portlet-body flip-scroll">
+            <div class="portlet-body">
+                <div>
+                    <table id="grid" class="table table-hover"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--------------------------添加/修改信息的弹出层---------------------------->
+<div id="add" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-pencil"></i>
+                    <span id="lblAddTitle" style="font-weight:bold">添加信息</span>
+                </h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffAdd" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">流程模板名称</label>
+                                <div class="col-md-8">
+                                    <input id="FormName" name="FormName" type="text" class="form-control" placeholder="流程模板名称..." required />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">对应的数据表</label>
+                                <div class="col-md-8">
+                                    <input id="DataTable" name="DataTable" type="text" class="form-control" placeholder="对应的数据表..." />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">表单分类</label>
+                                <div class="col-md-8">
+                                    <select id="Category" name="Category" type="text" class="form-control select2" placeholder="表单分类..."></select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">表单标识</label>
+                                <div class="col-md-8">
+                                    <input id="FormFlag" name="FormFlag" type="text" class="form-control" placeholder="表单标识..." />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">创建流程URL</label>
+                                <div class="col-md-10">
+                                    <input id="ApplyUrl" name="ApplyUrl" type="text" class="form-control" placeholder="创建流程URL..." />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">显示流程URL</label>
+                                <div class="col-md-10">
+                                    <input id="ApplyUrl2" name="ApplyUrl2" type="text" class="form-control" placeholder="显示流程URL..." />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">可创建者</label>
+                                <div class="col-md-8">
+                                    <input id="WhoCreate" name="WhoCreate" type="text" class="form-control" placeholder="可创建者..." />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">可浏览者</label>
+                                <div class="col-md-8">
+                                    <input id="WhoBrowse" name="WhoBrowse" type="text" class="form-control" placeholder="可浏览者..." />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">要通知谁</label>
+                                <div class="col-md-8">
+                                    <input id="WhoInform" name="WhoInform" type="text" class="form-control" placeholder="要通知谁..." />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">是否通知处理人</label>
+                                <div class="input-group col-md-10">
+                                    <div class="icheck-inline">
+                                        <label>
+                                            <input type="checkbox" name="Inform" value="完成" class="icheck"> 完成
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" name="Inform" value="退回" class="icheck"> 退回
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" name="Inform" value="撤销" class="icheck"> 撤销
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">通知方式</label>
+                                <div class="input-group col-md-10">
+                                    <div class="icheck-inline">
+                                        <label>
+                                            <input type="checkbox" name="Notify" value="邮件" class="icheck"> 邮件
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" name="Notify" value="广播" class="icheck"> 广播
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" name="Notify" value="短信" class="icheck"> 短信
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">可否撤销</label>
+                                <div class="col-md-8">
+                                    <select id="MayCancel" name="MayCancel" type="number" class="form-control" placeholder="可否撤销..."></select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">是否禁用</label>
+                                <div class="col-md-8">
+                                    <select id="Forbid" name="Forbid" type="number" class="form-control" placeholder="是否禁用..."></select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">备注信息</label>
+                                <div class="col-md-10">
+                                    <input id="Remark" name="Remark" type="text" class="form-control" placeholder="备注信息..." style="height:100px" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-info">
+                    <input type="hidden" id="ID" name="ID" />
+                    <button type="submit" class="btn blue">确定</button>
+                    <button type="button" class="btn green" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--------------------------查看信息的弹出层---------------------------->
+<div id="view" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-book-open"></i>
+                    <span style="font-weight:bold">查看信息</span>
+                </h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffView" action="">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">流程模板名称</label>
+                                <div class="col-md-8">
+                                    <label id="FormName2" name="FormName" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">对应的数据表</label>
+                                <div class="col-md-8">
+                                    <label id="DataTable2" name="DataTable" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">表单分类</label>
+                                <div class="col-md-8">
+                                    <label id="Category2" name="Category" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">表单标识</label>
+                                <div class="col-md-8">
+                                    <label id="FormFlag2" name="FormFlag" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">创建流程URL</label>
+                                <div class="col-md-10">
+                                    <label id="ApplyUrl_2" name="ApplyUrl" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">显示流程URL</label>
+                                <div class="col-md-10">
+                                    <label id="ApplyUrl22" name="ApplyUrl2" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">可创建者</label>
+                                <div class="col-md-8">
+                                    <label id="WhoCreate2" name="WhoCreate" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">可浏览者</label>
+                                <div class="col-md-8">
+                                    <label id="WhoBrowse2" name="WhoBrowse" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">要通知谁</label>
+                                <div class="col-md-8">
+                                    <label id="WhoInform2" name="WhoInform" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">是否通知处理人</label>
+                                <div class="input-group col-md-10">
+                                    <div class="icheck-inline">
+                                        <label>
+                                            <input type="checkbox" name="Inform2" value="完成" class="icheck"> 完成
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" name="Inform2" value="退回" class="icheck"> 退回
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" name="Inform2" value="撤销" class="icheck"> 撤销
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">通知方式</label>
+                                <div class="input-group col-md-10">
+                                    <div class="icheck-inline">
+                                        <label>
+                                            <input type="checkbox" name="Notify2" value="邮件" class="icheck"> 邮件
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" name="Notify2" value="广播" class="icheck"> 广播
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" name="Notify2" value="短信" class="icheck"> 短信
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">可否撤销</label>
+                                <div class="col-md-8">
+                                    <label id="MayCancel2" name="MayCancel" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">是否禁用</label>
+                                <div class="col-md-8">
+                                    <label id="Forbid2" name="Forbid" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">备注信息</label>
+                                <div class="col-md-10">
+                                    <label id="Remark2" name="Remark" class="form-control" style="height:100px"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-info">
+                    <input id="ID2" name="ID" type="hidden" value="">
+                    <button type="button" class="btn green" data-dismiss="modal">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!--导入数据操作层-->
+<div id="import" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">文件导入</h4>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:right;padding:5px">
+                    <a href="~/Content/Template/Form-模板.xls" onclick="javascript:Preview();">
+                        <img alt="文件导入-模板" src="~/Content/images/ico_excel.png" />
+                        <span style="font-size:larger;font-weight:200;color:red">Form-模板.xls</span>
+                    </a>
+                </div>
+                <hr />
+                <form id="ffImport" method="post">
+                    <div title="Excel导入操作" style="padding: 5px">
+                        <input type="hidden" id="AttachGUID" name="AttachGUID" />
+                        <input id="excelFile" type="file">
+                    </div>
+                </form>
+
+                <!--数据显示表格-->
+                <table id="gridImport" class="table table-striped table-bordered table-hover" cellpadding="0" cellspacing="0" border="0"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="SaveImport()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--流程设置操作层-->
+<div id="flow" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">流程设置</h4>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN 表格数据-->
+                <div class="portlet box green-meadow">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-cogs"></i>
+                            流程设置
+                        </div>
+                        <div class="tools">
+                            <button type="button" onclick="AddFlow()" class="btn btn-circle red">
+                                <i class="fa fa-plus"></i>
+                                添加流程步骤
+                            </button>
+                            <button type="button" onclick="Refresh_flow()" class="btn btn-circle btn-sm green-meadow" data-toggle="modal">
+                                <i class="fa fa-refresh"></i>
+                                刷新
+                            </button>
+                        </div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <div class="portlet-body">
+                            <div>
+                                <span>每页显示</span>
+                                <select id="rows" onchange="ChangeRows()">
+                                    <option>10</option>
+                                    <option selected>50</option>
+                                    <option>100</option>
+                                    <option>1000</option>
+                                </select>
+                                <span>条记录</span>&nbsp;&nbsp;
+                                <span>共有记录：</span><span id='totalCount' class="label label-success">0</span>条，总页数：<span id='totalPageCount' class="label label-success">0</span>页。
+                            </div>
+                            <hr />
+                            <div id="grid_body" class='list-group'></div>
+                            <div class="paging-toolbar">
+                                <ul id='grid_paging'></ul>
+                            </div>
+
+                            <div align="left" style="background-color:lightgrey">
+                                <p>
+                                    适用对象 ：即该流程环节只适用于哪些对象，其它对象不执行该流程环节。<br />
+                                    过滤条件 ：只有符合该过滤条件的申请单才执行该流程环节。<br />
+                                    选择处理人：申请人或上一级处理人是否可以从该流程环节的几个处理人中选择一个实际处理人。<br />
+                                    增加环节 ：流程环节的处理人是否可以增加新的流程环节。<br />
+                                    通知方式 ：流程处理人是否可以给其他人发送通知。当前处理方式为[通知]时，则表示给流程处理人发送通知的形式。<br />
+                                    完整标记：在[处理人]和[适用对象]中可使用标记 {$申请人} {$所在科室} {$所在部门} {$所在公司}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--添加表单流程步骤--->
+<div id="addFlow" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-pencil"></i>
+                    <span id="lblAddTitleFlow" style="font-weight:bold">添加表单流程步骤</span>
+                </h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffAddFlow" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">步骤名称</label>
+                                <div class="col-md-8">
+                                    <input id="FlowName" name="FlowName" type="text" class="form-control" placeholder="步骤名称..." required />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">流程环节名称</label>
+                                <div class="col-md-8">
+                                    <select id="ProcType" name="ProcType" class="form-control" placeholder="流程环节名称..." required></select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">适用对象（过滤）</label>
+                                <div class="col-md-10">
+                                    <input id="CondUser" name="CondUser" type="text" class="form-control" placeholder="适用对象..." />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">过滤条件</label>
+                                <div class="col-md-10">
+                                    <input id="CondVerify" name="CondVerify" type="text" class="form-control" placeholder="(为空表示不限制)(只有符合该条件才执行当前步骤)..." />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">流程处理人</label>
+                                <div class="col-md-10">
+                                    <input id="ProcUser" name="ProcUser" type="text" class="form-control" placeholder="流程处理人..." readonly />
+
+                                    <button type="button" class="btn green" id="btnSelectUser" onclick="SelectUsers()">选择人员</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">选择处理人</label>
+                                <div class="col-md-8">
+                                    <select id="MaySelproc" name="MaySelproc" type="number" class="form-control" placeholder="是否可以选择处理人..."></select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">增加新流程环节</label>
+                                <div class="col-md-8">
+                                    <select id="MayAddFlow" name="MayAddFlow" type="number" class="form-control" placeholder="增加新流程环节..."></select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">通知方式</label>
+                                <div class="col-md-8">
+                                    <select id="MayMsgSend" name="MayMsgSend" type="number" class="form-control" placeholder="通知方式..."></select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">备注信息</label>
+                                <div class="col-md-10">
+                                    <input id="Remark_Flow" name="Remark" type="text" class="form-control" placeholder="备注信息..." style="height:100px" />
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-info">
+                    <input type="hidden" id="ID_Flow" name="ID_Flow" />
+                    <input type="hidden" id="FormId" name="FormId" />
+                    <button type="submit" class="btn blue">确定</button>
+                    <button type="button" class="btn green" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--------------------------选择用户的弹出层---------------------------->
+<div id="selectUser" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-pencil"></i>
+                    <span id="lblSelectUserTitle" style="font-weight:bold">选择用户</span>
+                </h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffSelectUsers" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="portlet box green-meadow col-md-4">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-filter"></i>用户分类
+                            </div>
+                        </div>
+                        <div class="portlet-body flip-scroll">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#tab_1_1" data-toggle="tab">按组织机构查看</a>
+                                </li>
+                                <li>
+                                    <a href="#tab_1_2" data-toggle="tab">按角色查看</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade active in" id="tab_1_1">
+                                    <div class="row" style="padding-left:20px">
+                                        <div id="usertree_div"></div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="tab_1_2">
+                                    <div class="row" style="padding-left:20px">
+                                        <div id="usertree_role"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet box col-md-8">
+                        <div class="portlet-body flip-scroll" style="width:99%">
+                            <!-- BEGIN 表格数据-->
+                            <div class="portlet box green-meadow">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-cogs"></i>数据列表
+                                    </div>
+                                    <div class="tools">
+                                        <button type="button" onclick="addChoise()" class="btn btn-circle btn-sm green-meadow" data-toggle="modal">
+                                            <i class="fa fa-refresh"></i> 添加选择
+                                        </button>
+                                        <button type="button" onclick="clearChoise()" class="btn btn-circle btn-sm green-meadow" data-toggle="modal">
+                                            <i class="fa fa-refresh"></i> 清空
+                                        </button>
+                                        <button type="button" onclick="RefreshUsers()" class="btn btn-circle btn-sm green-meadow" data-toggle="modal">
+                                            <i class="fa fa-refresh"></i> 刷新
+                                        </button>
+                                        <button type="button" class="fullscreen btn btn-circle btn-sm green-meadow" data-original-title="全屏">
+                                            <i class="icon-size-fullscreen"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="portlet-body flip-scroll">
+                                    <div class="portlet-body">
+                                        <div>
+                                            <span>每页显示</span>
+                                            <select id="rowsUsers" onchange="ChangeRowsUsers()">
+                                                <option>10</option>
+                                                <option>50</option>
+                                                <option>100</option>
+                                                <option>1000</option>
+                                            </select>
+                                            <span>条记录</span>&nbsp;&nbsp;
+                                            <span>共有记录：</span><span id='totalCountUsers' class="label label-success">0</span>条，总页数：<span id='totalPageCountUsers' class="label label-success">0</span>页。
+                                        </div>
+                                        <hr />
+                                        <table id="gridUsers" class="table table-striped table-bordered table-hover" cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+                                            <thead id="grid_headUsers">
+                                                <tr>
+                                                    <th class="table-checkbox" style="width:40px"><input class="group-checkable" type="checkbox" onclick="selectAll(this)"></th>
+                                                    <th>ID</th>
+                                                    <th>用户编码</th>
+                                                    <th>用户名/登录名</th>
+                                                    <th>真实姓名</th>
+                                                    <th>是否过期</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="grid_bodyUsers"></tbody>
+                                        </table>
+                                        <div class="paging-toolbar">
+                                            <ul id='grid_pagingUsers'></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet box col-md-12">
+                        <input name="tags" id="tags" value="" />
+                    </div>
+                </div>
+                <div class="modal-footer bg-info">
+                    <button type="submit" class="btn blue">确定</button>
+                    <button type="button" class="btn green-meadow" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section footerScript {
+
+    <script type="text/javascript">
+        var currentPage = 1, rows = 10; //分页参数：当前页，记录数
+
+        var isAddOrEdit = 'add';//标识是新增还是编辑对话框弹出，用于删除附件的操作
+        var url;//新增或者更新的连接
+        var ID;//ID值，新增为空，编辑或者查看为具体ID
+
+        //页面初始化
+        $(function () {
+            initJsTree(); //初始化树
+            InitStyle();        //设置控件的样式
+            BindEvent();        //绑定事件处理
+            InitDictItem();     //初始化字典信息
+            Search(currentPage);//初始化Table
+        });
+
+        //绑定左侧树形列表
+        //如果update为True，则重新更新缓存
+        function initJsTree(update) {
+            var baseUrl = "/Form/GetJsTreeJson?r=" + Math.random();
+            var url = update ? baseUrl + "&update=true" : baseUrl;
+            bindJsTree("jstree_div", url);
+            $("#jstree_div").bind("dblclick.jstree", function (e, data) {
+                //var id = $(e.target).parents('li').attr('id');
+                //EditType();
+            });
+            //树控件的变化事件处理
+            $('#jstree_div').on("changed.jstree", function (e, data) {
+                var icon = data.node.icon;
+                loadData(data.selected);
+            });
+        }
+
+        //加载指定的对象数据
+        var clickId = "";
+        var where = {};//树列表条件
+        function loadData(id) {
+            var condition = { CustomedCondition: id + '' };
+            where = {};//清空
+            where["CustomedCondition"] = id + '';//使用自定义条件
+
+            //修改条件后需要重新刷新
+            $table.bootstrapTable('refresh', { url: queryUrl, query: condition, pageNumber:1 });
+            clickId = id;
+        }
+
+        //设置控件的样式
+        function InitStyle() {
+
+            //统一设置icheck控件的样式
+            $('input[class=icheck]').iCheck({
+                checkboxClass: 'icheckbox_square-red',
+                radioClass: 'iradio_square-red',
+            });
+            $('.input-daterange input').each(function () {
+                $(this).datepicker({
+                    language: 'zh-CN', //语言
+                    autoclose: true, //选择后自动关闭
+                    clearBtn: true,//清除按钮
+                    format: "yyyy-mm-dd"//日期格式
+                });
+            });
+
+            //增加数值的调整按钮样式
+            // $("#Age").TouchSpin({
+            //     buttondown_class: 'btn blue',
+            //     buttonup_class: 'btn blue',
+            //     min: 0,
+            //     max: 120,
+            //     stepinterval: 1,
+            //     maxboostedstep: 10,
+            //     prefix: ''
+            // });
+
+            //初始化fileinput控件（第一次初始化）
+            //initFileInput("file-Portrait", "/Form/EditPortrait");
+        }
+
+        var $table;
+		var queryUrl;
+        //初始化bootstrap-table的内容
+        function Search (page) {
+            //记录页面bootstrap-table全局变量$table，方便应用
+            queryUrl = '/Form/FindWithPager?rnd=' + Math.random()
+            $table = $('#grid').bootstrapTable({
+                url: queryUrl,                   	//请求后台的URL（*）
+                method: 'GET',                      //请求方式（*）
+                //toolbar: '#toolbar',              //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: true,                     //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: page,                      //初始化加载第一页，默认第一页,并记录
+                pageSize: rows,                     //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                search: false,                      //是否显示表格搜索
+                strictSearch: true,
+                showColumns: true,                  //是否显示所有的列（选择显示的列）
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+                //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+                showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                  //是否显示父子表
+                //得到查询的参数
+                queryParams : function (params) {
+                    //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+
+                    //var temp = {
+                    //    rows: params.limit,                         //页面大小
+                    //    page: (params.offset / params.limit) + 1,   //页码
+                    //    sort: params.sort,      //排序列名
+                    //    sortOrder: params.order //排位命令（desc，asc）
+                    //};
+                    //return temp;
+
+                    var temp = $("#ffSearch").serializeJsonObject();
+                    temp["rows"] = params.limit;                        //页面大小
+                    temp["page"] = (params.offset / params.limit) + 1;  //页码
+                    temp["sort"] = params.sort;                         //排序列名
+                    temp["sortOrder"] = params.order;                   //排位命令（desc，asc）
+
+                    //特殊格式的条件处理
+                    //temp["WHC_Age"] = $("#WHC_Age").val() + "~" + $("#WHC_Age2").val();
+                    //temp["WHC_BirthDate"] = $("#WHC_BirthDate").val() + "~" + $("#WHC_BirthDate2").val();
+
+                    //如果自定义条件非空，加入条件
+                    $.each(where, function (item) {
+                        console.log(item, where[item]);
+                        temp[item] = where[item];
+                    });
+
+                    return temp;
+                },
+                columns: [{
+                    checkbox: true,
+                    visible: true                  //是否显示复选框
+                },
+                 { title: '流程模板名称', field: 'FormName' /*, width: 80, sortable: true */ },
+                 { title: '表单分类', field: 'Category' /*, width: 80, sortable: true */ },
+                 { title: '对应的数据表', field: 'DataTable' /*, width: 80, sortable: true */ },
+                 { title: '可否撤销', field: 'MayCancel', width: 80, sortable: true, align: 'center', formatter: checkFormatter},
+                 { title: '是否禁用', field: 'Forbid', width: 80, sortable: true, align: 'center', formatter: checkFormatter },
+                 { title: '表单标识', field: 'FormFlag' /*, width: 80, sortable: true */ },
+                    { title: '备注信息', field: 'Remark' /*, width: 80, sortable: true */ },
+                    { title: '流程设置', field: 'ID', width: 80, align: 'center', valign: 'middle', formatter: flowFormatter },
+  				{ title: '操作', field:'ID', width: 120, align: 'center', valign: 'middle', formatter: actionFormatter},
+				],
+                onLoadSuccess: function () {
+                    currentPage = page;//存储当前页码
+                },
+                onLoadError: function () {
+                    showTips("数据加载失败！");
+                },
+                onDblClickRow: function (row, $element) {
+                    var id = row.ID;
+                    EditViewById(id, 'view');
+                },
+                //rowStyle: function (row, index) { //设置行的特殊样式
+                    //这里有5个取值颜色['active', 'success', 'info', 'warning', 'danger'];
+                    //var strclass = "";
+                    //if (index == 0) {
+                    //    strclass = "warning";
+                    //}
+                    //return { classes: strclass }
+                //}
+            });
+        };
+
+        //根据条件查询并绑定结果
+        var $import;
+        function InitImport(guid) {
+            var url = "/Form/GetExcelData?guid=" + guid;
+            $import = $('#gridImport').bootstrapTable({
+                url: url,                           //请求后台的URL（*）
+                method: 'GET',                      //请求方式（*）
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: false,                  //是否显示分页（*）
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: 1,                      //初始化加载第一页，默认第一页,并记录
+                pageSize: 100,                     //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                search: false,                      //是否显示表格搜索
+                strictSearch: true,
+                showColumns: true,                  //是否显示所有的列（选择显示的列）
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,               //是否启用点击选中行
+                uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+                queryParams: function (params) { },
+                columns: [{
+                    checkbox: true,
+                    visible: true                  //是否显示复选框
+                },
+                 { title: '表单分类', field: 'Category' /*, width: 80, sortable: true */},
+                 { title: '流程模板名称', field: 'FormName' /*, width: 80, sortable: true */},
+                 { title: '创建流程的url', field: 'ApplyUrl' /*, width: 80, sortable: true */},
+                 { title: '显示流程处理页面url', field: 'ApplyUrl2' /*, width: 80, sortable: true */},
+                 { title: '创建流程窗体类', field: 'ApplyWin' /*, width: 80, sortable: true */},
+                 { title: '查看流程窗体类', field: 'ApplyWin2' /*, width: 80, sortable: true */},
+                 { title: 'ApplyWinlist', field: 'ApplyWinlist' /*, width: 80, sortable: true */},
+                 { title: '对应的数据表', field: 'DataTable' /*, width: 80, sortable: true */},
+                 { title: '可创建者', field: 'WhoCreate' /*, width: 80, sortable: true */},
+                 { title: '可浏览者', field: 'WhoBrowse' /*, width: 80, sortable: true */},
+                 { title: '要通知谁', field: 'WhoInform' /*, width: 80, sortable: true */},
+                 { title: '可否撤销', field: 'MayCancel' /*, width: 80, sortable: true */},
+                 { title: '是否通知处理人（完成）', field: 'InformFinish' /*, width: 80, sortable: true */},
+                 { title: '是否通知处理人（退回）', field: 'InformRefuse' /*, width: 80, sortable: true */},
+                 { title: '是否通知处理人（撤销）', field: 'InformCancel' /*, width: 80, sortable: true */},
+                 { title: '通知方式（邮件）', field: 'SendMail' /*, width: 80, sortable: true */},
+                 { title: '通知方式（内部广播）', field: 'SendBroad' /*, width: 80, sortable: true */},
+                 { title: '通知方式（短信）', field: 'SendMobile' /*, width: 80, sortable: true */},
+                 { title: '表单标识', field: 'FormFlag' /*, width: 80, sortable: true */},
+                 { title: '是否禁用', field: 'Forbid' /*, width: 80, sortable: true */},
+                 { title: '备注信息', field: 'Remark' /*, width: 80, sortable: true */},
+  				],
+                onLoadSuccess: function () {
+                },
+                onLoadError: function () {
+                    showTips("数据加载失败！");
+                },
+            });
+        }
+
+        //流程设置
+        function flowFormatter(value, row, index) {
+            return "<a href='javascript:;' onclick=\"FlowSetting('" + value + "')\" title='流程设置'><span class='fa fa-sort-amount-asc icon-state-danger'></span></a>";
+
+        }
+
+        //图片格式化
+        function imageFormatter(value, row, index) {
+            return "<img src='" + value + "' style='width:50px; height:50px;' />";
+        }
+        //日期字段格式化
+        function dateFormatter(value, row, index) {
+            return getDateStr(value);
+        }
+        //连接字段格式化
+        function linkFormatter(value, row, index) {
+            return "<a href='" + value + "' title='单击打开连接' target='_blank'>" + value + "</a>";
+        }
+        //Email字段格式化
+        function emailFormatter(value, row, index) {
+            return "<a href='mailto:" + value + "' title='单击打开连接'>" + value + "</a>";
+        }
+        //性别字段格式化
+        function sexFormatter(value) {
+            if (value == "女") { color = 'Red'; }
+            else if (value == "男") { color = 'Green'; }
+            else { color = 'Yellow'; }
+
+            return '<div  style="color: ' + color + '">' + value + '</div>';
+        }
+
+        function checkFormatter(value) {
+            var display = "&radic;";
+            if (value) { color = 'Red'; }
+            else { color = 'green'; display = "";}
+
+            return '<div  style="color: ' + color + '">' + display + '</div>';
+        }
+        //操作栏的格式化
+        function actionFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + id + "', view='view')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
+            result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditViewById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+            result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"DeleteByIds('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+
+            return result;
+        }
+
+        //自定义函数处理queryParams的批量增加
+        $.fn.serializeJsonObject = function () {
+            var json = {};
+            var form = this.serializeArray();
+            $.each(form, function () {
+                if (json[this.name]) {
+                    if (!json[this.name].push) {
+                        json[this.name] = [json[this.name]];
+                    }
+                    json[this.name].push();
+                } else {
+                    json[this.name] = this.value || '';
+                }
+            });
+            return json;
+        }
+
+        //刷新列表
+        function Refresh() {
+            //Search(currentPage);
+            where = {};
+            $table.bootstrapTable('refresh');
+        }
+
+        //初始化字典信息（下拉列表）
+        function InitDictItem() {
+            //部分赋值参考
+
+            //绑定字典
+            BindDictItem("WHC_Forbid", "是否禁用");
+            BindDictItem("Forbid", "是否禁用");
+            BindDictItem("MayCancel", "可否撤销");
+            BindSelect("Category", "/Form/GetFormCategory");
+
+            //BindDictItem("Rank", "职务");
+            //绑定树列表
+            //BindSelect("PID", "/Menu/GetDictJson");
+
+            //绑定可选多个Tag
+            // $("#Hobby").val({
+            //     tags: ["旅游", "爬山", "篮球", "足球", "乒乓球"]
+            // }).trigger("change");
+
+            //绑定添加界面的公司、部门（联动处理）
+            // BindSelect("Company_ID", "/User/GetMyCompanyDictJson?userId="+@Session["UserId"]);
+            // $("#Company_ID").on("change", function (e) {
+            //     var companyid = $("#Company_ID").val();
+            //     BindSelect("Dept_ID", "/User/GetDeptDictJson?parentId="+ companyid);
+            // });
+        }
+
+        //实现删除数据的方法
+        function Delete() {
+            var ids = "";//得到用户选择的数据的ID
+            var rows = $table.bootstrapTable('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                ids += rows[i].ID + ',';
+            }
+            ids = ids.substring(0, ids.length - 1);
+
+            DeleteByIds(ids);
+        }
+
+        //删除指定的记录
+        function DeleteByIds(ids) {
+            if (ids != "") {
+                showDelete(function () {
+                    //最后去掉最后的逗号,
+                    ids = ids.replace(/,\s*$/, '');
+
+                    //然后发送异步请求的信息到后台删除数据
+                    var postData = { ids: ids };
+                    $.post("/Form/DeletebyIds", postData, function (json) {
+                        var data = $.parseJSON(json);
+                        if (data.Success) {
+                            showTips("删除选定的记录成功");
+                            Refresh();//刷新页面数据
+                        }
+                        else {
+                            showTips(data.ErrorMessage);
+                        }
+                    });
+                });
+            } else {
+                showTips("请选择你要删除的数据");
+            }
+        }
+
+        //初始化图像信息
+        function initPortrait(ctrlName, id) {
+            var control = $('#' + ctrlName);
+            var imageurl = '/Form/GetPortrait?id=' + id +'&r=' + Math.random();
+
+            //初始化fileinput控件（第一次初始化）
+            control.fileinput({
+                language: 'zh', //设置语言
+                uploadUrl: '/Form/EditPortrait', //上传的地址
+                allowedFileExtensions : ['jpg', 'png','gif'],//接收的文件后缀
+                showUpload: false, //是否显示上传按钮
+                showCaption: false,//是否显示标题
+                browseClass: "btn btn-primary", //按钮样式
+                previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                uploadExtraData: {id: id}, //附加内容，修改需要使用refresh重新设置
+                // overwriteInitial: false, //是否覆盖原图
+                // dropZoneEnabled:false, //是否显示拖动区域
+                // initialPreview: [  //预览图片的设置
+                //     "<img src='" + imageurl + "' class='file-preview-image' alt='肖像图片' title='肖像图片'>",
+                // ],
+            });
+
+            //重要，需要更新控件的附加参数内容，以及图片初始化显示
+            control.fileinput('refresh', {
+                uploadExtraData: { id: id },
+                initialPreview: [ //预览图片的设置
+                    "<img src='" + imageurl + "' class='file-preview-image' alt='肖像图片' title='肖像图片'>",
+                ],
+             });
+        }
+
+        //弹出新增对话框
+        function Add() {
+            isAddOrEdit = 'add';//新增对话框标识
+            //CKEDITOR.instances.Content.setData('');  //清空编辑器的数据
+            $("#ffAdd")[0].reset();//清空上次输入
+            $('#ffAdd').validate().resetForm();//去除验证信息
+
+            //增加记录前，赋值ID
+            url = '/Form/Insert';
+            $.get("/Form/NewGuid?r=" + Math.random(), function (result) {
+                $("#ID").val(result);
+                ID = result;
+
+            });
+
+            $("input[name='Inform']").iCheck('uncheck');
+            $("input[name='Notify']").iCheck('uncheck');
+            //$('input[name="Inform"]:checked').each(function () {
+            //    $(this).iCheck('uncheck');
+            //});
+            //$('input[name="Notify"]:checked').each(function () {
+            //    $(this).iCheck('uncheck');
+            //});
+
+
+            $("#MayCancel").val(1).trigger("change");
+            $("#Forbid").val(0).trigger("change");
+            //初始化部分控件
+            //$('input[name="Gender"][value="男"]').iCheck('check');
+            //$("#PID").val("").trigger("change");
+            //$("#Hobby").val(null).trigger("change");//清空下拉框
+
+            $("#lblAddTitle").text("添加信息");
+            $("#add").modal("show");
+        }
+
+        //修改或查看明细信息（绑定显示数据）
+        function EditView(view) {
+            ID = "";//重置ID的值
+            var rows = $table.bootstrapTable('getSelections');
+            if (rows.length > 0) {
+                ID = rows[0].ID;
+            }
+
+            EditViewById(ID, view);
+        }
+
+        //编辑或者查看指定记录
+        function EditViewById(ID, view) {
+            if (ID == "") {
+                showTips("请选择一条记录");
+                return;
+            }
+
+            if (view == null) {
+                //处理修改的信息
+                $("#lblAddTitle").text("修改信息");
+                $("#add").modal("show");
+                url = '/Form/Update?ID=' + ID;
+                //绑定修改详细信息的方法
+                BindEditInfo(ID);
+            }
+            else {
+                //处理查看详细
+                $("#view").modal("show");
+                //绑定查看详细信息方法
+                BindViewInfo(ID);
+            }
+        }
+
+        //绑定编辑详细信息的方法
+        function BindEditInfo(ID) {
+            //使用同步方式，使得联动的控件正常显示
+            $.ajaxSettings.async = false;
+
+            $('#ffAdd').validate().resetForm();//去除验证信息
+
+            //首先用户发送一个异步请求去后台实现方法
+            $.getJSON("/Form/FindByID?r=" + Math.random() + "&id=" + ID, function (info) {
+                $("#Category").val(info.Category).trigger("change");
+                 $("#FormName").val(info.FormName);
+                 $("#ApplyUrl").val(info.ApplyUrl);
+                 $("#ApplyUrl2").val(info.ApplyUrl2);
+                 $("#DataTable").val(info.DataTable);
+                 $("#WhoCreate").val(info.WhoCreate);
+                 $("#WhoBrowse").val(info.WhoBrowse);
+                 $("#WhoInform").val(info.WhoInform);
+                $("#MayCancel").val(info.MayCancel ? 1 : 0).trigger("change");
+                 $("#FormFlag").val(info.FormFlag);
+                $("#Forbid").val(info.Forbid ? 1 : 0).trigger("change");
+                 $("#Remark").val(info.Remark);
+
+                //参考赋值
+                //$("#Company_ID1").val(info.Company_ID).trigger("change");//联动
+                //$("#PID1").val(info.PID).trigger("change");//普通Select2
+                // var array = [info.Hobby];
+                // $("#Hobby").val(array).trigger("change"); //集合
+
+                $("input[name='Inform']").iCheck('uncheck');
+                if (info.InformFinish) {
+                    $("input[name='Inform'][value='完成']").iCheck('check');
+                }
+                if (info.InformRefuse) {
+                    $("input[name='Inform'][value='退回']").iCheck('check');
+                }
+                if (info.InformCancel) {
+                    $("input[name='Inform'][value='撤销']").iCheck('check');
+                }
+
+                $("input[name='Notify']").iCheck('uncheck');
+                if (info.SendMail) {
+                    $("input[name='Notify'][value='邮件']").iCheck('check');
+                }
+                if (info.SendBroad) {
+                    $("input[name='Notify'][value='广播']").iCheck('check');
+                }
+                if (info.SendMobile) {
+                    $("input[name='Notify'][value='短信']").iCheck('check');
+                }
+                // $("#BirthDate").val(getDateStr(info.BirthDate));
+
+                $("#ID").val(info.ID);
+                isAddOrEdit = 'edit';//新增对话框标识
+            });
+
+        }
+
+        //绑定查看详细信息的方法
+        function BindViewInfo(ID) {
+            //发送请求
+            $.getJSON("/Form/FindByID?r=" + Math.random() + "&id=" + ID, function (info) {
+                $("#ID2").val(info.ID);
+
+                 $("#Category2").text(info.Category);
+                 $("#FormName2").text(info.FormName);
+                 $("#ApplyUrl_2").text(info.ApplyUrl);
+                 $("#ApplyUrl22").text(info.ApplyUrl2);
+                 $("#DataTable2").text(info.DataTable);
+                 $("#WhoCreate2").text(info.WhoCreate);
+                 $("#WhoBrowse2").text(info.WhoBrowse);
+                 $("#WhoInform2").text(info.WhoInform);
+                $("#MayCancel2").text(info.MayCancel ? "可撤销" : "不可撤销");
+                 $("#FormFlag2").text(info.FormFlag);
+                 $("#Forbid2").text(info.Forbid ? "禁用":"不禁用");
+                $("#Remark2").text(info.Remark);
+
+                $("input[name='Inform2']").iCheck('uncheck');
+                if (info.InformFinish) {
+                    $("input[name='Inform2'][value='完成']").iCheck('check');
+                }
+                if (info.InformRefuse) {
+                    $("input[name='Inform2'][value='退回']").iCheck('check');
+                }
+                if (info.InformCancel) {
+                    $("input[name='Inform2'][value='撤销']").iCheck('check');
+                }
+
+                $("input[name='Notify2']").iCheck('uncheck');
+                if (info.SendMail) {
+                    $("input[name='Notify2'][value='邮件']").iCheck('check');
+                }
+                if (info.SendBroad) {
+                    $("input[name='Notify2'][value='广播']").iCheck('check');
+                }
+                if (info.SendMobile) {
+                    $("input[name='Notify2'][value='短信']").iCheck('check');
+                }
+
+                //$.getJSON("/User/GetFullNameByID?userid=" + info.Creator, function (result) {
+                //    $("#Creator2").text(result);
+                //});
+                //$.getJSON("/User/GetFullNameByID?userid=" + info.Editor, function (result) {
+                //    $("#Editor2").text(result);
+                //});
+                //
+
+                //列表框赋值
+                // $('#lbxOUs2').empty();
+                // $.getJSON("/Ou/GetOUsByUser?r=" + Math.random() + "&userid=" + info.ID, function (json) {
+                //     $.each(json, function (i, item) {
+                //         $('#lbxOUs2').append('<option value="' + item.ID + '">' + item.Name + '</option>');
+                //     });
+                // });
+
+                //图片显示
+                // var imageUrl = '/User/GetPortrait?id=' + ID +'&r=' + Math.random();
+                // $("#Portrait2").attr('src', imageUrl);
+
+                //树形控件
+                // var treeUrl = '/Function/GetFunctionJsTreeJsonByUser?userId=' + info.ID;
+                // bindJsTree("jstree_function2", treeUrl);
+            });
+        }
+
+        //显示导入界面
+        function ShowImport() {
+            $("#import").modal("show");
+        }
+
+        //导出Excel数据
+        function ShowExport() {
+            var url = "/Form/Export";
+            var condition = $("#ffSearch").serialize();//获取条件
+
+            executeExport(url, condition);//执行导出
+        }
+
+        //扩展包含函数
+        Array.prototype.contains = function (obj) {
+            var i = this.length;
+            while (i--) {
+                if (this[i] === obj) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        //绑定相关事件
+        function BindEvent() {
+            //判断表单的信息是否通过验证
+            $("#ffAdd").validate({
+                meta: "validate",
+                errorElement: 'span',
+                errorClass: 'help-block help-block-error',
+                focusInvalid: false,
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                success: function (label) {
+                    label.closest('.form-group').removeClass('has-error');
+                    label.remove();
+                },
+                errorPlacement: function (error, element) {
+                    element.parent('div').append(error);
+                },
+                submitHandler: function (form) {
+                    $("#add").modal("hide");
+
+	                //构造参数发送给后台
+                    var postData = $("#ffAdd").serializeArray();
+                    var arrayInform = [];
+                    $('input[name="Inform"]:checked').each(function () {
+                        var value = $(this).val();
+                        arrayInform.push(value);
+                    });
+                    postData.push({ "name": "InformFinish", "value": arrayInform.contains("完成") });
+                    postData.push({ "name": "InformRefuse", "value": arrayInform.contains("退回") });
+                    postData.push({ "name": "InformCancel", "value": arrayInform.contains("撤销") });
+
+                    var arrayNotify = [];
+                    $('input[name="Notify"]:checked').each(function () {
+                        var value = $(this).val();
+                        arrayNotify.push(value);
+                    });
+                    postData.push({ "name": "SendMail", "value": arrayNotify.contains("邮件") });
+                    postData.push({ "name": "SendBroad", "value": arrayNotify.contains("广播") });
+                    postData.push({ "name": "SendMobile", "value": arrayNotify.contains("短信") });
+
+	                $.post(url, postData, function (json) {
+	                    var data = $.parseJSON(json);
+	                    if (data.Success) {
+	                        //可增加其他处理
+
+	                        //保存成功  1.关闭弹出层，2.刷新表格数据
+	                        showTips("保存成功");
+	                        Refresh();
+	                    }
+	                    else {
+	                        showError("保存失败:" + data.ErrorMessage, 3000);
+	                    }
+	                }).error(function () {
+	                    showTips("您未被授权使用该功能，请联系管理员进行处理。");
+	                });
+                }
+            });
+
+            //回车进行查询
+            if (document.addEventListener) {
+                //如果是Firefox
+                document.getElementById("ffSearch").addEventListener("keypress", enterEvent, true);
+            } else {
+                //如果是IE
+                document.getElementById("ffSearch").attachEvent("onkeypress", enterEvent);
+            }
+        }
+        //按下Enter搜索
+        function enterEvent(evt) {
+            if (evt.keyCode == 13) {
+                //$("#btnSearch").click();
+                Refresh();        
+                evt.preventDefault();  //阻止事件冒泡
+            }
+        }
+
+    </script>
+
+    <!--添加对 fileinput 控件的支持-->
+    <script type="text/javascript">
+        $(function () {
+            InitExcelFile();
+        });
+
+        //初始化Excel导入的文件
+        function InitExcelFile() {
+            //记录GUID
+            $("#AttachGUID").val(newGuid());
+
+            $("#excelFile").fileinput({
+                uploadUrl: "/FileUpload/Upload",//上传的地址
+                uploadAsync: true,              //异步上传
+                language: "zh",                 //设置语言
+                showCaption: true,              //是否显示标题
+                showUpload: true,               //是否显示上传按钮
+                showRemove: true,               //是否显示移除按钮
+                showPreview: true,             //是否显示预览按钮
+                browseClass: "btn btn-primary", //按钮样式
+                dropZoneEnabled: false,         //是否显示拖拽区域
+                allowedFileExtensions: ["xls", "xlsx"], //接收的文件后缀
+                maxFileCount: 1,                        //最大上传文件数限制
+                previewFileIcon: '<i class="glyphicon glyphicon-file"></i>',
+                allowedPreviewTypes: null,
+                previewFileIconSettings: {
+                    'docx': '<i class="glyphicon glyphicon-file"></i>',
+                    'xlsx': '<i class="glyphicon glyphicon-file"></i>',
+                    'pptx': '<i class="glyphicon glyphicon-file"></i>',
+                    'jpg': '<i class="glyphicon glyphicon-picture"></i>',
+                    'pdf': '<i class="glyphicon glyphicon-file"></i>',
+                    'zip': '<i class="glyphicon glyphicon-file"></i>',
+                },
+                uploadExtraData: {  //上传的时候，增加的附加参数
+                    folder: '数据导入文件', guid: $("#AttachGUID").val()
+                }
+            })  //文件上传完成后的事件
+                .on('fileuploaded', function (event, data, previewId, index) {
+                    var form = data.form, files = data.files, extra = data.extra,
+                        response = data.response, reader = data.reader;
+
+                    var res = data.response; //返回结果
+                    if (res.Success) {
+                        showTips('上传成功');
+                        var guid = $("#AttachGUID").val();
+
+                        //提示用户Excel格式是否正常，如果正常加载数据
+                        $.ajax({
+                            url: '/Form/CheckExcelColumns?guid=' + guid,
+                            type: 'get',
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.Success) {
+                                    InitImport(guid); //重新刷新表格数据
+                                    showToast("文件已上传，数据加载完毕！");
+
+                                    //重新刷新GUID，以及清空文件，方便下一次处理
+                                    RefreshExcel();
+                                }
+                                else {
+                                    showToast("上传的Excel文件检查不通过。请根据页面右上角的Excel模板格式进行数据录入。", "error");
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        showTips('上传失败');
+                    }
+                });
+        }
+        //重新更新GUID的值，并清空文件
+        function RefreshExcel() {
+            $("#AttachGUID").val(newGuid());
+            $('#excelFile').fileinput('clear');//清空所有文件
+
+            //附加参数初始化后一直不会变化，如果需要发生变化，则需要使用refresh进行更新
+            $('#excelFile').fileinput('refresh', {
+                uploadExtraData: { folder: '数据导入文件', guid: $("#AttachGUID").val() },
+            });
+        }
+
+        //保存导入的数据
+        function SaveImport() {
+
+            var list = [];//构造集合对象
+            var rows = $import.bootstrapTable('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                list.push({
+                    'Category': rows[i].Category, 'FormName': rows[i].FormName, 'ApplyUrl': rows[i].ApplyUrl, 'ApplyUrl2': rows[i].ApplyUrl2, 'ApplyWin': rows[i].ApplyWin, 'ApplyWin2': rows[i].ApplyWin2, 'ApplyWinlist': rows[i].ApplyWinlist, 'DataTable': rows[i].DataTable, 'WhoCreate': rows[i].WhoCreate, 'WhoBrowse': rows[i].WhoBrowse, 'WhoInform': rows[i].WhoInform, 'MayCancel': rows[i].MayCancel, 'InformFinish': rows[i].InformFinish, 'InformRefuse': rows[i].InformRefuse, 'InformCancel': rows[i].InformCancel, 'SendMail': rows[i].SendMail, 'SendBroad': rows[i].SendBroad, 'SendMobile': rows[i].SendMobile, 'FormFlag': rows[i].FormFlag, 'Forbid': rows[i].Forbid, 'Remark': rows[i].Remark, 'Editor': rows[i].Editor, 'Edittime': rows[i].Edittime, 'Deleted': rows[i].Deleted
+                });
+            }
+
+            if (list.length == 0) {
+                showToast("请选择一条记录", "warning");
+                return;
+            }
+
+            var postData = { 'list': list };//可以增加其他参数，如{ 'list': list, 'Rucanghao': $("#Rucanghao").val() };
+            postData = JSON.stringify(postData);
+
+            $.ajax({
+                url: '/Form/SaveExcelData',
+                type: 'post',
+                dataType: 'json',
+                contentType: 'application/json;charset=utf-8',
+                traditional: true,
+                success: function (data) {
+                    if (data.Success) {
+                        //保存成功  1.关闭弹出层，2.清空记录显示 3.刷新主列表
+                        showToast("保存成功");
+
+                        $("#import").modal("hide");
+                        $(bodyTag).html("");
+                        Refresh();
+                    }
+                    else {
+                        showToast("保存失败:" + data.ErrorMessage, "error");
+                    }
+                },
+                data: postData
+            });
+        }
+    </script>
+
+    <!--数据列表-->
+    <script type="text/javascript">
+        //显示导入界面
+        var id_form;//当前选中的流程表单ID
+        function FlowSetting(id) {
+            id_form = id;
+            Search_flow(currentPage_flow);//初始化第一页数据
+            $("#flow").modal("show");
+        }
+
+        var currentPage_flow = 1, rows_flow = 50; //分页参数：当前页，记录数
+
+        //初始化列表
+        function initList() {
+            // List with handle
+            var grid_body = document.getElementById('grid_body');
+            new Sortable(grid_body, {
+                handle: '.glyphicon-move',
+                filter: ".js-remove",
+                animation: 150,
+                onFilter: function (evt) {
+                    var item = evt.item,
+                        ctrl = evt.target;
+                    if (Sortable.utils.is(ctrl, ".js-remove")) {  // Click on remove button
+                        var result = confirm("您确认删除选定的记录吗？");
+                        if (result) {
+                            item.parentNode.removeChild(item); // remove sortable item
+                            var obj = Sortable.utils.closest(item, ".list-group-item").children[1];
+                            //console.log(obj);
+                            //console.log(obj.id + ',' + obj.href + ',' + obj.text);
+
+                            var url = "/FormFlow/RemoveItem";
+                            var postData = { id: obj.id };
+                            $.post(url, postData, function (json) {
+                                var data = $.parseJSON(json);
+                                if (data.Success) {
+                                    //Refresh();//刷新页面数据
+                                }
+                                else {
+                                    showTips(data.ErrorMessage);
+                                }
+                            });
+                        };
+                    }
+                },
+                onUpdate: function (/**Event*/evt) {
+                    var list = [];//构造集合对象
+                    $('.list-group div a').each(function (i, item) {
+                        //console.log(item.innerHTML.replace(/<.+?>/gim, '').replace(/^\s*|\s*$/g, ""));
+                        //console.log(item.id + ',' + item.href + ',' + item.text);
+                        list.push(item.id);
+                    });
+
+                    var url = "/FormFlow/EditFormFlow";
+                    var postData = { list: list, form_id: id_form };
+                    $.post(url, postData, function (json) {
+                        var data = $.parseJSON(json);
+                        if (data.Success) {
+                            //showTips("操作成功");
+                            Refresh_flow();//刷新页面数据
+                        }
+                        else {
+                            showTips(data.ErrorMessage);
+                        }
+                    });
+                },
+            });
+        }
+
+        //根据条件查询并绑定结果
+        function Search_flow(page) {
+            //根据控件Name属性获取表单预设条件
+            var condition = '&WHC_Form_ID=' + id_form;//显示指定表单的步骤
+
+            //根据需要加上一些特殊条件
+            //condition += "&WHC_Age=" + $("#WHC_Age").val() + "~" + $("#WHC_Age2").val(); //数值范围
+            //condition += "&WHC_BirthDate=" + $("#WHC_BirthDate").val() + "~" + $("#WHC_BirthDate2").val(); //日期范围
+
+            SearchCondition_flow(page, condition);
+        }
+
+        function SearchCondition_flow(page, condition) {
+            //获取Json对象集合，并生成数据显示内容
+            url = "/FormFlow/FindWithPager?r=" + Math.random() + "&page=" + page + "&rows=" + rows_flow;
+            $.getJSON(url + "&" + condition, function (data) {
+                $("#totalCount").text(data.total);
+                $("#totalPageCount").text(Math.ceil(data.total / rows_flow));
+
+                $("#grid_body").html("");
+                $.each(data.rows, function (i, item) {
+                    var tr = "<div class='list-group-item'>";
+                    tr += "<span class='glyphicon glyphicon-move' aria-hidden='true'></span>";
+                    tr += "<a class='btn btn-sm blue' title='单击编辑记录' id='" + item.ID + "' href=\"javascript:BindEditFlowInfo('" + item.ID + "')\">" + item.FlowName + "(" + item.ProcTypeName + ")</a>";
+                    tr += "<i class='js-remove'>✖</i>";
+
+                    tr += "</div>";
+                    $("#grid_body").append(tr);
+                });
+                initList();
+
+                //设置分页属性及处理
+                var element = $('#grid_paging');
+                if (data.total > 0) {
+                    var options = {
+                        bootstrapMajorVersion: 3,
+                        currentPage: page,
+                        numberOfPages: rows_flow,
+                        totalPages: Math.ceil(data.total / rows_flow),
+                        onPageChanged: function (event, oldPage, newPage) {
+                            SearchCondition_flow(newPage, condition);  //页面变化时触发内容更新
+                        }
+                    }
+                    element.bootstrapPaginator(options);
+                } else {
+                    element.html("");
+                }
+            });
+        }
+
+        //设置一页显示多少条
+        function ChangeRows() {
+            rows_flow = $("#rows").val();
+            Refresh_flow();
+        }
+        //刷新列表
+        function Refresh_flow() {
+            Search_flow(currentPage_flow);
+        }
+
+    </script>
+
+    <!--编辑流程步骤-->
+    <script type="text/javascript">
+        $(function () {
+            BindDictItem("MaySelproc", "选择处理人");
+            BindDictItem("MayAddFlow", "增加流程环节");
+            BindDictItem("MayMsgSend", "通知方式");
+            //显示所有的步骤
+            BindSelect("ProcType", "/FormProc/GetProcTypeItemByForm?formid=");
+
+            BindEventFlow();
+        });
+
+        var isAddOrEdit_flow = 'add';//标识是新增还是编辑对话框弹出，用于删除附件的操作
+        var ID_flow;//ID值，新增为空，编辑或者查看为具体ID
+        var url_flow;
+
+        //弹出新增对话框
+        function AddFlow() {
+            isAddOrEdit_flow = 'add';//新增对话框标识
+            $("#ffAddFlow")[0].reset();//清空上次输入
+            $('#ffAddFlow').validate().resetForm();//去除验证信息
+
+            //增加记录前，赋值ID
+            url_flow = '/FormFlow/Insert';
+            $.get("/FormFlow/NewGuid?r=" + Math.random(), function (result) {
+                $("#ID_Flow").val(result);
+                ID = result;
+            });
+            $("#FormId").val(id_form);
+            $("#MaySelproc").val("1").trigger("change");
+            $("#MayAddFlow").val("1").trigger("change");
+            $("#MayMsgSend").val("0").trigger("change");
+            //初始化部分控件
+            //$('input[name="Gender"][value="男"]').iCheck('check');
+            //$("#PID").val("").trigger("change");
+            //$("#Hobby").val(null).trigger("change");//清空下拉框
+
+            $("#lblAddTitleFlow").text("添加表单流程步骤");
+            $("#addFlow").modal("show");
+        }
+
+        //绑定编辑详细信息的方法
+        function BindEditFlowInfo(ID) {
+            //处理修改的信息
+            $("#lblAddTitleFlow").text("修改表单流程步骤");
+            $("#addFlow").modal("show");
+            url_flow = '/FormFlow/Update?ID=' + ID;
+
+            //使用同步方式，使得联动的控件正常显示
+            $.ajaxSettings.async = false;
+
+            $('#ffAddFlow').validate().resetForm();//去除验证信息
+
+            //首先用户发送一个异步请求去后台实现方法
+            $.getJSON("/FormFlow/FindByID?r=" + Math.random() + "&id=" + ID, function (info) {
+                $("#FormId").val(info.FormId);
+                $("#ProcType").val(info.ProcType).trigger("change");
+                $("#FlowName").val(info.FlowName);
+                $("#CondVerify").val(info.CondVerify);
+                $("#CondUser").val(info.CondUser);
+                $("#ProcUser").val(info.ProcUser);
+                $("#MaySelproc").val(info.MaySelproc).trigger("change");
+                $("#MayAddFlow").val(info.MayAddFlow).trigger("change");
+                $("#MayMsgSend").val(info.MayMsgSend).trigger("change");
+                $("#Remark_Flow").val(info.Remark);
+
+                //参考赋值
+                //$("#Company_ID1").val(info.Company_ID).trigger("change");//联动
+                //$("#PID1").val(info.PID).trigger("change");//普通Select2
+                // var array = [info.Hobby];
+                // $("#Hobby").val(array).trigger("change"); //集合
+
+                // $("input[name='Gender']").iCheck('uncheck');
+                // $("input[name='Gender'][value='" + info.Gender + "']").iCheck('check');
+                // $("#BirthDate").val(getDateStr(info.BirthDate));
+
+                $("#ID_Flow").val(info.ID);
+                isAddOrEdit_flow = 'edit';//新增对话框标识
+
+                //重新绑定 流程环节名称
+                BindSelect("ProcType", "/FormProc/GetProcTypeItemByForm?formid=" + info.FormId, '', function () {
+                    $("#ProcType").val(info.ProcType).trigger("change");
+                });
+            });
+        };
+
+        //绑定相关事件
+        function BindEventFlow() {
+            //判断表单的信息是否通过验证
+            $("#ffAddFlow").validate({
+                meta: "validate",
+                errorElement: 'span',
+                errorClass: 'help-block help-block-error',
+                focusInvalid: false,
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                success: function (label) {
+                    label.closest('.form-group').removeClass('has-error');
+                    label.remove();
+                },
+                errorPlacement: function (error, element) {
+                    element.parent('div').append(error);
+                },
+                submitHandler: function (form) {
+                    $("#addFlow").modal("hide");
+                    //构造参数发送给后台
+                    var postData = $("#ffAddFlow").serializeArray();
+                    $.post(url_flow, postData, function (json) {
+                        var data = $.parseJSON(json);
+                        if (data.Success) {
+                            //可增加其他处理
+
+                            //保存成功  1.关闭弹出层，2.刷新表格数据
+                            showToast("保存成功");
+                            Refresh_flow();
+                        }
+                        else {
+                            showToast("保存失败:" + data.ErrorMessage, "error", 3000);
+                        }
+                    }).error(function () {
+                        showTips("您未被授权使用该功能，请联系管理员进行处理。");
+                    });
+                }
+            });
+        }
+    </script>
+
+    <!--添加对选择用户弹出框的功能支持-->
+    <script type="text/javascript">
+        //弹出选择用户页面初始化
+        $(function () {
+            initDeptTreeview(); //初始化部门树
+            initRoleTree();     //初始化角色树
+
+            //初始化标签控件
+            $('#tags').tagsInput({
+                width: 'auto',
+                height: '60px',
+                onRemoveTag: function (tag) {
+                    var i = addDisplayList.indexOf(tag);
+                    var id = addKeyList[i];
+                    removeUser(id, tag);
+                },
+                interactive: false
+            });
+
+            //初始化选择用户的表单处理
+            formValidate("ffSelectUsers", function (form) {
+                var dict = {};
+                addKeyList.forEach(function (key, index, array) {
+                    var display = addDisplayList[index];
+                    dict[key] = display;
+                });
+
+                //转换选择为JSON字符串
+                var json = JSON.stringify(dict);
+                $("#selectUser").modal("hide");
+                $("#ProcUser").val(json);
+            });
+        });
+
+        //添加用户选择
+        function addChoise() {
+            var i = 0;
+            var bodyTag = "#grid_bodyUsers";
+            $(bodyTag +" tr").each(function() {
+                //判断是否选中，选中的记录才导入数据库
+                var checkbox = $(this).find("td").find(".checkboxes");
+
+                if (checkbox!=undefined && $(checkbox).is(':checked')) {
+                    //遍历每个TD，获取内容，并添加进列表
+                    var rows = [];
+                    $(this).find('td:not(:first-child)').each (function() {
+                        rows.push($(this).text());
+                        // alert($(this).text());
+                    });
+
+                    //UserID:464
+                    var userKey = "UserID:" + rows[0];
+                    //张三
+                    var userValue = rows[3];
+                    addUser(userKey, userValue);
+
+                    i++;
+                }
+            });
+        }
+
+        //清空用户选择
+        function clearChoise() {
+            $('#tags').importTags('');
+            addKeyList = new Array();//键的集合
+            addDisplayList = new Array();//值的集合
+        }
+
+        var addKeyList = new Array();//键的集合
+        var addDisplayList = new Array();//值的集合
+        function addUser(key, name) {
+            if ($.inArray(key, addKeyList) == -1) {
+                addKeyList.push(key);
+                addDisplayList.push(name);
+
+                $('#tags').addTag(name);
+            }
+        }
+        function removeUser(key, name) {
+            if ($.inArray(key, addKeyList) != -1) {
+                addKeyList.pop(key);
+                addDisplayList.pop(name);
+
+                $('#tags').removeTag(name);
+            }
+        }
+
+        //清空标签并加上已选择用户的信息
+        function reloadEditTree() {
+            clearChoise();//清空标签
+            var json = $("#ProcUser").val();
+            if (json != '') {
+                var dict = JSON.parse(json);
+                if (dict != null) {
+                    for (var key in dict) {
+                        var display = dict[key];
+                        addUser(key, display);  //加上已选择用户的信息
+                    };
+                }
+            }
+        }
+
+        //初始化组织机构列表
+        function initDeptTreeview() {
+            var treeUrl = '/User/GetMyDeptJsTreeJson?userId=@Session["UserId"]';
+            bindJsTree("usertree_div", treeUrl, true);
+
+            //树控件的变化事件处理
+            $('#usertree_div').on("click.jstree", function (e, data) {
+                var nodeid = $(e.target).parents('li').attr('id');
+                //console.log(nodeid)
+                if (nodeid != 'undefined') {
+                    loadDataByOu(nodeid);
+                }
+            });
+            $('#usertree_div').on("changed.jstree", function (e, data) {
+                var nodeid = data.node.id + '';
+                var nodename = data.node.text;
+                var nodestate = data.node.state.selected;
+                console.log(nodeid + ":" + nodename);
+                if (nodeid != '') {
+                    //增加到列表
+                    var userKey = "DeptID:" + nodeid;//DeptID:1
+                    var userValue = nodename;//开发部
+                    if (nodestate) {
+                        addUser(userKey, userValue);
+                    } else {
+                        removeUser(userKey, userValue);
+                    }
+                }
+            });
+        }
+
+        //初始化角色列表
+        function initRoleTree() {
+            var treeUrl = '/Role/GetMyRoleJsTreeJson?userId=@Session["UserId"]';
+            bindJsTree("usertree_role", treeUrl, true);
+
+            //树控件的变化事件处理
+            $('#usertree_role').on("click.jstree", function (e, data) {
+                var nodeid = $(e.target).parents('li').attr('id');
+                if (nodeid != 'undefined') {
+                    var id = nodeid + '';
+                    var dept = "dept";
+                    var role = "role";
+
+                    if (id.indexOf(dept) == 0) {
+                        var newid = id.substring(dept.length, id.length);
+                        loadDataByOu(newid);
+                    }
+                    else if (id.indexOf(role) == 0) {
+                        var newid = id.substring(role.length, id.length);
+                        loadDataByRole(newid);
+                    }
+                }
+            });
+            $('#usertree_role').on("changed.jstree", function (e, data) {
+                var nodeid = data.node.id + '';
+                var nodename = data.node.text;
+                var nodestate = data.node.state.selected;
+                console.log(nodeid + ":" + nodename);
+
+                var dept = "dept";
+                var role = "role";
+
+                var id = nodeid + '';
+                if (id.indexOf(dept) == 0) {
+                    var newid = id.substring(dept.length, id.length);
+
+                    //增加到列表
+                    var userKey = "DeptID:" + newid;//RoleID:1
+                    var userValue = nodename;//管理员
+                    if (nodestate) {
+                        addUser(userKey, userValue);
+                    } else {
+                        removeUser(userKey, userValue);
+                    }
+                }
+                else if (id.indexOf(role) == 0) {
+                    var newid = id.substring(role.length, id.length);
+                    //增加到列表
+                    var userKey = "RoleID:" + newid;//RoleID:1
+                    var userValue = nodename;//管理员
+                    if (nodestate) {
+                        addUser(userKey, userValue);
+                    } else {
+                        removeUser(userKey, userValue);
+                    }
+                }
+            });
+        }
+
+        //加载指定的对象数据
+        var clickId = "";
+        function loadDataByOu(id) {
+            var condition = "Role_ID=&Dept_ID=" + id;
+            condition += appendCondition();
+            SearchConditionUsers(currentPageUsers, condition);
+
+            clickId = id;
+        }
+        //根据角色加载列表
+        function loadDataByRole(id) {
+            var condition = "Dept_ID=&Role_ID=" + id;
+            condition += appendCondition();
+            SearchConditionUsers(currentPageUsers, condition);
+
+            clickId = id;
+        }
+        //加上一些特殊条件
+        function appendCondition() {
+            var condition = "&WHC_Deleted=0";
+            //如果不是超级管理员，只能看本公司的人员
+            @if (Session["IsSuperAdmin"] == null || !(bool)Session["IsSuperAdmin"])
+            {
+                @Html.Raw("condition +=\"&WHC_Company_ID=" + Session["Company_ID"] + "\";");
+            }
+
+            return condition;
+        }
+
+        var currentPageUsers = 1, rowsUsers = 10; //分页参数：当前页，记录数
+        //根据条件查询并绑定结果
+        function SearchUsers(page) {
+            var condition = $("#ffSearchUsers").serialize();
+            condition += appendCondition();
+
+            SearchConditionUsers(page, condition);
+        }
+        function SearchConditionUsers(page, condition) {
+
+            url = "/User/FindWithPager?r=" + Math.random() + "&page=" + page + "&rows=" + rowsUsers;
+            $.getJSON(url + "&" + condition, function (data) {
+                $("#totalCountUsers").text(data.total);
+                $("#totalPageCountUsers").text(Math.ceil(data.total / rowsUsers));
+
+                $("#grid_bodyUsers").html("");
+
+                $.each(data.rows, function (i, item) {
+                    var tr = "<tr>";
+                    tr += "<td><input class='checkboxes' type=\"checkbox\" name=\"checkbox\" value=" + item.ID + "></td>";
+                    tr += "<td>" + item.ID + "</td>";
+                    tr += "<td>" + item.HandNo + "</td>";
+                    tr += "<td>" + item.Name + "</td>";
+                    tr += "<td>" + item.FullName + "</td>";
+
+                    if (item.IsExpire) {
+                        //tr += "<td>" + item.Visible + "</td>";
+                        tr += "<td><span class='label label-danger'>过期</span></td>";
+                    } else {
+                        tr += "<td><span class='label label-success'>正常</span></td>";
+                    }
+
+                    tr += "</tr>";
+                    $("#grid_bodyUsers").append(tr);
+                });
+
+                var element = $('#grid_pagingUsers');
+                if(data.total > 0) {
+                    var options = {
+                        bootstrapMajorVersion: 3,
+                        currentPage: page,
+                        numberOfPages: rowsUsers,
+                        totalPages: Math.ceil(data.total / rowsUsers),
+                        onPageChanged: function (event, oldPage, newPage) {
+                            SearchCondition(newPage, condition); //页面变化时触发内容更新
+                        }
+                    }
+                    element.bootstrapPaginator(options);
+                } else {
+                    element.html("");
+                }
+            });
+        }
+
+        //设置一页显示多少条
+        function ChangeRowsUsers() {
+            rowsUsers = $("#rowsUsers").val();
+            RefreshUser();
+        }
+        //刷新列表
+        function RefreshUsers() {
+            SearchUsers(currentPageUsers);
+        }
+        function SelectUsers() {
+            if (ID != '') {
+                reloadEditTree();
+                $("#selectUser").modal("show");
+            }
+            else {
+                showToast("请选择一条记录", 'warning');
+            }
+
+        }
+    </script>
+}

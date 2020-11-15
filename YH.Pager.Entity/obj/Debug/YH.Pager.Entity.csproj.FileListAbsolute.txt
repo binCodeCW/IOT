@@ -1,0 +1,6 @@
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\YH.Pager.Entity.xml
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\YH.Pager.Entity.dll
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\YH.Pager.Entity.pdb
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\YH.Pager.Entity\obj\Debug\YH.Pager.Entity.csprojResolveAssemblyReference.cache
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\YH.Pager.Entity\obj\Debug\YH.Pager.Entity.dll
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\YH.Pager.Entity\obj\Debug\YH.Pager.Entity.pdb

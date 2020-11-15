@@ -1,0 +1,194 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "查看信访投诉工作";
+}
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+<script src="~/Content/JQueryTools/printThis/printThis.js"></script>
+
+<!--此处放置业务表单的数据呈现，方便隔离，减少复杂性-->
+@RenderPage("~/Views/Apply/ViewDetail.cshtml", new { applyId = Request["id"] })
+
+<!--定义子表单数据呈现-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-cogs"></i>
+            信访投诉工作-表单数据
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <div class="portlet-body">
+            <div class="row">
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">工作类别</label>
+                                <div class="col-md-8">
+                                    <label id="Category2" name="Category" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">紧急程度</label>
+                                <div class="col-md-8">
+                                    <label id="Urgency2" name="Urgency" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">标题</label>
+                                <div class="col-md-8">
+                                    <label id="Title2" name="Title" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">内容摘要</label>
+                                <div class="col-md-8">
+                                    <label id="Abstract2" name="Abstract" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">正文</label>
+                                <div class="col-md-8">
+                                    <label id="MainBody2" name="MainBody" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">拟办意见</label>
+                                <div class="col-md-8">
+                                    <label id="InitOpinion2" name="InitOpinion" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">回复意见</label>
+                                <div class="col-md-8">
+                                    <label id="ReplyOpinion2" name="ReplyOpinion" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">回复正文</label>
+                                <div class="col-md-8">
+                                    <label id="ReplyBody2" name="ReplyBody" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">办理附件GUID</label>
+                                <div class="col-md-8">
+                                    <label id="ReplyAttachGUID2" name="ReplyAttachGUID" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">备注信息</label>
+                                <div class="col-md-8">
+                                    <label id="Note2" name="Note" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">交办单位</label>
+                                <div class="col-md-8">
+                                    <label id="ToDept_ID2" name="ToDept_ID" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">交办单位负责人</label>
+                                <div class="col-md-8">
+                                    <label id="DeptManager_ID2" name="DeptManager_ID" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">过期日期</label>
+                                <div class="col-md-8">
+                                    <label id="ExpiredDate2" name="ExpiredDate" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                                 <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">分阅人员</label>
+                                <div class="col-md-8">
+                                    <label id="DispatchUsers2" name="DispatchUsers" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+  
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">附件组别ID</label>
+                        <div class="col-md-8">
+                            <input id="AttachGUID2" name="AttachGUID" type="hidden" />
+                            <div id="div_files"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <!--记录重要参数-->
+                    <input type="hidden" id="ID2" name="ID" />
+                </div>
+                <div class="col-md-12" style="text-align:right">
+                    <button type="button" class="btn red" onclick="BackToList()">返回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section footerScript {
+    <script>
+    //页面初始化
+    $(function () {
+        LoadSubData();
+    })
+
+    function LoadSubData() {
+        //具体业务表单数据
+        var applyId = '@Request["id"]';
+        $.getJSON("/AssignWork/FindByApplyId?r=" + Math.random() + "&applyId=" + applyId, function (info) {
+                 $("#Category2").text(info.Category);
+                 $("#Urgency2").text(info.Urgency);
+                 $("#Title2").text(info.Title);
+                 $("#Abstract2").text(info.Abstract);
+                 $("#MainBody2").text(info.MainBody);
+                 $("#InitOpinion2").text(info.InitOpinion);
+                 $("#ReplyOpinion2").text(info.ReplyOpinion);
+                 $("#ReplyBody2").text(info.ReplyBody);
+                 $("#ReplyAttachGUID2").text(info.ReplyAttachGUID);
+                 $("#Note2").text(info.Note);
+                 $("#ToDept_ID2").text(info.ToDept_ID);
+                 $("#DeptManager_ID2").text(info.DeptManager_ID);
+                 $("#ExpiredDate2").text(getDateStr(info.ExpiredDate));
+                         $("#DispatchUsers2").text(info.DispatchUsers);
+  
+            //附件处理
+            $("#ID2").val(info.ID);
+            $("#AttachGUID2").text(info.AttachGUID);
+            ViewUpFiles(info.AttachGUID, "div_files");
+        });
+    };
+
+    function BackToList() {
+       history.go(-1);
+    }
+    </script>
+}

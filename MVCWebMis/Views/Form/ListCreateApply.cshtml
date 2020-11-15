@@ -1,0 +1,259 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "业务受理列表";
+}
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+<style>
+   .icon-btn2 {
+        height: 80px;
+        min-width: 80px;
+        margin: 5px 5px 0 0;
+        border: 1px solid #ddd;
+        padding: 12px 0px 0px 0px;
+        background-color: #fafafa;
+        background-image: none;
+        filter: none;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        display: inline-block;
+        color: #646464;
+        text-shadow: none;
+        text-align: center;
+        cursor: pointer;
+        position: relative;
+        -webkit-transition: all 0.3s ease;
+        -moz-transition: all 0.3s ease;
+        -ms-transition: all 0.3s ease;
+        -o-transition: all 0.3s ease;
+        transition: all 0.3s ease;
+    }
+
+        .icon-btn2:hover {
+            text-decoration: none;
+            border-color: #999;
+            color: #444;
+            text-shadow: 0 1px 0px white;
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            -ms-transition: all 0.3s ease;
+            -o-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+        }
+
+            .icon-btn2:hover > .badge {
+                -webkit-transition: all 0.3s ease;
+                -moz-transition: all 0.3s ease;
+                -ms-transition: all 0.3s ease;
+                -o-transition: all 0.3s ease;
+                transition: all 0.3s ease;
+                -webkit-box-shadow: none;
+                -moz-box-shadow: none;
+                box-shadow: none;
+            }
+
+        .icon-btn2 > div {
+            margin-top: 5px;
+            margin-bottom: 20px;
+            color: #3f444a;
+            font-size: 12px;
+            font-weight: 300;
+        }
+
+        .icon-btn2 > .badge {
+            position: absolute;
+            font-size: 11px;
+            font-weight: 300;
+            top: -5px;
+            right: -5px;
+            padding: 3px 6px 3px 6px;
+            color: white;
+            text-shadow: none;
+            border-width: 0;
+            border-style: solid;
+            -webkit-border-radius: 12px;
+            -moz-border-radius: 12px;
+            border-radius: 12px;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+        }
+
+        .icon-btn2 > i {
+            font-size: 18px;
+        }
+
+    .ie8 .icon-btn2:hover {
+        filter: none;
+    }
+</style>
+
+<div class="portlet box green-meadow col-md-2">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-filter"></i>业务分类
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <div class="row" style="padding-left:10px">
+            <div id="jstree_div"></div>
+        </div>
+    </div>
+</div>
+
+<div class="portlet box col-md-10">
+    <div class="portlet-body flip-scroll" style="width:99%">
+        <div class="portlet box green-meadow">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-filter"></i>
+                    业务受理列表
+                </div>
+            </div>
+            <div class="portlet-body flip-scroll">
+                <div>
+                    <span>每页显示</span>
+                    <select id="rows" onchange="ChangeRows()">
+                        <option>50</option>
+                        <option selected>100</option>
+                        <option>200</option>
+                        <option>1000</option>
+                    </select>
+                    <span>条记录</span>&nbsp;&nbsp;
+                    <span>共有记录：</span><span id='totalCount' class="label label-success">0</span>条，总页数：<span id='totalPageCount' class="label label-success">0</span>页。
+                </div>
+                <hr />
+                <div class="row" style="padding-left:10px">
+                    <div class="portlet-body" id="grid_body"></div>
+                </div>
+                <div class="row" style="padding-left:20px">
+                    <div class="paging-toolbar">
+                        <ul id='grid_paging'></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section footerScript{
+    <script type="text/javascript">
+        var currentPage = 1, rows = 100; //分页参数：当前页，记录数
+
+        var isAddOrEdit = 'add';//标识是新增还是编辑对话框弹出，用于删除附件的操作
+        var url;//新增或者更新的连接
+        var ID;//ID值，新增为空，编辑或者查看为具体ID
+
+        //页面初始化
+        $(function () {
+            initJsTree();
+            Refresh();      //初始化第一页数据
+            InitDictItem();     //初始化字典信息
+        });
+
+        //绑定左侧树形列表
+        //如果update为True，则重新更新缓存
+        function initJsTree(update) {
+            var baseUrl = "/Form/GetJsTreeJson?r=" + Math.random();
+            var url = update ? baseUrl + "&update=true" : baseUrl;
+            bindJsTree("jstree_div", url);
+            $("#jstree_div").bind("dblclick.jstree", function (e, data) {
+                //var id = $(e.target).parents('li').attr('id');
+                //EditType();
+            });
+            //树控件的变化事件处理
+            $('#jstree_div').on("changed.jstree", function (e, data) {
+                var icon = data.node.icon;
+                loadData(data.selected);
+            });
+        }
+
+        //加载指定的对象数据
+        var clickId = "";
+        function loadData(id) {
+            var condition = 'CustomedCondition=' + id;
+
+            //修改条件后需要重新刷新
+            SearchCondition(currentPage, condition);
+            clickId = id;
+        }
+
+        //图标查询
+        function Search(page) {
+            var condition = "";//特殊条件
+
+            SearchCondition(page, condition);
+        }
+        function SearchCondition(page, condition) {
+            var queryUrl = "/Form/FindWithPager?r=" + Math.random() + "&page=" + page + "&rows=" + rows;
+
+            $.getJSON(queryUrl + "&" + condition, function (data) {
+
+                $("#totalCount").text(data.total);
+                $("#totalPageCount").text(Math.ceil(data.total / rows));
+
+                $("#grid_body").html("");
+                $.each(data.rows, function (i, item) {
+                    var tr = "<div class='col-md-3 col-sm-3 col-xs-6'>";
+                    tr += "<a href='javascript:;' onclick=\"CreateApply('" + item.ApplyUrl + "','"+ item.ID +"')\" class='icon-btn2'  title=\"" + item.FormName + "\">";
+                    tr += "    <br><i class=\"icon-doc icon-state-success\" style=\"font-size: 2.2em\"></i>";//
+                    tr += "    <div> <bold>" + item.FormName +"</bold> <br></div> ";
+                    //tr += "    <div> " + item.Remark + " </div> ";
+                    tr += "</a>";
+                    tr += "</div>";
+                    $("#grid_body").append(tr);
+                });
+
+                var element = $('#grid_paging');
+                if (data.total > 0) {
+                    var options = {
+                        bootstrapMajorVersion: 3,
+                        currentPage: page,
+                        numberOfPages: rows,
+                        totalPages: Math.ceil(data.total / rows),
+                        onPageChanged: function (event, oldPage, newPage) {
+                            SearchCondition(newPage, condition);
+                        }
+                    }
+                    element.bootstrapPaginator(options);
+                } else {
+                    element.html("");
+                }
+            });
+        }
+
+        //设置一页显示多少条
+        function ChangeRows() {
+            rows = $("#rows").val();
+            Refresh();
+        }
+
+        //刷新
+        function Refresh() {
+            Search(currentPage);
+        }
+
+        //初始化字典信息（下拉列表）
+        function InitDictItem() {
+            //BindDictItem("Titles", "职称");
+            //BindDictItem("Rank", "职务");
+            //BindSelect("PID", "/Menu/GetDictJson");
+        }
+
+        //定位到创建表单的页面
+        function CreateApply(url, formId) {
+            if (url != '') {
+                window.location.href = url + "?formid=" + formId;
+            } else {
+                showToast("暂未开通");
+            }
+        }
+
+    </script>
+}

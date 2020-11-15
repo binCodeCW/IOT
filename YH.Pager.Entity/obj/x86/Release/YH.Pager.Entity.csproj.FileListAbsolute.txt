@@ -1,0 +1,3 @@
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Pager.Entity\bin\x86\Release\YH.Pager.Entity.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Pager.Entity\obj\x86\Release\YH.Pager.Entity.csprojResolveAssemblyReference.cache
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Pager.Entity\obj\x86\Release\YH.Pager.Entity.dll

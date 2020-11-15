@@ -1,0 +1,131 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "查看会议室预定申请单";
+}
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+<script src="~/Content/JQueryTools/printThis/printThis.js"></script>
+
+<!--此处放置业务表单的数据呈现，方便隔离，减少复杂性-->
+@RenderPage("~/Views/Apply/ViewDetail.cshtml", new { applyId = Request["id"] })
+
+<!--定义子表单数据呈现-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-cogs"></i>
+            会议室预定申请单-表单数据
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <div class="portlet-body">
+            <div class="row">
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">会议室名称</label>
+                                <div class="col-md-8">
+                                    <label id="RoomName2" name="RoomName" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">开始时间</label>
+                                <div class="col-md-8">
+                                    <label id="StartTime2" name="StartTime" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">结束时间</label>
+                                <div class="col-md-8">
+                                    <label id="EndTime2" name="EndTime" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">时长</label>
+                                <div class="col-md-8">
+                                    <label id="Duration2" name="Duration" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">参会人数</label>
+                                <div class="col-md-8">
+                                    <label id="MeetingPersonNumber2" name="MeetingPersonNumber" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">参会人</label>
+                                <div class="col-md-8">
+                                    <label id="MeetingPerson2" name="MeetingPerson" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">备注信息</label>
+                                <div class="col-md-8">
+                                    <label id="Note2" name="Note" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+       
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">附件组别ID</label>
+                        <div class="col-md-8">
+                            <input id="AttachGUID2" name="AttachGUID" type="hidden" />
+                            <div id="div_files"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <!--记录重要参数-->
+                    <input type="hidden" id="ID2" name="ID" />
+                </div>
+                <div class="col-md-12" style="text-align:right">
+                    <button type="button" class="btn red" onclick="BackToList()">返回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section footerScript {
+    <script>
+    //页面初始化
+    $(function () {
+        LoadSubData();
+    })
+
+    function LoadSubData() {
+        //具体业务表单数据
+        var applyId = '@Request["id"]';
+        $.getJSON("/MeetingRoom/FindByApplyId?r=" + Math.random() + "&applyId=" + applyId, function (info) {
+                 $("#RoomName2").text(info.RoomName);
+                 $("#StartTime2").text(getDateStr(info.StartTime));
+                 $("#EndTime2").text(getDateStr(info.EndTime));
+                 $("#Duration2").text(info.Duration);
+                 $("#MeetingPersonNumber2").text(info.MeetingPersonNumber);
+                 $("#MeetingPerson2").text(info.MeetingPerson);
+                    $("#Note2").text(info.Note);
+       
+            //附件处理
+            $("#ID2").val(info.ID);
+            $("#AttachGUID2").text(info.AttachGUID);
+            ViewUpFiles(info.AttachGUID, "div_files");
+        });
+    };
+
+    function BackToList() {
+       history.go(-1);
+    }
+    </script>
+}

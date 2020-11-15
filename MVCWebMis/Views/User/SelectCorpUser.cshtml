@@ -1,0 +1,164 @@
+﻿<!--------------------------选择指定盘点人的弹出层---------------------------->
+<div id="checkUserDiv" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-book-open"></i>
+                    <span style="font-weight:bold">选择指定人员（绑定企业微信用户）</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form class="form-horizontal" id="ffSearchCheck">
+                        <div class="col-md-5 col-sm-5 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-6">用户名/登录名</label>
+                                <div class="col-md-6">
+                                    <input id="WHC_Name" name="WHC_Name" type="text" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 col-sm-5 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-6">企业微信UserID</label>
+                                <div class="col-md-6">
+                                    <input id="WHC_CorpUserId" name="WHC_CorpUserId" type="text" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="RefreshCheck()">
+                                <i class="fa fa-search"></i>
+                                查 询
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="row">
+                    <table id="gridCheckUser" class="table table-hover"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var currentPageCheck = 1, rowsCheck = 10; //分页参数：当前页，记录数
+
+    var $tableCheck;
+    var queryUrlCheck;
+    //初始化bootstrap-table的内容
+    function SearchCheck(page) {
+        //记录页面bootstrap-table全局变量$table，方便应用
+        queryUrlCheck = '/User/FindCorpUserBinded?rnd=' + Math.random();
+        $tableCheck = $('#gridCheckUser').bootstrapTable({
+            url: queryUrlCheck,                   	//请求后台的URL（*）
+            method: 'GET',                      //请求方式（*）
+            //toolbar: '#toolbar',              //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: true,                   //是否显示分页（*）
+            sortable: true,                     //是否启用排序
+            sortOrder: "asc",                   //排序方式
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber: page,                      //初始化加载第一页，默认第一页,并记录
+            pageSize: rowsCheck,                     //每页的记录行数（*）
+            pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+            search: false,                      //是否显示表格搜索
+            strictSearch: true,
+            showColumns: true,                  //是否显示所有的列（选择显示的列）
+            showRefresh: true,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+            //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+            showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,                  //是否显示父子表
+            //得到查询的参数
+            queryParams: function (params) {
+                //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+                //var temp = {
+                //    rows: params.limit,                         //页面大小
+                //    page: (params.offset / params.limit) + 1,   //页码
+                //    sort: params.sort,      //排序列名
+                //    sortOrder: params.order //排位命令（desc，asc）
+                //};
+                //return temp;
+
+                var temp = $("#ffSearchCheck").serializeJsonObject();
+                temp["rows"] = params.limit;                        //页面大小
+                temp["page"] = (params.offset / params.limit) + 1;  //页码
+                temp["sort"] = params.sort;                         //排序列名
+                temp["sortOrder"] = params.order;                   //排位命令（desc，asc）
+                return temp;
+            },
+            columns: [{
+                checkbox: true,
+                visible: true                  //是否显示复选框
+            },
+            { title: '用户编码', field: 'HandNo' /*, width: 80, sortable: true */ },
+            { title: '用户名/登录名', field: 'Name' /*, width: 80, sortable: true */ },
+            { title: '真实姓名', field: 'FullName' /*, width: 80, sortable: true */ },
+            { title: '企业微信UserID', field: 'CorpUserId' /*, width: 80, sortable: true */ },
+            { title: '操作', field: 'ID', width: 120, align: 'center', valign: 'middle', formatter: actionFormatterCheck },
+            ],
+            onLoadSuccess: function () {
+                currentPageCheck = page;//存储当前页码
+            },
+            onLoadError: function () {
+                showTips("数据加载失败！");
+            },
+            onDblClickRow: function (row, $element) {
+                var id = row.ID;
+                SelectCheckUser(id);
+            }
+        });
+    };
+
+    //操作栏的格式化
+    function actionFormatterCheck(value, row, index) {
+        var id = row.ID;
+        var userid = row.CorpUserId;
+        var result = "";
+        result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"SelectCheckUser('" + id + "','" + userid + "')\" title='选择用户'><span class='glyphicon glyphicon-search'></span></a>";
+
+        return result;
+    }
+    //刷新列表
+    function RefreshCheck() {
+        //Search(currentPage);
+        $tableCheck.bootstrapTable('refresh');
+    }
+    //选择盘点用户
+    function SelectCheckUser(id, userid) {
+        //保存选择人员
+        ConfirmAction(function () {
+            $("#add").modal("hide");
+            //构造参数发送给后台
+            var postData = {
+                userid: id,
+                billno: checkBillNo,
+            }
+            url = '/AssetCheck/EditCheckUser';
+            $.post(url, postData, function (json) {
+                var data = $.parseJSON(json);
+                if (data.Success) {
+                    //可增加其他处理
+
+                    //保存成功  1.关闭弹出层，2.刷新表格数据
+                    showTips("保存盘点人员成功");
+                    $("#checkUserDiv").modal("hide");
+                    RefreshAsset();
+                }
+                else {
+                    showError("保存盘点人员失败:" + data.ErrorMessage, 3000);
+                }
+            }).error(function () {
+                showTips("您未被授权使用该功能，请联系管理员进行处理。");
+            });
+        }, "您确认要设置盘点人员吗?");
+    }
+</script>

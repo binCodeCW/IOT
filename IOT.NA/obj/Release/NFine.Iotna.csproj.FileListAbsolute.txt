@@ -1,0 +1,12 @@
+D:\web\NFine_VS2105\project\NFine.Iotna\bin\Release\NFine.Iotna.dll
+D:\web\NFine_VS2105\project\NFine.Iotna\bin\Release\NFine.Iotna.pdb
+D:\web\NFine_VS2105\project\NFine.Iotna\bin\Release\Newtonsoft.Json.dll
+D:\web\NFine_VS2105\project\NFine.Iotna\obj\Release\NFine.Iotna.dll
+D:\web\NFine_VS2105\project\NFine.Iotna\obj\Release\NFine.Iotna.pdb
+D:\web\NFine_VS2105\project\NFine.Iotna\obj\Release\NFine.Iotna.csprojResolveAssemblyReference.cache
+D:\test88\Bootstrap\Iotna\bin\Release\NFine.Iotna.dll
+D:\test88\Bootstrap\Iotna\bin\Release\NFine.Iotna.pdb
+D:\test88\Bootstrap\Iotna\bin\Release\Newtonsoft.Json.dll
+D:\test88\Bootstrap\Iotna\obj\Release\NFine.Iotna.csprojResolveAssemblyReference.cache
+D:\test88\Bootstrap\Iotna\obj\Release\NFine.Iotna.dll
+D:\test88\Bootstrap\Iotna\obj\Release\NFine.Iotna.pdb

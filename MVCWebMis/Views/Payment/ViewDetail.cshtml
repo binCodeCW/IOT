@@ -1,0 +1,139 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "查看付款申请单";
+}
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+<script src="~/Content/JQueryTools/printThis/printThis.js"></script>
+
+<!--此处放置业务表单的数据呈现，方便隔离，减少复杂性-->
+@RenderPage("~/Views/Apply/ViewDetail.cshtml", new { applyId = Request["id"] })
+
+<!--定义子表单数据呈现-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-cogs"></i>
+            付款申请单-表单数据
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <div class="portlet-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="control-label col-md-2">付款事由</label>
+                        <div class="col-md-10">
+                            <label id="Reason2" name="Reason" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">付款金额</label>
+                        <div class="col-md-8">
+                            <label id="PayAmount2" name="PayAmount" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">付款方式</label>
+                        <div class="col-md-8">
+                            <label id="PayType2" name="PayType" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">付款日期</label>
+                        <div class="col-md-8">
+                            <label id="PayDate2" name="PayDate" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">收款人全称</label>
+                        <div class="col-md-8">
+                            <label id="PayeeFullName2" name="PayeeFullName" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">银行账号</label>
+                        <div class="col-md-8">
+                            <label id="BankAccount2" name="BankAccount" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">开户行</label>
+                        <div class="col-md-8">
+                            <label id="Bank2" name="Bank" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="control-label col-md-2">备注信息</label>
+                        <div class="col-md-10">
+                            <label id="Note2" name="Note" class="form-control" style="height:100px"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">附件组别ID</label>
+                        <div class="col-md-8">
+                            <input id="AttachGUID2" name="AttachGUID" type="hidden" />
+                            <div id="div_files"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <!--记录重要参数-->
+                    <input type="hidden" id="ID2" name="ID" />
+                </div>
+                <div class="col-md-12" style="text-align:right">
+                    <button type="button" class="btn red" onclick="BackToList()">返回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footerScript {
+    <script>
+    //页面初始化
+    $(function () {
+        LoadSubData();
+    })
+
+    function LoadSubData() {
+        //具体业务表单数据
+        var applyId = '@Request["id"]';
+        $.getJSON("/Payment/FindByApplyId?r=" + Math.random() + "&applyId=" + applyId, function (info) {
+            $("#Reason2").text(info.Reason);
+            $("#PayAmount2").text(info.PayAmount);
+            $("#PayType2").text(info.PayType);
+            $("#PayDate2").text(info.PayDate);
+            $("#PayeeFullName2").text(info.PayeeFullName);
+            $("#BankAccount2").text(info.BankAccount);
+            $("#Bank2").text(info.Bank);
+            $("#Note2").text(info.Note);
+
+            $("#ID2").val(info.ID);
+            $("#AttachGUID2").text(info.AttachGUID);
+            ViewUpFiles(info.AttachGUID, "div_files");
+        });
+    };
+
+    function BackToList() {
+       history.go(-1);
+    }
+    </script>
+}

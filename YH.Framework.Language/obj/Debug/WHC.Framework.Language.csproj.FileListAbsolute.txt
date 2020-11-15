@@ -1,0 +1,6 @@
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\Lib\WHC.Framework.Language.XML
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\Lib\WHC.Framework.Language.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\Lib\WHC.Framework.Language.pdb
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Language\obj\Debug\WHC.Framework.Language.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Language\obj\Debug\WHC.Framework.Language.pdb
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Language\obj\Debug\WHC.Framework.Language.csprojResolveAssemblyReference.cache

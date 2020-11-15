@@ -1,0 +1,6 @@
+D:\test88\Bootstrap\Iotna\bin\Release\NFine.Iotna.dll
+D:\test88\Bootstrap\Iotna\bin\Release\NFine.Iotna.pdb
+D:\test88\Bootstrap\Iotna\bin\Release\Newtonsoft.Json.dll
+D:\test88\Bootstrap\Iotna\obj\Release\NFine.Iotna.dll
+D:\test88\Bootstrap\Iotna\obj\Release\NFine.Iotna.pdb
+D:\test88\Bootstrap\Iotna\obj\Release\Iotna.csprojResolveAssemblyReference.cache

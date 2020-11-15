@@ -1,0 +1,12 @@
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Commons\obj\x86\Debug\WHC.Framework.Commons.csprojResolveAssemblyReference.cache
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Commons\obj\x86\Debug\WHC.Framework.Commons.csproj.ResolveComReference.cache
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Commons\obj\x86\Debug\WHC.Framework.Commons.CoolPrintPreviewDialog.resources
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Commons\obj\x86\Debug\WHC.Framework.Commons.DragAndDropListView.resources
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Commons\obj\x86\Debug\WHC.Framework.Commons.PrintOptions.resources
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Commons\obj\x86\Debug\WHC.Framework.Commons.QueryInputDialog.resources
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Commons\obj\x86\Debug\WHC.Framework.Commons.csproj.GenerateResource.Cache
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\Lib\WHC.Framework.Commons.XML
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\Lib\WHC.Framework.Commons.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\Lib\WHC.Framework.Commons.pdb
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Commons\obj\x86\Debug\WHC.Framework.Commons.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Commons\obj\x86\Debug\WHC.Framework.Commons.pdb

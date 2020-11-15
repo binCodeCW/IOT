@@ -1,0 +1,48 @@
+﻿<link href="~/Content/metronic/assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
+
+<body class="login" style="background-color:#1c77ac; background-image:url(../content/images/loginbg3.png); background-repeat:no-repeat; background-position:center top; overflow:hidden;">
+    <!-- BEGIN LOGO -->
+    <div class="logo">
+        <a href="/login/index">
+            <img src="~/Content/images/loginlogo.png" alt="" />
+        </a>
+    </div>
+    <!-- END LOGO -->
+    <!-- BEGIN LOGIN -->
+    <div class="content">
+        <!-- BEGIN LOGIN FORM -->
+        <form class="login-form" id="form1">
+            <h3 class="form-title font-green">用户登录</h3>
+            <div class="alert alert-danger display-hide">
+                <button class="close" data-close="alert"></button>
+                <span> 输入用户名和密码。 </span>
+            </div>
+            <div class="form-group">
+                <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+                <label class="control-label visible-ie8 visible-ie9">用户名</label>
+                <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="用户名" id="UserName" />
+            </div>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">密码</label>
+                <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="密码" id="Password" />
+            </div>
+            <div class="form-actions">
+                <input id="btnLogin" type="button" class="btn green uppercase" value="登录" />
+                <input id="btnReset" type="button" class="btn red uppercase" value="重置" onclick='doReset()'/>
+            </div>
+
+            <div class="login-options">
+                &nbsp;&nbsp;<br/>
+                <lable style="font-weight:bold">版本号: 2019版</lable>
+            </div>
+        </form>
+        <!-- END LOGIN FORM -->
+    </div>
+    <div class="copyright"> 版权所有  2019  <a href="http://www.yh-medical.com/">安徽养和医疗器械设备有限公司</a></div>
+    <!--[if lt IE 9]>
+    <script src="../assets/global/plugins/respond.min.js"></script>
+    <script src="../assets/global/plugins/excanvas.min.js"></script>
+    <script src="../assets/global/plugins/ie8.fix.min.js"></script>
+    <![endif]-->
+
+</body>

@@ -1,0 +1,89 @@
+﻿<!--撤销表单-->
+<div id="cancelAction" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">撤销表单</h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffCancel" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">撤销理由</label>
+                            <div class="col-md-10">
+                                <input id="WhyCancel" name="WhyCancel" type="text" class="form-control" placeholder="撤销理由..." style="height:100px" required />
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">常见撤销理由</label>
+                            <div class="col-md-10">
+                                <select id="CommonCancelReason" name="CommonCancelReason" type="text" class="form-control" placeholder="常见撤销理由..."></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn blue">发送</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //页面初始化
+    $(function () {
+        BindCancelEvent();
+    });
+
+    //绑定相关事件
+    function BindCancelEvent() {
+        //判断表单的信息是否通过验证
+        $("#ffCancel").validate({
+            meta: "validate",
+            errorElement: 'span',
+            errorClass: 'help-block help-block-error',
+            focusInvalid: false,
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success: function (label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+            errorPlacement: function (error, element) {
+                element.parent('div').append(error);
+            },
+            submitHandler: function (form) {
+                $("#cancelAction").modal("hide");
+                var result = confirm("您确实要撤消该申请吗？");
+                if (!result) return;
+
+                var url = "/AdminApply/CancelApply";
+                //构造参数发送给后台
+                var postData = {
+                    applyId: "@Page.applyId",
+                    whyCancel: $("#whyCancel").val()
+                };
+                postData = JSON.stringify(postData);
+                $.post(url, postData, function (json) {
+                    var data = $.parseJSON(json);
+                    if (data.Success) {
+                        //可增加其他处理
+                        LoadMainData();         //加载数据
+
+                        //提示处理结果
+                        showTips("您已经撤消了该申请");
+                    }
+                    else {
+                        showError("操作失败:" + data.ErrorMessage, 3000);
+                    }
+                });
+            }
+        });
+</script> 

@@ -1,0 +1,1809 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+    ViewBag.Title = "YH08A质控信息";
+}
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+
+<!-- BEGIN 数据查询-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption"> <i class="fa fa-filter"></i>
+            查询内容
+        </div>
+        <div class="tools">
+            <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="Refresh()">
+                <i class="fa fa-search"></i>
+                查 询
+            </button>
+            <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="ShowImport()">
+                <i class="fa fa-file-excel-o"></i>
+                导 入
+            </button>
+            <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="ShowExport()">
+                <i class="fa fa-file-excel-o"></i>
+                导 出
+            </button>
+            <a href="javascript:;" class="collapse" title="折叠内容"></a>
+        </div>
+    </div>
+
+    <div class="portlet-body flip-scroll">
+        <div class="row">
+            <form class="form-horizontal" id="ffSearch">
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">时间戳</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Timestamp" name="WHC_Timestamp" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class=" input-group input-daterange">
+                        <input id="WHC_Stamptime" name="WHC_Stamptime" class="form-control" placeholder="时间戳转换成datetime(起)"/>                
+                        <span class="input-group-addon">~</span>
+                        <input id="WHC_Stamptime2" name="WHC_Stamptime" class="form-control" placeholder="时间戳转换成datetime(止)"/>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">应用ID</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Appid" name="WHC_Appid" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">服务ID</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Serviceid" name="WHC_Serviceid" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">设备ID</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Deviceid" name="WHC_Deviceid" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">质控第一次DOB</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Dob0" name="WHC_Dob0" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">第二次DOB</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Dob1" name="WHC_Dob1" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">第三次DOB</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Dob2" name="WHC_Dob2" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">第四次DOB</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Dob3" name="WHC_Dob3" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">第五次DOB</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Dob4" name="WHC_Dob4" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">第六次DOB</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Dob5" name="WHC_Dob5" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">第七次DOB</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Dob6" name="WHC_Dob6" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">第八次DOB</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Dob7" name="WHC_Dob7" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">第九次DOB</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Dob8" name="WHC_Dob8" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">第十次DOB</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Dob9" name="WHC_Dob9" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">仪器编号</label>
+                        <div class="col-md-8">
+                            <input id="WHC_DeviceNo" name="WHC_DeviceNo" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">参数P</label>
+                        <div class="col-md-8">
+                            <input id="WHC_P" name="WHC_P" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">参数T</label>
+                        <div class="col-md-8">
+                            <input id="WHC_T" name="WHC_T" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">压力</label>
+                        <div class="col-md-8">
+                            <input id="WHC_PressType" name="WHC_PressType" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">曲线系数（下同）</label>
+                        <div class="col-md-8">
+                            <input id="WHC_M_lCfC12_0" name="WHC_M_lCfC12_0" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">m_lCfC12_1</label>
+                        <div class="col-md-8">
+                            <input id="WHC_M_lCfC12_1" name="WHC_M_lCfC12_1" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">m_lCfC12_2</label>
+                        <div class="col-md-8">
+                            <input id="WHC_M_lCfC12_2" name="WHC_M_lCfC12_2" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">m_lCfC12_3</label>
+                        <div class="col-md-8">
+                            <input id="WHC_M_lCfC12_3" name="WHC_M_lCfC12_3" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">m_lCfC12_4</label>
+                        <div class="col-md-8">
+                            <input id="WHC_M_lCfC12_4" name="WHC_M_lCfC12_4" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">m_lCfC12_5</label>
+                        <div class="col-md-8">
+                            <input id="WHC_M_lCfC12_5" name="WHC_M_lCfC12_5" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">m_lCfC13_0</label>
+                        <div class="col-md-8">
+                            <input id="WHC_M_lCfC13_0" name="WHC_M_lCfC13_0" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">m_lCfC13_1</label>
+                        <div class="col-md-8">
+                            <input id="WHC_M_lCfC13_1" name="WHC_M_lCfC13_1" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">m_lCfC13_2</label>
+                        <div class="col-md-8">
+                            <input id="WHC_M_lCfC13_2" name="WHC_M_lCfC13_2" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">m_lCfC13_3</label>
+                        <div class="col-md-8">
+                            <input id="WHC_M_lCfC13_3" name="WHC_M_lCfC13_3" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">m_lCfC13_4</label>
+                        <div class="col-md-8">
+                            <input id="WHC_M_lCfC13_4" name="WHC_M_lCfC13_4" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">m_lCfC13_5</label>
+                        <div class="col-md-8">
+                            <input id="WHC_M_lCfC13_5" name="WHC_M_lCfC13_5" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">平均值</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Aver" name="WHC_Aver" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">标准方差</label>
+                        <div class="col-md-8">
+                            <input id="WHC_Se" name="WHC_Se" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class=" input-group input-daterange">
+                        <input id="WHC_Recordtime" name="WHC_Recordtime" class="form-control" placeholder="记录时间(起)"/>                
+                        <span class="input-group-addon">~</span>
+                        <input id="WHC_Recordtime2" name="WHC_Recordtime" class="form-control" placeholder="记录时间(止)"/>
+                    </div>
+                </div>
+  
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END 数据查询-->
+
+<!-- BEGIN 表格数据-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-cogs"></i>
+            数据列表
+        </div>
+        <div class="tools">
+            <button type="button" onclick="Add()" class="btn btn-circle btn-sm green-meadow">
+                <i class="fa fa-plus"></i>
+                新增
+            </button>
+            <button type="button" onclick="EditView()" class="btn btn-circle btn-sm green-meadow">
+                <i class="fa fa-pencil"></i>
+                修改
+            </button>
+            <button type="button" onclick="EditView('view')" class="btn btn-circle btn-sm green-meadow">
+                <i class="fa fa-table"></i>
+                查看
+            </button>
+            <button type="button" onclick="Delete()" class="btn btn-circle btn-sm green-meadow">
+                <i class="fa fa-minus"></i>
+                删除
+            </button>
+            <button type="button" onclick="Refresh()" class="btn btn-circle btn-sm green-meadow" data-toggle="modal">
+                <i class="fa fa-refresh"></i>
+                刷新
+            </button>
+            <button type="button" class="fullscreen btn btn-circle btn-sm green-meadow" data-original-title="全屏">
+                <i class="icon-size-fullscreen"></i>
+            </button>
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <div class="portlet-body">
+            <div>
+                <table id="grid" class="table table-hover"></table>			
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--------------------------添加/修改信息的弹出层---------------------------->
+<div id="add"  class="modal fade bs-modal-lg"tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-pencil"></i>
+                    <span id="lblAddTitle" style="font-weight:bold">添加信息</span>
+                </h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffAdd" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row">
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">时间戳</label>
+                                <div class="col-md-8 ">
+                                    <input id="Timestamp" name="Timestamp" type="text" class="form-control" placeholder="时间戳..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">时间戳转换成datetime</label>
+                                <div class="col-md-8  input-date">
+                                    <input id="Stamptime" name="Stamptime" class="form-control" placeholder="时间戳转换成datetime..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">应用ID</label>
+                                <div class="col-md-8 ">
+                                    <input id="Appid" name="Appid" type="text" class="form-control" placeholder="应用ID..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">服务ID</label>
+                                <div class="col-md-8 ">
+                                    <input id="Serviceid" name="Serviceid" type="text" class="form-control" placeholder="服务ID..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">设备ID</label>
+                                <div class="col-md-8 ">
+                                    <input id="Deviceid" name="Deviceid" type="text" class="form-control" placeholder="设备ID..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">质控第一次DOB</label>
+                                <div class="col-md-8 ">
+                                    <input id="Dob0" name="Dob0" type="text" class="form-control" placeholder="质控第一次DOB..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第二次DOB</label>
+                                <div class="col-md-8 ">
+                                    <input id="Dob1" name="Dob1" type="text" class="form-control" placeholder="第二次DOB..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第三次DOB</label>
+                                <div class="col-md-8 ">
+                                    <input id="Dob2" name="Dob2" type="text" class="form-control" placeholder="第三次DOB..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第四次DOB</label>
+                                <div class="col-md-8 ">
+                                    <input id="Dob3" name="Dob3" type="text" class="form-control" placeholder="第四次DOB..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第五次DOB</label>
+                                <div class="col-md-8 ">
+                                    <input id="Dob4" name="Dob4" type="text" class="form-control" placeholder="第五次DOB..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第六次DOB</label>
+                                <div class="col-md-8 ">
+                                    <input id="Dob5" name="Dob5" type="text" class="form-control" placeholder="第六次DOB..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第七次DOB</label>
+                                <div class="col-md-8 ">
+                                    <input id="Dob6" name="Dob6" type="text" class="form-control" placeholder="第七次DOB..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第八次DOB</label>
+                                <div class="col-md-8 ">
+                                    <input id="Dob7" name="Dob7" type="text" class="form-control" placeholder="第八次DOB..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第九次DOB</label>
+                                <div class="col-md-8 ">
+                                    <input id="Dob8" name="Dob8" type="text" class="form-control" placeholder="第九次DOB..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第十次DOB</label>
+                                <div class="col-md-8 ">
+                                    <input id="Dob9" name="Dob9" type="text" class="form-control" placeholder="第十次DOB..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">仪器编号</label>
+                                <div class="col-md-8 ">
+                                    <input id="DeviceNo" name="DeviceNo" type="text" class="form-control" placeholder="仪器编号..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">参数P</label>
+                                <div class="col-md-8 ">
+                                    <input id="P" name="P" type="text" class="form-control" placeholder="参数P..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">参数T</label>
+                                <div class="col-md-8 ">
+                                    <input id="T" name="T" type="text" class="form-control" placeholder="参数T..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">压力</label>
+                                <div class="col-md-8 ">
+                                    <input id="PressType" name="PressType" type="text" class="form-control" placeholder="压力..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">曲线系数（下同）</label>
+                                <div class="col-md-8 ">
+                                    <input id="M_lCfC12_0" name="M_lCfC12_0" type="text" class="form-control" placeholder="曲线系数（下同）..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC12_1</label>
+                                <div class="col-md-8 ">
+                                    <input id="M_lCfC12_1" name="M_lCfC12_1" type="text" class="form-control" placeholder="m_lCfC12_1..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC12_2</label>
+                                <div class="col-md-8 ">
+                                    <input id="M_lCfC12_2" name="M_lCfC12_2" type="text" class="form-control" placeholder="m_lCfC12_2..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC12_3</label>
+                                <div class="col-md-8 ">
+                                    <input id="M_lCfC12_3" name="M_lCfC12_3" type="text" class="form-control" placeholder="m_lCfC12_3..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC12_4</label>
+                                <div class="col-md-8 ">
+                                    <input id="M_lCfC12_4" name="M_lCfC12_4" type="text" class="form-control" placeholder="m_lCfC12_4..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC12_5</label>
+                                <div class="col-md-8 ">
+                                    <input id="M_lCfC12_5" name="M_lCfC12_5" type="text" class="form-control" placeholder="m_lCfC12_5..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC13_0</label>
+                                <div class="col-md-8 ">
+                                    <input id="M_lCfC13_0" name="M_lCfC13_0" type="text" class="form-control" placeholder="m_lCfC13_0..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC13_1</label>
+                                <div class="col-md-8 ">
+                                    <input id="M_lCfC13_1" name="M_lCfC13_1" type="text" class="form-control" placeholder="m_lCfC13_1..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC13_2</label>
+                                <div class="col-md-8 ">
+                                    <input id="M_lCfC13_2" name="M_lCfC13_2" type="text" class="form-control" placeholder="m_lCfC13_2..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC13_3</label>
+                                <div class="col-md-8 ">
+                                    <input id="M_lCfC13_3" name="M_lCfC13_3" type="text" class="form-control" placeholder="m_lCfC13_3..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC13_4</label>
+                                <div class="col-md-8 ">
+                                    <input id="M_lCfC13_4" name="M_lCfC13_4" type="text" class="form-control" placeholder="m_lCfC13_4..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC13_5</label>
+                                <div class="col-md-8 ">
+                                    <input id="M_lCfC13_5" name="M_lCfC13_5" type="text" class="form-control" placeholder="m_lCfC13_5..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">平均值</label>
+                                <div class="col-md-8 ">
+                                    <input id="Aver" name="Aver" type="text" class="form-control" placeholder="平均值..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">标准方差</label>
+                                <div class="col-md-8 ">
+                                    <input id="Se" name="Se" type="text" class="form-control" placeholder="标准方差..."/>
+
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">记录时间</label>
+                                <div class="col-md-8  input-date">
+                                    <input id="Recordtime" name="Recordtime" class="form-control" placeholder="记录时间..."/>
+
+                                </div>
+                            </div>
+                        </div>
+  
+                    </div>
+                </div>
+                <div class="modal-footer bg-info">
+                    <input type="hidden" id="rowid" name="rowid" />
+                    <button type="submit" class="btn blue">确定</button>
+                    <button type="button" class="btn green" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--------------------------查看信息的弹出层---------------------------->
+<div id="view" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-book-open"></i>
+                    <span style="font-weight:bold">查看信息</span>
+                </h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffView" action="">
+                <div class="modal-body">                    
+                    <div class="row">
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">时间戳</label>
+                                <div class="col-md-8">
+                                    <label id="Timestamp2" name="Timestamp" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">时间戳转换成datetime</label>
+                                <div class="col-md-8">
+                                    <label id="Stamptime2" name="Stamptime" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">应用ID</label>
+                                <div class="col-md-8">
+                                    <label id="Appid2" name="Appid" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">服务ID</label>
+                                <div class="col-md-8">
+                                    <label id="Serviceid2" name="Serviceid" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">设备ID</label>
+                                <div class="col-md-8">
+                                    <label id="Deviceid2" name="Deviceid" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">质控第一次DOB</label>
+                                <div class="col-md-8">
+                                    <label id="Dob02" name="Dob0" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第二次DOB</label>
+                                <div class="col-md-8">
+                                    <label id="Dob12" name="Dob1" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第三次DOB</label>
+                                <div class="col-md-8">
+                                    <label id="Dob22" name="Dob2" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第四次DOB</label>
+                                <div class="col-md-8">
+                                    <label id="Dob32" name="Dob3" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第五次DOB</label>
+                                <div class="col-md-8">
+                                    <label id="Dob42" name="Dob4" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第六次DOB</label>
+                                <div class="col-md-8">
+                                    <label id="Dob52" name="Dob5" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第七次DOB</label>
+                                <div class="col-md-8">
+                                    <label id="Dob62" name="Dob6" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第八次DOB</label>
+                                <div class="col-md-8">
+                                    <label id="Dob72" name="Dob7" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第九次DOB</label>
+                                <div class="col-md-8">
+                                    <label id="Dob82" name="Dob8" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">第十次DOB</label>
+                                <div class="col-md-8">
+                                    <label id="Dob92" name="Dob9" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">仪器编号</label>
+                                <div class="col-md-8">
+                                    <label id="DeviceNo2" name="DeviceNo" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">参数P</label>
+                                <div class="col-md-8">
+                                    <label id="P2" name="P" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">参数T</label>
+                                <div class="col-md-8">
+                                    <label id="T2" name="T" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">压力</label>
+                                <div class="col-md-8">
+                                    <label id="PressType2" name="PressType" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">曲线系数（下同）</label>
+                                <div class="col-md-8">
+                                    <label id="M_lCfC12_02" name="M_lCfC12_0" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC12_1</label>
+                                <div class="col-md-8">
+                                    <label id="M_lCfC12_12" name="M_lCfC12_1" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC12_2</label>
+                                <div class="col-md-8">
+                                    <label id="M_lCfC12_22" name="M_lCfC12_2" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC12_3</label>
+                                <div class="col-md-8">
+                                    <label id="M_lCfC12_32" name="M_lCfC12_3" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC12_4</label>
+                                <div class="col-md-8">
+                                    <label id="M_lCfC12_42" name="M_lCfC12_4" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC12_5</label>
+                                <div class="col-md-8">
+                                    <label id="M_lCfC12_52" name="M_lCfC12_5" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC13_0</label>
+                                <div class="col-md-8">
+                                    <label id="M_lCfC13_02" name="M_lCfC13_0" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC13_1</label>
+                                <div class="col-md-8">
+                                    <label id="M_lCfC13_12" name="M_lCfC13_1" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC13_2</label>
+                                <div class="col-md-8">
+                                    <label id="M_lCfC13_22" name="M_lCfC13_2" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC13_3</label>
+                                <div class="col-md-8">
+                                    <label id="M_lCfC13_32" name="M_lCfC13_3" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC13_4</label>
+                                <div class="col-md-8">
+                                    <label id="M_lCfC13_42" name="M_lCfC13_4" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">m_lCfC13_5</label>
+                                <div class="col-md-8">
+                                    <label id="M_lCfC13_52" name="M_lCfC13_5" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">平均值</label>
+                                <div class="col-md-8">
+                                    <label id="Aver2" name="Aver" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">标准方差</label>
+                                <div class="col-md-8">
+                                    <label id="Se2" name="Se" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">记录时间</label>
+                                <div class="col-md-8">
+                                    <label id="Recordtime2" name="Recordtime" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+  
+                    </div>
+                </div>
+                <div class="modal-footer bg-info">
+                    <input id="rowid2" name="rowid" type="hidden" value="">
+                    <button type="button" class="btn green" data-dismiss="modal">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!--导入数据操作层-->
+<div id="import" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">文件导入</h4>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:right;padding:5px">
+                    <a href="~/Content/Template/YH08A_DeviceInfoRec-模板.xls" onclick="javascript:Preview();">
+                        <img alt="文件导入-模板" src="~/Content/images/ico_excel.png" />
+                        <span style="font-size:larger;font-weight:200;color:red">YH08A_DeviceInfoRec-模板.xls</span>
+                    </a>
+                </div>
+                <hr/>
+                <form id="ffImport" method="post">
+                    <div title="Excel导入操作" style="padding: 5px">
+                        <input type="hidden" id="AttachGUID" name="AttachGUID" />    
+                        <input id="excelFile" type="file">                     
+                    </div>
+                </form>
+
+                <!--数据显示表格-->
+                <table id="gridImport" class="table table-striped table-bordered table-hover" cellpadding="0" cellspacing="0" border="0">
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="SaveImport()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section footerScript {
+
+<script type="text/javascript">
+        var currentPage = 1, rows = 10; //分页参数：当前页，记录数
+
+        var isAddOrEdit = 'add';//标识是新增还是编辑对话框弹出，用于删除附件的操作
+        var url;//新增或者更新的连接
+        var ID;//ID值，新增为空，编辑或者查看为具体ID
+
+        //页面初始化
+        $(function () {
+            InitStyle();        //设置控件的样式
+            BindEvent();        //绑定事件处理
+            InitDictItem();     //初始化字典信息	
+            Search(currentPage);//初始化Table
+        });
+
+        //设置控件的样式
+        function InitStyle() {
+            
+            //统一设置icheck控件的样式
+            $('input[class=icheck]').iCheck({
+                checkboxClass: 'icheckbox_square-red',
+                radioClass: 'iradio_square-red',
+            });
+			//设置日期样式
+            $('.input-daterange input').each(function () {
+                $(this).datepicker({
+                    language: 'zh-CN', //语言
+                    autoclose: true, //选择后自动关闭
+                    clearBtn: true,//清除按钮
+                    format: "yyyy-mm-dd"//日期格式
+                });
+            });
+            $('.input-date input').each(function () {
+                $(this).datepicker({
+                    language: 'zh-CN', //语言
+                    autoclose: true, //选择后自动关闭
+                    clearBtn: true,//清除按钮
+                    format: "yyyy-mm-dd"//日期格式
+                });
+            });			
+            //增加数值的调整按钮样式
+            // $("#Age").TouchSpin({
+            //     buttondown_class: 'btn blue',
+            //     buttonup_class: 'btn blue',
+            //     min: 0,
+            //     max: 120,
+            //     stepinterval: 1,
+            //     maxboostedstep: 10,
+            //     prefix: ''
+            // });
+                         
+            //初始化fileinput控件（第一次初始化）
+            //initFileInput("file-Portrait", "/YH08A_DeviceInfoRec/EditPortrait");
+        }
+		
+        var $table;
+		var queryUrl;
+        //初始化bootstrap-table的内容
+        function Search (page) {
+            //记录页面bootstrap-table全局变量$table，方便应用
+            queryUrl = '/YH08A_DeviceInfoRec/FindWithPager?rnd=' + Math.random()
+            $table = $('#grid').bootstrapTable({
+                url: queryUrl,                   	//请求后台的URL（*）
+                method: 'GET',                      //请求方式（*）
+                //toolbar: '#toolbar',              //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: true,                     //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: page,                      //初始化加载第一页，默认第一页,并记录
+                pageSize: rows,                     //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                search: false,                      //是否显示表格搜索
+                strictSearch: true,
+                showColumns: true,                  //是否显示所有的列（选择显示的列）
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+                //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                uniqueId: "rowid",                     //每一行的唯一标识，一般为主键列
+                showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                  //是否显示父子表
+                //得到查询的参数
+                queryParams : function (params) {
+                    //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+					
+                    //var temp = {   
+                    //    rows: params.limit,                         //页面大小
+                    //    page: (params.offset / params.limit) + 1,   //页码
+                    //    sort: params.sort,      //排序列名  
+                    //    sortOrder: params.order //排位命令（desc，asc） 
+                    //};
+                    //return temp;
+
+                    var temp = $("#ffSearch").serializeJsonObject();
+                    temp["rows"] = params.limit;                        //页面大小
+                    temp["page"] = (params.offset / params.limit) + 1;  //页码
+                    temp["sort"] = params.sort;                         //排序列名
+                    temp["sortOrder"] = params.order;                   //排位命令（desc，asc） 
+
+                    //特殊格式的条件处理					
+
+                    //数据行，递增1条件
+                    //temp["WHC_rowid"] = $("#WHC_rowid").val() + "~" + $("#WHC_rowid2").val();	
+  
+                    //时间戳转换成datetime条件
+                    //temp["WHC_stamptime"] = $("#WHC_stamptime").val() + "~" + $("#WHC_stamptime2").val();	
+                                
+                    //记录时间条件
+                    //temp["WHC_recordtime"] = $("#WHC_recordtime").val() + "~" + $("#WHC_recordtime2").val();	
+                      return temp;
+                },
+                columns: [{
+                    checkbox: true,  
+                    visible: true                  //是否显示复选框  
+                }, 
+                 { title: '时间戳', field: 'Timestamp' /*, width: 80, sortable: true */ },
+                 { title: '时间戳转换成datetime', field: 'Stamptime' /*, width: 80, sortable: true */ },
+                 { title: '应用ID', field: 'Appid' /*, width: 80, sortable: true */ },
+                 { title: '服务ID', field: 'Serviceid' /*, width: 80, sortable: true */ },
+                 { title: '设备ID', field: 'Deviceid' /*, width: 80, sortable: true */ },
+                 { title: '质控第一次DOB', field: 'Dob0' /*, width: 80, sortable: true */ },
+                 { title: '第二次DOB', field: 'Dob1' /*, width: 80, sortable: true */ },
+                 { title: '第三次DOB', field: 'Dob2' /*, width: 80, sortable: true */ },
+                 { title: '第四次DOB', field: 'Dob3' /*, width: 80, sortable: true */ },
+                 { title: '第五次DOB', field: 'Dob4' /*, width: 80, sortable: true */ },
+                 { title: '第六次DOB', field: 'Dob5' /*, width: 80, sortable: true */ },
+                 { title: '第七次DOB', field: 'Dob6' /*, width: 80, sortable: true */ },
+                 { title: '第八次DOB', field: 'Dob7' /*, width: 80, sortable: true */ },
+                 { title: '第九次DOB', field: 'Dob8' /*, width: 80, sortable: true */ },
+                 { title: '第十次DOB', field: 'Dob9' /*, width: 80, sortable: true */ },
+                 { title: '仪器编号', field: 'DeviceNo' /*, width: 80, sortable: true */ },
+                 { title: '参数P', field: 'P' /*, width: 80, sortable: true */ },
+                 { title: '参数T', field: 'T' /*, width: 80, sortable: true */ },
+                 { title: '压力', field: 'PressType' /*, width: 80, sortable: true */ },
+                 { title: '曲线系数（下同）', field: 'M_lCfC12_0' /*, width: 80, sortable: true */ },
+                 { title: 'm_lCfC12_1', field: 'M_lCfC12_1' /*, width: 80, sortable: true */ },
+                 { title: 'm_lCfC12_2', field: 'M_lCfC12_2' /*, width: 80, sortable: true */ },
+                 { title: 'm_lCfC12_3', field: 'M_lCfC12_3' /*, width: 80, sortable: true */ },
+                 { title: 'm_lCfC12_4', field: 'M_lCfC12_4' /*, width: 80, sortable: true */ },
+                 { title: 'm_lCfC12_5', field: 'M_lCfC12_5' /*, width: 80, sortable: true */ },
+                 { title: 'm_lCfC13_0', field: 'M_lCfC13_0' /*, width: 80, sortable: true */ },
+                 { title: 'm_lCfC13_1', field: 'M_lCfC13_1' /*, width: 80, sortable: true */ },
+                 { title: 'm_lCfC13_2', field: 'M_lCfC13_2' /*, width: 80, sortable: true */ },
+                 { title: 'm_lCfC13_3', field: 'M_lCfC13_3' /*, width: 80, sortable: true */ },
+                 { title: 'm_lCfC13_4', field: 'M_lCfC13_4' /*, width: 80, sortable: true */ },
+                 { title: 'm_lCfC13_5', field: 'M_lCfC13_5' /*, width: 80, sortable: true */ },
+                 { title: '平均值', field: 'Aver' /*, width: 80, sortable: true */ },
+                 { title: '标准方差', field: 'Se' /*, width: 80, sortable: true */ },
+                 { title: '记录时间', field: 'Recordtime' /*, width: 80, sortable: true */ },
+  				{ title: '操作', field:'rowid', width: 120, align: 'center', valign: 'middle', formatter: actionFormatter}, 
+				],
+                onLoadSuccess: function () {
+                    currentPage = page;//存储当前页码
+                },
+                onLoadError: function () {
+                    showTips("数据加载失败！");
+                },
+                onDblClickRow: function (row, $element) {
+                    var id = row.rowid;
+                    EditViewById(id, 'view');
+                },
+                //rowStyle: function (row, index) { //设置行的特殊样式
+                    //这里有5个取值颜色['active', 'success', 'info', 'warning', 'danger'];
+                    //var strclass = "";
+                    //if (index == 0) {
+                    //    strclass = "warning";
+                    //}
+                    //return { classes: strclass }
+                //}
+            });
+        };
+
+        //根据条件查询并绑定结果
+        var $import;		
+        var importGuid;
+        function InitImport(guid) {
+            importGuid = guid;
+            var url = "/YH08A_DeviceInfoRec/GetExcelData?guid=" + guid;
+            $import = $('#gridImport').bootstrapTable({
+                url: url,                           //请求后台的URL（*）
+                method: 'GET',                      //请求方式（*）
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: false,                  //是否显示分页（*）
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: 1,                      //初始化加载第一页，默认第一页,并记录
+                pageSize: 100,                     //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                search: false,                      //是否显示表格搜索
+                strictSearch: true,
+                showColumns: true,                  //是否显示所有的列（选择显示的列）
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,               //是否启用点击选中行
+                uniqueId: "rowid",                     //每一行的唯一标识，一般为主键列
+                queryParams: function (params) { },
+                columns: [{
+                    checkbox: true,
+                    visible: true                  //是否显示复选框  
+                }, 
+                 { title: '时间戳', field: 'Timestamp' /*, width: 80, sortable: true */},
+                 { title: '时间戳转换成datetime', field: 'Stamptime' /*, width: 80, sortable: true */},
+                 { title: '应用ID', field: 'Appid' /*, width: 80, sortable: true */},
+                 { title: '服务ID', field: 'Serviceid' /*, width: 80, sortable: true */},
+                 { title: '设备ID', field: 'Deviceid' /*, width: 80, sortable: true */},
+                 { title: '质控第一次DOB', field: 'Dob0' /*, width: 80, sortable: true */},
+                 { title: '第二次DOB', field: 'Dob1' /*, width: 80, sortable: true */},
+                 { title: '第三次DOB', field: 'Dob2' /*, width: 80, sortable: true */},
+                 { title: '第四次DOB', field: 'Dob3' /*, width: 80, sortable: true */},
+                 { title: '第五次DOB', field: 'Dob4' /*, width: 80, sortable: true */},
+                 { title: '第六次DOB', field: 'Dob5' /*, width: 80, sortable: true */},
+                 { title: '第七次DOB', field: 'Dob6' /*, width: 80, sortable: true */},
+                 { title: '第八次DOB', field: 'Dob7' /*, width: 80, sortable: true */},
+                 { title: '第九次DOB', field: 'Dob8' /*, width: 80, sortable: true */},
+                 { title: '第十次DOB', field: 'Dob9' /*, width: 80, sortable: true */},
+                 { title: '仪器编号', field: 'DeviceNo' /*, width: 80, sortable: true */},
+                 { title: '参数P', field: 'P' /*, width: 80, sortable: true */},
+                 { title: '参数T', field: 'T' /*, width: 80, sortable: true */},
+                 { title: '压力', field: 'PressType' /*, width: 80, sortable: true */},
+                 { title: '曲线系数（下同）', field: 'M_lCfC12_0' /*, width: 80, sortable: true */},
+                 { title: 'm_lCfC12_1', field: 'M_lCfC12_1' /*, width: 80, sortable: true */},
+                 { title: 'm_lCfC12_2', field: 'M_lCfC12_2' /*, width: 80, sortable: true */},
+                 { title: 'm_lCfC12_3', field: 'M_lCfC12_3' /*, width: 80, sortable: true */},
+                 { title: 'm_lCfC12_4', field: 'M_lCfC12_4' /*, width: 80, sortable: true */},
+                 { title: 'm_lCfC12_5', field: 'M_lCfC12_5' /*, width: 80, sortable: true */},
+                 { title: 'm_lCfC13_0', field: 'M_lCfC13_0' /*, width: 80, sortable: true */},
+                 { title: 'm_lCfC13_1', field: 'M_lCfC13_1' /*, width: 80, sortable: true */},
+                 { title: 'm_lCfC13_2', field: 'M_lCfC13_2' /*, width: 80, sortable: true */},
+                 { title: 'm_lCfC13_3', field: 'M_lCfC13_3' /*, width: 80, sortable: true */},
+                 { title: 'm_lCfC13_4', field: 'M_lCfC13_4' /*, width: 80, sortable: true */},
+                 { title: 'm_lCfC13_5', field: 'M_lCfC13_5' /*, width: 80, sortable: true */},
+                 { title: '平均值', field: 'Aver' /*, width: 80, sortable: true */},
+                 { title: '标准方差', field: 'Se' /*, width: 80, sortable: true */},
+                 { title: '记录时间', field: 'Recordtime' /*, width: 80, sortable: true */},
+  				],
+                onLoadSuccess: function () {
+                },
+                onLoadError: function () {
+                    showTips("数据加载失败！");
+                },
+            });
+        }
+
+        //图片格式化
+        function imageFormatter(value, row, index) {
+            return "<img src='" + value + "' style='width:50px; height:50px;' />";
+        }
+        //日期字段格式化
+        function dateFormatter(value, row, index) {
+            return getDateStr(value);
+        }
+        //连接字段格式化
+        function linkFormatter(value, row, index) {                
+            return "<a href='" + value + "' title='单击打开连接' target='_blank'>" + value + "</a>";
+        }
+        //Email字段格式化
+        function emailFormatter(value, row, index) {
+            return "<a href='mailto:" + value + "' title='单击打开连接'>" + value + "</a>";
+        }
+        //性别字段格式化
+        function sexFormatter(value) {
+            if (value == "女") { color = 'Red'; }
+            else if (value == "男") { color = 'Green'; }
+            else { color = 'Yellow'; }
+
+            return '<div  style="color: ' + color + '">' + value + '</div>';
+        }
+        //操作栏的格式化
+        function actionFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + id + "', view='view')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
+            result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditViewById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+            result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"DeleteByIds('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+
+            return result;
+        }
+
+        // label-default、label-primary、label-success、label-info、label-warning、label-danger
+        function statusFormatter(value) {
+            var result = "";
+            if (value == "待审核") {
+                result = "<spanc class='label label-primary'> " + value + " </span>";
+            }
+            else if (value == "不通过") {
+                result = "<span class='label label-warning'> " + value + " </span>";
+            }
+            else if (value == "已审核") {
+                result = "<span class='label label-info'> " + value + " </span>";
+            }
+            else if (value == "已完成") {
+                result = "<span class='label label-success'> " + value + " </span>";
+            }
+            return result;
+        }
+        
+        //自定义函数处理queryParams的批量增加
+        $.fn.serializeJsonObject = function () {
+            var json = {};
+            var form = this.serializeArray();
+            $.each(form, function () {
+                if (json[this.name]) {
+                    if (!json[this.name].push) {
+                        json[this.name] = [json[this.name]];
+                    }
+                    json[this.name].push();
+                } else {
+                    json[this.name] = this.value || '';
+                }
+            });
+            return json;
+        }
+
+        //刷新列表
+        function Refresh() {
+			//Search(currentPage);
+            $table.bootstrapTable('refresh');
+        }
+
+        //初始化字典信息（下拉列表）
+        function InitDictItem() {
+            //部分赋值参考
+            
+            //绑定字典
+            //BindDictItem("Rank", "职务");            
+            //绑定树列表
+            //BindSelect("PID", "/Menu/GetDictJson");
+            
+            //绑定可选多个Tag
+            // $("#Hobby").val({
+            //     tags: ["旅游", "爬山", "篮球", "足球", "乒乓球"]
+            // }).trigger("change");
+            
+            //绑定添加界面的公司、部门（联动处理）
+            // BindSelect("Company_ID", "/User/GetMyCompanyDictJson?userId="+@Session["UserId"]);
+            // $("#Company_ID").on("change", function (e) {
+            //     var companyid = $("#Company_ID").val();
+            //     BindSelect("Dept_ID", "/User/GetDeptDictJson?parentId="+ companyid);
+            // });
+        }
+
+        //实现删除数据的方法
+        function Delete() {
+            var ids = "";//得到用户选择的数据的ID
+            var rows = $table.bootstrapTable('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                ids += rows[i].rowid + ',';
+            }
+            ids = ids.substring(0, ids.length - 1);
+
+            DeleteByIds(ids);
+        }
+
+        //删除指定的记录
+        function DeleteByIds(ids) {
+            if (ids != "") {
+                showDelete(function () {
+                    //最后去掉最后的逗号,
+                    ids = ids.replace(/,\s*$/, '');
+
+                    //然后发送异步请求的信息到后台删除数据
+                    var postData = { ids: ids };
+                    $.post("/YH08A_DeviceInfoRec/DeletebyIds", postData, function (json) {
+                        var data = $.parseJSON(json);
+                        if (data.Success) {
+                            showTips("删除选定的记录成功");
+                            Refresh();//刷新页面数据
+                        }
+                        else {
+                            showTips(data.ErrorMessage);
+                        }
+                    });
+                });
+            } else {
+                showTips("请选择你要删除的数据");
+            }
+        }
+
+        //初始化图像信息
+        function initPortrait(ctrlName, id) {
+            var control = $('#' + ctrlName); 
+            var imageurl = '/YH08A_DeviceInfoRec/GetPortrait?id=' + id +'&r=' + Math.random();
+			
+            //初始化fileinput控件（第一次初始化）
+            control.fileinput({
+                language: 'zh', //设置语言
+                uploadUrl: '/YH08A_DeviceInfoRec/EditPortrait', //上传的地址
+                allowedFileExtensions : ['jpg', 'png','gif'],//接收的文件后缀
+                showUpload: false, //是否显示上传按钮
+                showCaption: false,//是否显示标题
+                browseClass: "btn btn-primary", //按钮样式             
+                previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",                
+                uploadExtraData: {id: id}, //附加内容，修改需要使用refresh重新设置
+                // overwriteInitial: false, //是否覆盖原图
+                // dropZoneEnabled:false, //是否显示拖动区域
+                // initialPreview: [  //预览图片的设置
+                //     "<img src='" + imageurl + "' class='file-preview-image' alt='肖像图片' title='肖像图片'>",
+                // ],
+            });
+			
+            //重要，需要更新控件的附加参数内容，以及图片初始化显示
+            control.fileinput('refresh', {
+                uploadExtraData: { id: id },
+                initialPreview: [ //预览图片的设置
+                    "<img src='" + imageurl + "' class='file-preview-image' alt='肖像图片' title='肖像图片'>",
+                ],
+             });
+        }
+
+        //弹出新增对话框
+        function Add() {
+            isAddOrEdit = 'add';//新增对话框标识
+            //CKEDITOR.instances.Content.setData('');  //清空编辑器的数据
+            $("#ffAdd")[0].reset();//清空上次输入
+            $('#ffAdd').validate().resetForm();//去除验证信息
+			$(".has-error").removeClass("has-error");
+
+            //增加记录前，赋值ID
+            url = '/YH08A_DeviceInfoRec/Insert';
+            $.get("/YH08A_DeviceInfoRec/NewGuid?r=" + Math.random(), function (result) {
+                $("#rowid").val(result);
+                ID = result;
+
+            });
+
+            //初始化部分控件
+            //$('input[name="Gender"][value="男"]').iCheck('check');
+            //$("#PID").val("").trigger("change");
+            //$("#Hobby").val(null).trigger("change");//清空下拉框
+
+            $("#lblAddTitle").text("添加信息");
+            $("#add").modal("show");
+        }
+
+        //修改或查看明细信息（绑定显示数据）
+        function EditView(view) {
+            ID = "";//重置ID的值
+            var rows = $table.bootstrapTable('getSelections');
+            if (rows.length > 0) {
+                ID = rows[0].rowid;
+            }
+            
+            EditViewById(ID, view);
+        }
+
+        //编辑或者查看指定记录
+        function EditViewById(ID, view) {
+            if (ID == "") {
+                showTips("请选择一条记录");
+                return;
+            }
+
+            if (view == null) {
+                //处理修改的信息
+                $("#lblAddTitle").text("修改信息");
+                $("#add").modal("show");
+                url = '/YH08A_DeviceInfoRec/Update?ID=' + ID;
+                //绑定修改详细信息的方法
+                BindEditInfo(ID);
+            }
+            else {
+                //处理查看详细
+                $("#view").modal("show");
+                //绑定查看详细信息方法
+                BindViewInfo(ID);
+            }
+        }
+
+        //绑定编辑详细信息的方法
+        function BindEditInfo(ID) {
+            //使用同步方式，使得联动的控件正常显示
+            $.ajaxSettings.async = false;
+
+            $('#ffAdd').validate().resetForm();//去除验证信息
+			$(".has-error").removeClass("has-error");
+
+            //首先用户发送一个异步请求去后台实现方法
+            $.getJSON("/YH08A_DeviceInfoRec/FindByID?r=" + Math.random() + "&id=" + ID, function (info) {
+                 $("#Timestamp").val(info.Timestamp);
+                 $("#Stamptime").val(getDateStr(info.Stamptime));
+                 $("#Appid").val(info.Appid);
+                 $("#Serviceid").val(info.Serviceid);
+                 $("#Deviceid").val(info.Deviceid);
+                 $("#Dob0").val(info.Dob0);
+                 $("#Dob1").val(info.Dob1);
+                 $("#Dob2").val(info.Dob2);
+                 $("#Dob3").val(info.Dob3);
+                 $("#Dob4").val(info.Dob4);
+                 $("#Dob5").val(info.Dob5);
+                 $("#Dob6").val(info.Dob6);
+                 $("#Dob7").val(info.Dob7);
+                 $("#Dob8").val(info.Dob8);
+                 $("#Dob9").val(info.Dob9);
+                 $("#DeviceNo").val(info.DeviceNo);
+                 $("#P").val(info.P);
+                 $("#T").val(info.T);
+                 $("#PressType").val(info.PressType);
+                 $("#M_lCfC12_0").val(info.M_lCfC12_0);
+                 $("#M_lCfC12_1").val(info.M_lCfC12_1);
+                 $("#M_lCfC12_2").val(info.M_lCfC12_2);
+                 $("#M_lCfC12_3").val(info.M_lCfC12_3);
+                 $("#M_lCfC12_4").val(info.M_lCfC12_4);
+                 $("#M_lCfC12_5").val(info.M_lCfC12_5);
+                 $("#M_lCfC13_0").val(info.M_lCfC13_0);
+                 $("#M_lCfC13_1").val(info.M_lCfC13_1);
+                 $("#M_lCfC13_2").val(info.M_lCfC13_2);
+                 $("#M_lCfC13_3").val(info.M_lCfC13_3);
+                 $("#M_lCfC13_4").val(info.M_lCfC13_4);
+                 $("#M_lCfC13_5").val(info.M_lCfC13_5);
+                 $("#Aver").val(info.Aver);
+                 $("#Se").val(info.Se);
+                 $("#Recordtime").val(getDateStr(info.Recordtime));
+  
+                //参考赋值
+                //$("#Company_ID1").val(info.Company_ID).trigger("change");//联动
+                //$("#PID1").val(info.PID).trigger("change");//普通Select2
+                // var array = [info.Hobby];
+                // $("#Hobby").val(array).trigger("change"); //集合
+
+                // $("input[name='Gender']").iCheck('uncheck');
+                // $("input[name='Gender'][value='" + info.Gender + "']").iCheck('check');
+                // $("#BirthDate").val(getDateStr(info.BirthDate));
+
+                $("#rowid").val(info.rowid);
+                isAddOrEdit = 'edit';//新增对话框标识
+            });
+
+        }
+
+        //绑定查看详细信息的方法
+        function BindViewInfo(ID) {
+            //发送请求
+            $.getJSON("/YH08A_DeviceInfoRec/FindByID?r=" + Math.random() + "&id=" + ID, function (info) {
+                $("#rowid2").val(info.rowid);
+
+                 $("#Timestamp2").text(info.Timestamp);
+                 $("#Stamptime2").text(info.Stamptime);
+                 $("#Appid2").text(info.Appid);
+                 $("#Serviceid2").text(info.Serviceid);
+                 $("#Deviceid2").text(info.Deviceid);
+                 $("#Dob02").text(info.Dob0);
+                 $("#Dob12").text(info.Dob1);
+                 $("#Dob22").text(info.Dob2);
+                 $("#Dob32").text(info.Dob3);
+                 $("#Dob42").text(info.Dob4);
+                 $("#Dob52").text(info.Dob5);
+                 $("#Dob62").text(info.Dob6);
+                 $("#Dob72").text(info.Dob7);
+                 $("#Dob82").text(info.Dob8);
+                 $("#Dob92").text(info.Dob9);
+                 $("#DeviceNo2").text(info.DeviceNo);
+                 $("#P2").text(info.P);
+                 $("#T2").text(info.T);
+                 $("#PressType2").text(info.PressType);
+                 $("#M_lCfC12_02").text(info.M_lCfC12_0);
+                 $("#M_lCfC12_12").text(info.M_lCfC12_1);
+                 $("#M_lCfC12_22").text(info.M_lCfC12_2);
+                 $("#M_lCfC12_32").text(info.M_lCfC12_3);
+                 $("#M_lCfC12_42").text(info.M_lCfC12_4);
+                 $("#M_lCfC12_52").text(info.M_lCfC12_5);
+                 $("#M_lCfC13_02").text(info.M_lCfC13_0);
+                 $("#M_lCfC13_12").text(info.M_lCfC13_1);
+                 $("#M_lCfC13_22").text(info.M_lCfC13_2);
+                 $("#M_lCfC13_32").text(info.M_lCfC13_3);
+                 $("#M_lCfC13_42").text(info.M_lCfC13_4);
+                 $("#M_lCfC13_52").text(info.M_lCfC13_5);
+                 $("#Aver2").text(info.Aver);
+                 $("#Se2").text(info.Se);
+                 $("#Recordtime2").text(info.Recordtime);
+  
+                //$.getJSON("/User/GetFullNameByID?userid=" + info.Creator, function (result) {
+                //    $("#Creator2").text(result);
+                //});
+                //$.getJSON("/User/GetFullNameByID?userid=" + info.Editor, function (result) {
+                //    $("#Editor2").text(result);
+                //});
+                //
+                
+                //列表框赋值
+                // $('#lbxOUs2').empty();
+                // $.getJSON("/Ou/GetOUsByUser?r=" + Math.random() + "&userid=" + info.ID, function (json) {
+                //     $.each(json, function (i, item) {
+                //         $('#lbxOUs2').append('<option value="' + item.ID + '">' + item.Name + '</option>');
+                //     });
+                // });
+
+                //图片显示
+                // var imageUrl = '/User/GetPortrait?id=' + ID +'&r=' + Math.random();
+                // $("#Portrait2").attr('src', imageUrl);
+
+                //树形控件
+                // var treeUrl = '/Function/GetFunctionJsTreeJsonByUser?userId=' + info.ID;
+                // bindJsTree("jstree_function2", treeUrl);
+            });
+        }
+
+        //显示导入界面
+        function ShowImport() {
+            $("#import").modal("show");
+        }
+
+        //导出Excel数据
+        function ShowExport() {
+            var url = "/YH08A_DeviceInfoRec/Export";
+            var condition = $("#ffSearch").serialize();//获取条件
+
+            executeExport(url, condition);//执行导出
+        }
+
+        //绑定相关事件
+        function BindEvent() {
+            //判断表单的信息是否通过验证
+            $("#ffAdd").validate({
+                meta: "validate",
+                errorElement: 'span',
+                errorClass: 'help-block help-block-error',
+                focusInvalid: false,
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                success: function (label) {
+                    label.closest('.form-group').removeClass('has-error');
+                    label.remove();
+                },
+                errorPlacement: function (error, element) {
+                    element.parent('div').append(error);
+                },
+                submitHandler: function (form) {
+	                $("#add").modal("hide");
+	                //构造参数发送给后台
+	                var postData = $("#ffAdd").serializeArray();
+	                $.post(url, postData, function (json) {
+	                    var data = $.parseJSON(json);
+	                    if (data.Success) {
+	                        //可增加其他处理
+
+	                        //保存成功  1.关闭弹出层，2.刷新表格数据
+	                        showTips("保存成功");
+	                        Refresh();
+	                    }
+	                    else {
+	                        showError("保存失败:" + data.ErrorMessage, 3000);
+	                    }
+	                }).error(function () {
+	                    showTips("您未被授权使用该功能，请联系管理员进行处理。");
+	                });
+                }
+            });
+
+            //回车进行查询
+            if (document.addEventListener) {
+                //如果是Firefox  
+                document.getElementById("ffSearch").addEventListener("keypress", enterEvent, true);
+            } else {
+                //如果是IE
+                document.getElementById("ffSearch").attachEvent("onkeypress", enterEvent);
+            }
+        }
+        //按下Enter搜索
+        function enterEvent(evt) {
+            if (evt.keyCode == 13) {
+                //$("#btnSearch").click();
+                Refresh();
+            }
+        }
+
+    </script>
+
+    <!--添加对 fileinput 控件的支持-->
+    <script type="text/javascript">
+        $(function () {
+            InitExcelFile();
+        });
+
+        //初始化Excel导入的文件
+        function InitExcelFile() {
+            //记录GUID
+            $("#AttachGUID").val(newGuid());
+
+            $("#excelFile").fileinput({
+                uploadUrl: "/FileUpload/Upload",//上传的地址
+                uploadAsync: true,              //异步上传
+                language: "zh",                 //设置语言
+                showCaption: true,              //是否显示标题
+                showUpload: true,               //是否显示上传按钮
+                showRemove: true,               //是否显示移除按钮
+                showPreview : true,             //是否显示预览按钮
+                browseClass: "btn btn-primary", //按钮样式 
+                dropZoneEnabled: false,         //是否显示拖拽区域
+                allowedFileExtensions: ["xls", "xlsx"], //接收的文件后缀
+                maxFileCount: 1,                        //最大上传文件数限制
+                previewFileIcon: '<i class="glyphicon glyphicon-file"></i>',
+                allowedPreviewTypes: null,
+                previewFileIconSettings: {
+                    'docx': '<i class="glyphicon glyphicon-file"></i>',
+                    'xlsx': '<i class="glyphicon glyphicon-file"></i>',
+                    'pptx': '<i class="glyphicon glyphicon-file"></i>',
+                    'jpg': '<i class="glyphicon glyphicon-picture"></i>',
+                    'pdf': '<i class="glyphicon glyphicon-file"></i>',
+                    'zip': '<i class="glyphicon glyphicon-file"></i>',
+                },
+                uploadExtraData: {  //上传的时候，增加的附加参数
+                    folder: '数据导入文件', guid: $("#AttachGUID").val()
+                }
+            })  //文件上传完成后的事件
+           .on('fileuploaded', function (event, data, previewId, index) {
+                var form = data.form, files = data.files, extra = data.extra,
+                    response = data.response, reader = data.reader;
+
+                var res = data.response; //返回结果
+                if (res.Success) {
+                    showTips('上传成功');
+                    var guid = $("#AttachGUID").val();
+
+                    //提示用户Excel格式是否正常，如果正常加载数据
+                    $.ajax({
+                        url: '/YH08A_DeviceInfoRec/CheckExcelColumns?guid=' + guid,
+                        type: 'get',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.Success) {
+                                InitImport(guid); //重新刷新表格数据
+                                showToast("文件已上传，数据加载完毕！");
+
+                                //重新刷新GUID，以及清空文件，方便下一次处理
+                                RefreshExcel();
+                            }
+                            else {
+                                showToast("上传的Excel文件检查不通过。请根据页面右上角的Excel模板格式进行数据录入。", "error");
+                            }
+                        }
+                    });
+                }
+                else {
+                    showTips('上传失败');
+                }
+           });
+        }
+        //重新更新GUID的值，并清空文件
+        function RefreshExcel() {
+            $("#AttachGUID").val(newGuid());
+            $('#excelFile').fileinput('clear');//清空所有文件
+            
+            //附加参数初始化后一直不会变化，如果需要发生变化，则需要使用refresh进行更新
+            $('#excelFile').fileinput('refresh', {
+                uploadExtraData: { folder: '数据导入文件', guid: $("#AttachGUID").val() },
+            });
+        }
+
+                                    
+        //保存导入的数据
+        function SaveImport() {
+            var postData = { 'guid': importGuid };
+            postData = JSON.stringify(postData);
+
+            $.ajax({
+                url: '/YH08A_DeviceInfoRec/SaveExcelByGuid',
+                type: 'post',
+                dataType: 'json',
+                contentType: 'application/json;charset=utf-8',
+                traditional: true,
+                success: function (data) {
+                    if (data.Success) {
+                        Refresh();
+                        //保存成功  1.关闭弹出层，2.清空记录显示 3.刷新主列表
+                        showToast("保存成功");
+
+                        $("#import").modal("hide");
+                        $(bodyTag).html("");
+                    }
+                    else {
+                        showToast("保存失败:" + data.ErrorMessage, "error");
+                    }
+                },
+                data: postData
+            });
+        }
+
+    </script>
+
+}

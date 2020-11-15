@@ -1,0 +1,382 @@
+﻿<!--------------------------选择用户的弹出层---------------------------->
+<div id="selectUser" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-pencil"></i>
+                    <span id="lblSelectUserTitle" style="font-weight:bold">选择用户</span>
+                </h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffSelectUsers" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="portlet box green-meadow col-md-4">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-filter"></i>用户分类
+                            </div>
+                        </div>
+                        <div class="portlet-body flip-scroll">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#tab_1_1" data-toggle="tab">按组织机构查看</a>
+                                </li>
+                                <li>
+                                    <a href="#tab_1_2" data-toggle="tab">按角色查看</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade active in" id="tab_1_1">
+                                    <div class="row" style="padding-left:20px">
+                                        <div id="usertree_div"></div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="tab_1_2">
+                                    <div class="row" style="padding-left:20px">
+                                        <div id="usertree_role"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet box col-md-8">
+                        <div class="portlet-body flip-scroll" style="width:99%">
+                            <!-- BEGIN 表格数据-->
+                            <div class="portlet box green-meadow">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-cogs"></i>数据列表
+                                    </div>
+                                    <div class="tools">
+                                        <button type="button" onclick="addChoise()" class="btn btn-circle btn-sm green-meadow" data-toggle="modal">
+                                            <i class="fa fa-refresh"></i> 添加选择
+                                        </button>
+                                        <button type="button" onclick="clearChoise()" class="btn btn-circle btn-sm green-meadow" data-toggle="modal">
+                                            <i class="fa fa-refresh"></i> 清空
+                                        </button>
+                                        <button type="button" onclick="RefreshUsers()" class="btn btn-circle btn-sm green-meadow" data-toggle="modal">
+                                            <i class="fa fa-refresh"></i> 刷新
+                                        </button>
+                                        <button type="button" class="fullscreen btn btn-circle btn-sm green-meadow" data-original-title="全屏">
+                                            <i class="icon-size-fullscreen"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="portlet-body flip-scroll">
+                                    <div class="portlet-body">
+                                        <div class="row">
+                                            <div class="col-md-5 col-sm-5 col-xs-5">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">用户名</label>
+                                                    <div class="col-md-8">
+                                                        <input name="WHC_Name" type="text" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5 col-sm-5 col-xs-5">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">姓名</label>
+                                                    <div class="col-md-8">
+                                                        <input name="WHC_FullName" type="text" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-2 col-xs-2">
+                                                <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="RefreshUsers()">
+                                                    <i class="fa fa-search"></i>
+                                                    查 询
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <table id="gridUsers" class="table table-hover"></table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet box col-md-12">
+                        <input name="tags_Users" id="tags_Users" value="" />
+                    </div>
+                </div>
+                <div class="modal-footer bg-info">
+                    <button type="submit" class="btn blue">确定</button>
+                    <button type="button" class="btn green-meadow" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <!--添加对选择用户弹出框的功能支持-->
+    <script type="text/javascript">
+        //弹出选择用户页面初始化
+        $(function () {
+            initDeptTreeview(); //初始化部门树
+            initRoleTree();     //初始化角色树
+            SearchUsers(currentPageUsers);//初始化第一页数据
+
+            //初始化标签控件
+            $('#tags_Users').tagsInput({
+                width: 'auto',
+                height: '60px',
+                onRemoveTag: function (tag) {
+                    var i = addDisplayList.indexOf(tag);
+                    var id = addKeyList[i];
+                    removeUser(id, tag);
+                },
+                interactive: false
+            });
+
+            //初始化选择用户的表单处理
+            formValidate("ffSelectUsers", function (form) {
+                var dict = {};
+                addKeyList.forEach(function (key, index, array) {
+                    var display = addDisplayList[index];
+                    dict[key] = display;
+                });
+
+                //转换选择为JSON字符串
+                var json = JSON.stringify(dict);
+                $("#selectUser").modal("hide");
+
+                //留给调用的界面实现这个函数，实现数据的返回出来
+                ProcUserJson = json;
+                OnSelectUser(json);
+            });
+        });
+
+        //添加用户选择
+        function addChoise() {
+            //获取勾选的记录信息，然后逐一添加
+            var rows = $tableUsers.bootstrapTable('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                var userKey = rows[i].ID + '';
+                var userValue = rows[i].FullName;
+
+                //464
+                //张三
+                addUser(userKey, userValue);  
+            }
+        }
+
+        //清空用户选择
+        function clearChoise() {
+            $('#tags_Users').importTags('');
+            addKeyList = new Array();//键的集合
+            addDisplayList = new Array();//值的集合
+        }
+
+        var addKeyList = new Array();//键的集合
+        var addDisplayList = new Array();//值的集合
+        function addUser(key, name) {
+            if ($.inArray(key, addKeyList) == -1) {
+                addKeyList.push(key);
+                addDisplayList.push(name);
+
+                $('#tags_Users').addTag(name);
+            }
+        }
+        function removeUser(key, name) {
+            if ($.inArray(key, addKeyList) != -1) {
+                addKeyList.pop(key);
+                addDisplayList.pop(name);
+
+                $('#tags_Users').removeTag(name);
+            }
+        }
+
+        //清空标签并加上已选择用户的信息
+        var ProcUserJson = "";
+        function reloadEditTree() {
+            clearChoise();//清空标签
+
+            //获取页面的ProcUserJson属性，初始化显示用户
+            var json = ProcUserJson;//$("#ProcUser").val();
+            if (json != '') {
+                var dict = JSON.parse(json);
+                if (dict != null) {
+                    for (var key in dict) {
+                        var display = dict[key];
+                        addUser(key, display);  //加上已选择用户的信息
+                    };
+                }
+            }
+        }
+
+        //初始化组织机构列表
+        function initDeptTreeview() {
+            var treeUrl = '/User/GetMyDeptJsTreeJson?userId=@Session["UserId"]';
+            bindJsTree("usertree_div", treeUrl, false);
+
+            //树控件的变化事件处理
+            $('#usertree_div').on("click.jstree", function (e, data) {
+                var nodeid = $(e.target).parents('li').attr('id');
+                //console.log(nodeid)
+                if (nodeid != 'undefined') {
+                    loadDataByOu(nodeid);
+                }
+            });
+        }
+
+        //初始化角色列表
+        function initRoleTree() {
+            var treeUrl = '/Role/GetMyRoleJsTreeJson?userId=@Session["UserId"]';
+            bindJsTree("usertree_role", treeUrl, false);
+
+            //树控件的变化事件处理
+            $('#usertree_role').on("click.jstree", function (e, data) {
+                var nodeid = $(e.target).parents('li').attr('id');
+                if (nodeid != 'undefined') {
+                    var id = nodeid + '';
+                    var dept = "dept";
+                    var role = "role";
+
+                    if (id.indexOf(dept) == 0) {
+                        var newid = id.substring(dept.length, id.length);
+                        loadDataByOu(newid);
+                    }
+                    else if (id.indexOf(role) == 0) {
+                        var newid = id.substring(role.length, id.length);
+                        loadDataByRole(newid);
+                    }
+                }
+            });
+        }
+
+        //加载指定的对象数据
+        var clickId = "";
+        var where = {};//树列表条件
+        function loadDataByOu(id) {
+            var condition = { CustomedCondition: "Dept_ID=" + id };
+            where = {};//清空
+            where["CustomedCondition"] = encodeURI("Dept_ID=" + id);//使用自定义条件
+            //修改条件后需要重新刷新
+            $tableUsers.bootstrapTable('refresh', { url: queryUrlUsers, query: condition, pageNumber: 1 });
+            clickId = id;
+        }
+        //根据角色加载列表
+        function loadDataByRole(id) {
+            var condition = { Role_ID: id };
+            where = {};//清空
+            where["Role_ID"]= "Role_ID=" + id;//使用自定义条件
+            //修改条件后需要重新刷新
+            $tableUsers.bootstrapTable('refresh', { url: queryUrlUsers, query: condition, pageNumber: 1 });
+            clickId = id;
+        }
+
+    var currentPageUsers = 1, rowsUsers = 10; //分页参数：当前页，记录数
+    var $tableUsers;
+    var queryUrlUsers;
+    //初始化bootstrap-table的内容
+    function SearchUsers (page) {
+        //记录页面bootstrap-table全局变量$table，方便应用
+        queryUrlUsers = '/User/FindWithPager?rnd=' + Math.random()
+        $tableUsers = $('#gridUsers').bootstrapTable({
+            url: queryUrlUsers,                      //请求后台的URL（*）
+            method: 'GET',                      //请求方式（*）
+            //toolbar: '#toolbar',              //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: true,                   //是否显示分页（*）
+            sortable: true,                     //是否启用排序
+            sortOrder: "asc",                   //排序方式
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber: page,                      //初始化加载第一页，默认第一页,并记录
+            pageSize: rowsUsers,                     //每页的记录行数（*）
+            pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+            search: false,                      //是否显示表格搜索
+            strictSearch: true,
+            showColumns: true,                  //是否显示所有的列（选择显示的列）
+            showRefresh: true,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+            //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+            showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,                  //是否显示父子表
+            //得到查询的参数
+            queryParams : function (params) {
+                //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+
+                var temp = $("#ffSelectUsers").serializeJsonObject();
+                temp["rows"] = params.limit;                        //页面大小
+                temp["page"] = (params.offset / params.limit) + 1;  //页码
+                temp["sort"] = params.sort;                         //排序列名
+                temp["sortOrder"] = params.order;                   //排位命令（desc，asc）
+
+                //如果自定义条件费用，加入条件
+                $.each(where, function (item) {
+                    //console.log(item, where[item]);
+                    temp[item] = where[item];
+                });
+
+                //特殊格式的条件处理
+                temp["WHC_Deleted"] = 0;
+                //如果不是超级管理员，只能看本公司的人员
+                @if (Session["IsSuperAdmin"] == null || !(bool)Session["IsSuperAdmin"])
+                {
+                     @Html.Raw("temp[\"WHC_Company_ID\"] = " + Session["Company_ID"] + ";");
+                }
+
+                //temp["WHC_Age"] = $("#WHC_Age").val() + "~" + $("#WHC_Age2").val();
+                //temp["WHC_BirthDate"] = $("#WHC_BirthDate").val() + "~" + $("#WHC_BirthDate2").val();
+
+                return temp;
+            },
+            columns: [{
+                checkbox: true,
+                visible: true                  //是否显示复选框
+            },
+             { title: 'ID', field: 'ID' , width: 60, sortable: true  },
+             { title: '用户编码', field: 'HandNo' , width: 60, sortable: true  },
+             { title: '用户名/登录名', field: 'Name' , width: 80, sortable: true  },
+             { title: '真实姓名', field: 'FullName' , width: 60, sortable: true },
+             //{ title: '是否过期', field: 'IsExpire', width: 60, sortable: true, formatter:expireFormatter},
+             { title: '操作', field:'ID', width: 120, align: 'center', valign: 'middle', formatter: selectUserFormatter},
+            ],
+            onLoadSuccess: function () {
+                currentPage = page;//存储当前页码
+            },
+            onLoadError: function () {
+                showTips("数据加载失败！");
+            },
+            onDblClickRow: function (row, $element) {
+                var id = row.ID + '';
+                var name = row.FullName
+                //console.log(id + ":" + name);
+                addUser(id, name);
+            }
+        });
+    };
+        //操作栏的格式化
+        function selectUserFormatter(value, row, index) {
+            var id = value;
+            var name = row.FullName
+            //console.log(id + ":" + name);
+            var result = "";
+            result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"addUser('" + id + "', '" + name +"')\" title='添加流程处理人'><span class='fa fa-check-square-o '></span></a>";
+            return result;
+        }
+
+        //设置一页显示多少条
+        function ChangeRowsUsers() {
+            rowsUsers = $("#rowsUsers").val();
+            RefreshUsers();
+        }
+        //刷新列表
+        function RefreshUsers() {
+            where = {};//置空树形条件，使用查询框条件
+            $tableUsers.bootstrapTable('refresh');
+        }
+
+        //显示用户选择对话框
+        function SelectUsers() {
+            reloadEditTree();
+            $("#selectUser").modal("show");
+        }
+    </script>

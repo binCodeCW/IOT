@@ -1,0 +1,5 @@
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\YH.Security.Core.dll
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\YH.Security.Core.pdb
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\YH.Security.Core\obj\Debug\YH.Security.Core.csprojResolveAssemblyReference.cache
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\YH.Security.Core\obj\Debug\YH.Security.Core.dll
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\YH.Security.Core\obj\Debug\YH.Security.Core.pdb

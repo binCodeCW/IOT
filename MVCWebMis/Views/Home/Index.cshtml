@@ -1,0 +1,1376 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "";
+}
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+
+<style>
+    .table {
+        table-layout: fixed;
+    }
+</style>
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=IDvNBsejl9oqMbPF316iKsXR"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.js"></script>
+<link rel="stylesheet" href="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.css" />
+
+
+<!-- BEGIN DASHBOARD STATS -->
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <a class="dashboard-stat dashboard-stat-light blue-soft" href="#">
+            <div class="visual">
+                <i class="fa fa-comments"></i>
+            </div>
+            <div class="details">
+                <div id="YH04D_total" class="number">
+                    
+                </div>
+                <div class="desc">
+                    YH04D数量:
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <a class="dashboard-stat dashboard-stat-light red-soft" href="#">
+            <div class="visual">
+                <i class="fa fa-trophy"></i>
+            </div>
+            <div class="details">
+                <div id="YH04E_online" class="number">
+                    
+                </div>
+                <div class="desc">
+                    <div id="YH04E_total">
+                        YH04E数量:
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <a class="dashboard-stat dashboard-stat-light green-soft" href="#">
+            <div class="visual">
+                <i class="fa fa-shopping-cart"></i>
+            </div>
+            <div class="details">
+                <div id="YH08A_total" class="number">
+                    
+                </div>
+                <div class="desc">
+                    YH08A数量:
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <a class="dashboard-stat dashboard-stat-light purple-soft" href="#">
+            <div class="visual">
+                <i class="fa fa-globe"></i>
+            </div>
+            <div class="details">
+                <div id="YH01AS_total" class="number">
+                    
+                </div>
+                <div class="desc">
+                    YH01AS数量:
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+<!-- END DASHBOARD STATS -->
+
+<div class="clearfix">
+</div>
+
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-filter"></i>仪器预览
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#tab_2_1" data-toggle="tab" class="grid_tab">设备分布</a>
+            </li>
+            <li>
+                <a href="#tab_2_2" data-toggle="tab" class="grid_tab">饼图数据</a>
+            </li>
+            @*<li>
+                    <a href="#tab_2_3" data-toggle="tab" class="grid_tab">曲线图数据</a>
+                </li>*@
+        </ul>
+
+
+
+
+        <div class="tab-content">
+
+            <div class="tab-pane fade active in" id="tab_2_1">
+                <div class="demo_main">
+                    <fieldset class="demo_title">
+                        IOT设备仪器分布情况
+                    </fieldset>
+                    <fieldset class="content">
+                        <div style="height: 500px; width: 100%;" id="map">
+                        </div>
+                        <script type="text/javascript">
+                            ////构建标注的内容
+                            //var markerArr = [
+                            //    { title: "YH04D 设备id:", point: "113.264531,23.157003", address: "广东省广州市广州火车站", tel: "12306" },
+                            //    { title: "YH04E 设备id:", point: "113.330934,23.113401", address: "广东省广州市广州塔（赤岗塔） ", tel: "18555666870" },
+                            //    { title: "YH01AS 设备id:", point: "113.312213,23.147267", address: "广东省广州市广州动物园", tel: "18500000000" },
+                            //    { title: "YH08A 设备id:", point: "113.372867,23.134274", address: "广东省广州市天河公园", tel: "18566551439" }
+                            //];
+
+                            function map_init() {
+                                var map = new BMap.Map("map"); // 创建Map实例
+                                //var point = new BMap.Point(113.312213, 23.147267); //地图中心点，广州市
+                                //map.centerAndZoom(point, 13); // 初始化地图,设置中心点坐标和地图级别。
+                                // 创建地图实例
+                                var point = new BMap.Point(116.404, 39.915);
+                                // 创建点坐标
+                                map.centerAndZoom(point, 5);
+                                map.enableScrollWheelZoom(true); //启用滚轮放大缩小
+                                //地图、卫星、混合模式切换
+                                map.addControl(new BMap.MapTypeControl({ mapTypes: [BMAP_NORMAL_MAP, BMAP_SATELLITE_MAP, BMAP_HYBRID_MAP] }));
+                                //向地图中添加缩放控件
+                                var ctrlNav = new window.BMap.NavigationControl({
+                                    anchor: BMAP_ANCHOR_TOP_LEFT,
+                                    type: BMAP_NAVIGATION_CONTROL_LARGE
+                                });
+                                map.addControl(ctrlNav);
+                                //向地图中添加缩略图控件
+                                var ctrlOve = new window.BMap.OverviewMapControl({
+                                    anchor: BMAP_ANCHOR_BOTTOM_RIGHT,
+                                    isOpen: 1
+                                });
+                                //map.addControl(ctrlOve);
+                                ////向地图中添加比例尺控件
+                                //var ctrlSca = new window.BMap.ScaleControl({
+                                //    anchor: BMAP_ANCHOR_BOTTOM_LEFT
+                                //});
+                                //map.addControl(ctrlSca);
+
+                                // 加载动态数据
+                                loadMarks(map);
+
+                                //var point = new Array(); //存放标注点经纬信息的数组
+                                //var marker = new Array(); //存放标注点对象的数组
+                                //var info = new Array(); //存放提示信息窗口对象的数组
+                                //var searchInfoWindow = new Array();//存放检索信息窗口对象的数组
+                                //for (var i = 0; i < markerArr.length; i++) {
+                                //    var p0 = markerArr[i].point.split(",")[0]; //
+                                //    var p1 = markerArr[i].point.split(",")[1]; //按照原数组的point格式将地图点坐标的经纬度分别提出来
+                                //    point[i] = new window.BMap.Point(p0, p1); //循环生成新的地图点
+                                //    marker[i] = new window.BMap.Marker(point[i]); //按照地图点坐标生成标记
+                                //    map.addOverlay(marker[i]);
+                                //    marker[i].setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+                                //    //显示marker的title，marker多的话可以注释掉
+                                //    var label = new window.BMap.Label(markerArr[i].title, { offset: new window.BMap.Size(20, -10) });
+                                //    marker[i].setLabel(label);
+
+                                //    // 创建信息窗口对象
+                                //    info[i] = `<div style='margin:0;line-height:20px;padding:2px;'><br/>地址：${markerArr[i].address}<br/> 电话：${markerArr[i].tel}<br/><br/></div>`;
+
+                                //    //创建百度样式检索信息窗口对象
+                                //    searchInfoWindow[i] = new BMapLib.SearchInfoWindow(map, info[i], {
+                                //        title: markerArr[i].title,      //标题
+                                //        width: 290,             //宽度
+                                //        height: 75,             //高度
+                                //        panel: "panel",         //检索结果面板
+                                //        enableAutoPan: true,     //自动平移
+                                //        searchTypes: [
+                                //            BMAPLIB_TAB_SEARCH,   //周边检索
+                                //            BMAPLIB_TAB_TO_HERE,  //到这里去
+                                //            BMAPLIB_TAB_FROM_HERE //从这里出发
+                                //        ]
+                                //    });
+
+                                //    //添加点击事件
+                                //    marker[i].addEventListener("click",
+                                //        (function (k) {
+                                //            // js 闭包
+                                //            return function () {
+                                //                //将被点击marker置为中心
+                                //                //map.centerAndZoom(point[k], 18);
+                                //                //在marker上打开检索信息窗口
+                                //                searchInfoWindow[k].open(marker[k]);
+                                //            }
+                                //        })(i)
+                                //    );
+                                //}
+                            }
+                            //异步调用百度js
+                            function map_load() {
+                                var load = document.createElement("script");
+                                load.src = "http://api.map.baidu.com/api?v=2.0&ak=IDvNBsejl9oqMbPF316iKsXR&callback=map_init";
+                                document.body.appendChild(load);
+                            }
+                            window.onload = map_load;
+                        </script>
+                    </fieldset>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="tab_2_2">
+                <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-bar-chart font-green-sharp hide"></i>
+                                    <span class="caption-subject font-green-sharp bold uppercase">图表1</span>
+                                </div>
+                                <div class="actions">
+                                    <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                        <label class="btn btn-transparent purple btn-circle btn-sm active">
+                                            <input type="radio" name="options" class="toggle" id="option1">更多...
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="tab-char" id="container1" style="height: 300px;max-width:500px"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-bar-chart font-green-sharp hide"></i>
+                                    <span class="caption-subject font-green-sharp bold uppercase">3D图表2</span>
+                                </div>
+                                <div class="actions">
+                                    <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                        <label class="btn btn-transparent purple btn-circle btn-sm active">
+                                            <input type="radio" name="options" class="toggle" id="option1">更多...
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="tab-char" id="container2" style="height: 300px;max-width:500px"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="clearfix">
+                    </div>
+
+                    <div class="col-md-6 col-sm-6">
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-bar-chart font-green-sharp hide"></i>
+                                    <span class="caption-subject font-green-sharp bold uppercase">仪表图3</span>
+                                </div>
+                                <div class="actions">
+                                    <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                        <label class="btn btn-transparent purple btn-circle btn-sm active">
+                                            <input type="radio" name="options" class="toggle" id="option1">更多...
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="tab-char" id="container3" style="height: 300px;max-width:500px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-bar-chart font-green-sharp hide"></i>
+                                    <span class="caption-subject font-green-sharp bold uppercase">3D柱状图4</span>
+                                </div>
+                                <div class="actions">
+                                    <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                        <label class="btn btn-transparent purple btn-circle btn-sm active">
+                                            <input type="radio" name="options" class="toggle" id="option1">更多...
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="tab-char" id="container4" style="height:300px;max-width:500px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_2_3">
+                <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-bar-chart font-green-sharp hide"></i>
+                                    <span class="caption-subject font-green-sharp bold uppercase">柱状图1</span>
+                                </div>
+                                <div class="actions">
+                                    <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                        <label class="btn btn-transparent purple btn-circle btn-sm active">
+                                            <input type="radio" name="options" class="toggle" id="option1">更多...
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="tab-char" id="lineContainer1" style="height:300px;max-width:500px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-bar-chart font-green-sharp hide"></i>
+                                    <span class="caption-subject font-green-sharp bold uppercase">曲线图2</span>
+                                </div>
+                                <div class="actions">
+                                    <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                        <label class="btn btn-transparent purple btn-circle btn-sm active">
+                                            <input type="radio" name="options" class="toggle" id="option1">更多...
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="tab-char" id="lineContainer2" style="height:300px;max-width:500px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="clearfix">
+                    </div>
+
+                    <div class="col-md-6 col-sm-6">
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-bar-chart font-green-sharp hide"></i>
+                                    <span class="caption-subject font-green-sharp bold uppercase">散点图3</span>
+                                </div>
+                                <div class="actions">
+                                    <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                        <label class="btn btn-transparent purple btn-circle btn-sm active">
+                                            <input type="radio" name="options" class="toggle" id="option1">更多...
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="tab-char" id="lineContainer3" style="height:250px;max-width:500px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-bar-chart font-green-sharp hide"></i>
+                                    <span class="caption-subject font-green-sharp bold uppercase">面积图4</span>
+                                </div>
+                                <div class="actions">
+                                    <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                        <label class="btn btn-transparent purple btn-circle btn-sm active">
+                                            <input type="radio" name="options" class="toggle" id="option1">更多...
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="tab-char" id="lineContainer4" style="height:250px;max-width:500px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section footerScript {
+    <script src="~/Content/JQueryTools/Highcharts/js/highcharts.js"></script>
+    <script src="~/Content/JQueryTools/Highcharts/js/highcharts-more.js"></script>
+    <script src="~/Content/JQueryTools/Highcharts/js/highcharts-3d.js"></script>
+    <script src="~/Content/JQueryTools/Highcharts/js/themes/grid.js"></script>
+    <script src="~/Content/JQueryTools/Highcharts/js/modules/exporting.js"></script>
+    <script>
+        $(function () {
+            GetTodo();//待办
+            GetDone();//已办
+            GetAsset();//我的资产信息
+        });
+
+        //仪器分布初始化
+        $(function () {
+            changeSize();
+        });
+
+        function changeSize() {
+            var showMap = document.getElementById("map");
+            //showMap.style.width = (document.documentElement.clientWidth - 200) + "px";
+            showMap.style.height = (document.documentElement.clientHeight - 150) + "px";
+        }
+
+        //待办
+        function GetTodo() {
+            var condition = "todo:";
+            //获取前五个
+            $.getJSON("/Apply/FindApplyByTag?r=" + Math.random() + "&page=1&rows=5&CustomedCondition=" + condition, function (data) {
+                $("#grid_todo_body").html("");
+
+                $.each(data.rows, function (i, item) {
+                    var tr = "<tr>";
+                    tr += "<td>" + formatLink(item.ID, item.Title) + "</td>";
+                    tr += "<td>" + item.LastProcTime + "</td>";
+                    tr += "<td>" + item.LastReciever + "</td>";
+                    tr += "</tr>";
+                    $("#grid_todo_body").append(tr);
+                });
+            });
+        };
+
+        //已办
+        function GetDone() {
+            var condition = "done:";
+            //获取前五个
+            $.getJSON("/Apply/FindApplyByTag?r=" + Math.random() + "&page=1&rows=5&CustomedCondition=" + condition, function (data) {
+                $("#grid_done_body").html("");
+
+                $.each(data.rows, function (i, item) {
+                    var tr = "<tr>";
+                    tr += "<td>" + formatLink(item.ID, item.Title) + "</td>";
+                    tr += "<td>" + item.LastProcTime + "</td>";
+                    tr += "<td>" + item.LastReciever + "</td>";
+                    tr += "</tr>";
+                    $("#grid_done_body").append(tr);
+                });
+            });
+        };
+
+        //我的资产
+        function GetAsset() {
+            Search(currentPage);
+        }
+
+        //操作栏的格式化
+        function formatLink(id, title) {
+            var result = "";
+            result += "<a href='javascript:;' onclick=\"EditViewById('" + id + "')\" title='查看'>" + title + "</a>";
+            return result;
+        }
+        //编辑或者查看指定记录
+        function EditViewById(ID) {
+            if (ID == "") {
+                showTips("请选择一条记录");
+                return;
+            }
+
+            //获取表单的查看明细URL，然后组合URL跳转到查看
+            $.getJSON("/Apply/FindByID?r=" + Math.random() + "&id=" + ID, function (info) {
+                var formId = info.FormId;
+
+                $.getJSON("/Form/FindByID?r=" + Math.random() + "&id=" + formId, function (info) {
+                    var ApplyUrl2 = info.ApplyUrl2;
+                    if (ApplyUrl2 != null && ApplyUrl2 != '') {
+                        var viewUrl = ApplyUrl2 + '?id=' + ID;
+                        window.location.href = viewUrl;
+                    }
+                });
+            });
+        }
+
+        var currentPage = 1, rows = 10; //分页参数：当前页，记录数
+        var $table;
+        var queryUrl;
+        var where = {};//自定义条件
+        //初始化bootstrap-table的内容
+        function Search(page) {
+            //记录页面bootstrap-table全局变量$table，方便应用
+            queryUrl = '/Asset/FindWithPager?rnd=' + Math.random()
+            $table = $('#grid_asset').bootstrapTable({
+                url: queryUrl,                   	//请求后台的URL（*）
+                method: 'GET',                      //请求方式（*）
+                //toolbar: '#toolbar',              //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: true,                     //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: page,                   //初始化加载第一页，默认第一页,并记录
+                pageSize: rows,                     //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                search: false,                      //是否显示表格搜索
+                strictSearch: false,
+                showColumns: false,                 //是否显示所有的列（选择显示的列）
+                showRefresh: false,                 //是否显示刷新按钮
+                showToggle: false,                  //是否显示详细视图和列表视图的切换按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+                //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                  //是否显示父子表
+                //得到查询的参数
+                queryParams: function (params) {
+                    //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+
+                    //var temp = {
+                    //    rows: params.limit,                         //页面大小
+                    //    page: (params.offset / params.limit) + 1,   //页码
+                    //    sort: params.sort,      //排序列名
+                    //    sortOrder: params.order //排位命令（desc，asc）
+                    //};
+                    //return temp;
+
+                    var temp = {};//$("#ffSearch").serializeJsonObject();
+                    temp["rows"] = params.limit;                        //页面大小
+                    temp["page"] = (params.offset / params.limit) + 1;  //页码
+                    temp["sort"] = params.sort;                         //排序列名
+                    temp["sortOrder"] = params.order;                   //排位命令（desc，asc）
+
+                    //如果自定义条件非空，加入条件
+                    $.each(where, function (item) {
+                        //console.log(item, where[item]);
+                        temp[item] = where[item];
+                    });
+
+                    //特殊格式的条件处理
+                    //temp["WHC_Operator"] = "admin";
+                    //temp["WHC_Age"] = $("#WHC_Age").val() + "~" + $("#WHC_Age2").val();
+                    //temp["WHC_Edittime"] = $("#WHC_Edittime").val() + "~" + $("#WHC_Edittime2").val();
+
+                    return temp;
+                },
+                columns: [{
+                    checkbox: true,
+                    visible: true                  //是否显示复选框
+                },
+                    { title: '编号', field: 'ID' /*, width: 80, sortable: true */ },
+                    { title: '资产编码', field: 'Code' /*, width: 80, sortable: true */ },
+                    { title: '资产名称', field: 'Name' /*, width: 80, sortable: true */ },
+                    { title: '使用部门', field: 'CurrDept' /*, width: 80, sortable: true */ },
+                    { title: '存放地点', field: 'KeepAddr' /*, width: 80, sortable: true */ },
+                    { title: '单位', field: 'Unit' /*, width: 80, sortable: true */ },
+                    { title: '数量', field: 'Qty' /*, width: 80, sortable: true */ },
+                    { title: '金额', field: 'OriginValue' /*, width: 80, sortable: true */ },
+                    { title: '在用类型', field: 'UseType' /*, width: 80, sortable: true */ },
+                    { title: '操作日期', field: 'OperateDate', width: 80, sortable: true, formatter: dateFormatter },
+                ],
+                onLoadSuccess: function () {
+                    currentPage = page;//存储当前页码
+                },
+                onLoadError: function () {
+                    showTips("数据加载失败！");
+                },
+                onDblClickRow: function (row, $element) {
+                    var id = row.ID;
+                    EditViewById(id, 'view');
+                }
+            });
+        };
+
+        //图片格式化
+        function imageFormatter(value, row, index) {
+            return "<img src='" + value + "' style='width:50px; height:50px;' />";
+        }
+        //日期字段格式化
+        function dateFormatter(value, row, index) {
+            return getDateStr(value);
+        }
+        //连接字段格式化
+        function linkFormatter(value, row, index) {
+            return "<a href='" + value + "' title='单击打开连接' target='_blank'>" + value + "</a>";
+        }
+        //Email字段格式化
+        function emailFormatter(value, row, index) {
+            return "<a href='mailto:" + value + "' title='单击打开连接'>" + value + "</a>";
+        }
+        //性别字段格式化
+        function sexFormatter(value) {
+            if (value == "女") { color = 'Red'; }
+            else if (value == "男") { color = 'Green'; }
+            else { color = 'Yellow'; }
+
+            return '<div  style="color: ' + color + '">' + value + '</div>';
+        }
+        //操作栏的格式化
+        function actionFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + id + "', view='view')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
+            result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"DeleteByIds('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+
+            return result;
+        }
+        //状态格式化
+        function statusFormatter(value, row, index) {
+            var result = "";
+            if (value == "处理中") {
+                result = "<spanc class='label' style='background:#57B756'> " + value + " </span>";
+            }
+            else if (value == "已完成") {
+                result = "<span class='label label-primary'> " + value + " </span>";
+            }
+            else if (value == "已退回") {
+                result = "<span class='label label-warning'> " + value + " </span>";
+            }
+            else if (value == "已撤消") {
+                result = "<span class='label label-error'> " + value + " </span>";
+            }
+            return result;
+        }
+
+        //自定义函数处理queryParams的批量增加
+        $.fn.serializeJsonObject = function () {
+            var json = {};
+            var form = this.serializeArray();
+            $.each(form, function () {
+                if (json[this.name]) {
+                    if (!json[this.name].push) {
+                        json[this.name] = [json[this.name]];
+                    }
+                    json[this.name].push();
+                } else {
+                    json[this.name] = this.value || '';
+                }
+            });
+            return json;
+        }
+
+        //刷新列表
+        function Refresh() {
+            //Search(currentPage);
+            where = {};
+            $table.bootstrapTable('refresh');
+        }
+    </script>
+
+    <script type="text/javascript">
+        //初始化对象
+        $(function () {
+            var chart1 = new Highcharts.Chart({
+                chart: {
+                    renderTo: "container1",
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                },
+                title: {
+                    text: '集团分子公司人员组成'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.y}</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
+                        },
+                        //showInLegend: true
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    name: '人员数量',
+                    data: []
+                }]
+            });
+
+            //通过Ajax获取图表1数据
+            $.ajaxSettings.async = false;
+            var data1 = [];
+            $.getJSON("/User/GetCompanyUserCountJson", function (dict) {
+                for (var key in dict) {
+                    if (dict.hasOwnProperty(key)) {
+                        data1.push([key, dict[key]]);
+                    }
+                };
+                chart1.series[0].setData(data1);
+            });
+
+            var chart2 = new Highcharts.Chart({
+                chart: {
+                    renderTo: "container2",
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie',
+                    options3d: {
+                        enabled: true,
+                        alpha: 45,
+                        beta: 0
+                    }
+                },
+                title: {
+                    text: '集团分子公司部门组成'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.y}</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        depth: 35,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.name}'
+                        },
+                        showInLegend: true
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    name: '部门数量',
+                    data: []
+                }]
+            });
+            //通过Ajax获取图表1数据
+            $.ajaxSettings.async = false;
+            var data2 = [];
+            $.getJSON("/OU/GetCompanyDeptCountJson", function (dict) {
+                for (var key in dict) {
+                    if (dict.hasOwnProperty(key)) {
+                        data2.push([key, dict[key]]);
+                    }
+                };
+                chart2.series[0].setData(data2);
+            });
+
+            $('#container3').highcharts({
+                chart: {
+                    type: 'gauge',
+                    plotBackgroundColor: null,
+                    plotBackgroundImage: null,
+                    plotBorderWidth: 0,
+                    plotShadow: false
+                },
+                title: {
+                    text: 'Speedometer'
+                },
+                pane: {
+                    startAngle: -150,
+                    endAngle: 150,
+                    background: [{
+                        backgroundColor: {
+                            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                            stops: [
+                                [0, '#FFF'],
+                                [1, '#333']
+                            ]
+                        },
+                        borderWidth: 0,
+                        outerRadius: '109%'
+                    }, {
+                        backgroundColor: {
+                            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                            stops: [
+                                [0, '#333'],
+                                [1, '#FFF']
+                            ]
+                        },
+                        borderWidth: 1,
+                        outerRadius: '107%'
+                    }, {
+                        // default background
+                    }, {
+                        backgroundColor: '#DDD',
+                        borderWidth: 0,
+                        outerRadius: '105%',
+                        innerRadius: '103%'
+                    }]
+                },
+
+                // the value axis
+                yAxis: {
+                    min: 0,
+                    max: 200,
+
+                    minorTickInterval: 'auto',
+                    minorTickWidth: 1,
+                    minorTickLength: 10,
+                    minorTickPosition: 'inside',
+                    minorTickColor: '#666',
+
+                    tickPixelInterval: 30,
+                    tickWidth: 2,
+                    tickPosition: 'inside',
+                    tickLength: 10,
+                    tickColor: '#666',
+                    labels: {
+                        step: 2,
+                        rotation: 'auto'
+                    },
+                    title: {
+                        text: 'km/h'
+                    },
+                    plotBands: [{
+                        from: 0,
+                        to: 120,
+                        color: '#55BF3B' // green
+                    }, {
+                        from: 120,
+                        to: 160,
+                        color: '#DDDF0D' // yellow
+                    }, {
+                        from: 160,
+                        to: 200,
+                        color: '#DF5353' // red
+                    }]
+                },
+                series: [{
+                    name: 'Speed',
+                    data: [80],
+                    tooltip: {
+                        valueSuffix: ' km/h'
+                    }
+                }]
+            },
+                // Add some life
+                function (chart) {
+                    if (!chart.renderer.forExport) {
+                        setInterval(function () {
+                            var point = chart.series[0].points[0],
+                                newVal,
+                                inc = Math.round((Math.random() - 0.5) * 20);
+
+                            newVal = point.y + inc;
+                            if (newVal < 0 || newVal > 200) {
+                                newVal = point.y - inc;
+                            }
+
+                            point.update(newVal);
+
+                        }, 3000);
+                    }
+                });
+
+            var chart4 = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container4',
+                    type: 'column',
+                    margin: 75,
+                    options3d: {
+                        enabled: true,
+                        alpha: 15,
+                        beta: 15,
+                        depth: 50,
+                        viewDistance: 25
+                    }
+                },
+                title: {
+                    text: 'Chart rotation demo'
+                },
+                subtitle: {
+                    text: 'Test options by dragging the sliders below'
+                },
+                plotOptions: {
+                    column: {
+                        depth: 25
+                    }
+                },
+                series: [
+                    {
+                        data: null//[29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+                    }
+                ]
+            });
+
+            //模拟动态设置，chartData数据可以通过Ajax动态获取
+            var chartData = [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4];
+            chart4.series[0].setData(chartData);
+
+
+            //柱状图的展示
+            var linechart1 = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'lineContainer1',
+                    type: 'column',
+                },
+                title: {
+                    text: '销售出货日报表'
+                },
+                xAxis: {
+                    categories: []//['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
+                },
+                yAxis: {
+                    allowDecimals: false,
+                    min: 0,
+                    title: {
+                        text: '销售金额'
+                    }
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.x + '</b><br/>' +
+                            this.series.name + ': ' + this.y + '<br/>' +
+                            'Total: ' + this.point.stackTotal;
+                    }
+                },
+                plotOptions: {
+                    column: {
+                        stacking: 'normal'
+                    }
+                },
+                series: [
+                    //{
+                    //    name: 'John',
+                    //    data: [5, 3, 4, 7, 2],
+                    //    stack: 'male'
+                    //}, {
+                    //    name: 'Joe',
+                    //    data: [3, 4, 4, 2, 5],
+                    //    stack: 'male'
+                    //}, {
+                    //    name: 'Jane',
+                    //    data: [2, 5, 6, 2, 1],
+                    //    stack: 'female'
+                    //}, {
+                    //    name: 'Janet',
+                    //    data: [3, 0, 4, 4, 3],
+                    //    stack: 'female'
+                    //}
+                ]
+            });
+
+            //设置数据，这里可以通过JSON获取
+            var category = ['2018-7-1', '2018-7-2', '2018-7-3', '2018-7-4', '2018-7-5'];
+            var seriesData = [{
+                name: 'AB',
+                data: [500, 300, 400, 700, 200]
+            }, {
+                name: 'BC',
+                data: [300, 400, 400, 200, 500]
+            }, {
+                name: 'CD',
+                data: [200, 500, 600, 200, 100]
+            }, {
+                name: 'EF',
+                data: [300, 0, 400, 400, 300]
+            }];
+            //先移除选来的series对象，然后加入
+            while (linechart1.series.length > 0) {
+                linechart1.series[0].remove(true);
+            }
+            for (var i = 0; i < seriesData.length; i++) {
+                //加入categories
+                linechart1.xAxis[0].setCategories(category);
+                //加入series
+                linechart1.addSeries(seriesData[i]);
+            }
+
+
+            var linechart2 = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'lineContainer2',
+                    type: 'column',
+                },
+                title: {
+                    text: 'Monthly Average Temperature',
+                    x: -20 //center
+                },
+                subtitle: {
+                    text: 'Source: WorldClimate.com',
+                    x: -20
+                },
+                xAxis: {
+                    categories: []//['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                },
+                yAxis: {
+                    title: {
+                        text: 'Temperature (°C)'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    valueSuffix: '°C'
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: [
+                    //{
+                    //    name: 'Tokyo',
+                    //    data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+                    //}, {
+                    //    name: 'New York',
+                    //    data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
+                    //}, {
+                    //    name: 'Berlin',
+                    //    data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0]
+                    //}, {
+                    //    name: 'London',
+                    //    data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+                    //}
+                ]
+            });
+
+            //设置数据，这里可以通过JSON获取
+            var category2 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            var seriesData2 = [{
+                name: 'Tokyo',
+                data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+            }, {
+                name: 'New York',
+                data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
+            }, {
+                name: 'Berlin',
+                data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0]
+            }, {
+                name: 'London',
+                data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+            }];
+            //先移除选来的series对象，然后加入
+            while (linechart2.series.length > 0) {
+                linechart2.series[0].remove(true);
+            }
+            for (var i = 0; i < seriesData2.length; i++) {
+                linechart2.xAxis[0].setCategories(category2);
+                linechart2.addSeries(seriesData2[i]);
+            }
+
+
+            var lineContainer3 = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'lineContainer3',
+                    type: 'bubble',
+                    zoomType: 'xy'
+                },
+                title: {
+                    text: 'Highcharts Bubbles'
+                },
+                series: [
+                    //{
+                    //    data: [[97, 36, 79], [94, 74, 60], [68, 76, 58], [64, 87, 56], [68, 27, 73], [74, 99, 42], [7, 93, 87], [51, 69, 40], [38, 23, 33], [57, 86, 31]]
+                    //}, {
+                    //    data: [[25, 10, 87], [2, 75, 59], [11, 54, 8], [86, 55, 93], [5, 3, 58], [90, 63, 44], [91, 33, 17], [97, 3, 56], [15, 67, 48], [54, 25, 81]]
+                    //}, {
+                    //    data: [[47, 47, 21], [20, 12, 4], [6, 76, 91], [38, 30, 60], [57, 98, 64], [61, 17, 80], [83, 60, 13], [67, 78, 75], [64, 12, 10], [30, 77, 82]]
+                    //}
+                ]
+            });
+
+            //设置数据，这里可以通过JSON获取
+            var seriesData3 = [{
+                data: [[97, 36, 79], [94, 74, 60], [68, 76, 58], [64, 87, 56], [68, 27, 73], [74, 99, 42], [7, 93, 87], [51, 69, 40], [38, 23, 33], [57, 86, 31]]
+            }, {
+                data: [[25, 10, 87], [2, 75, 59], [11, 54, 8], [86, 55, 93], [5, 3, 58], [90, 63, 44], [91, 33, 17], [97, 3, 56], [15, 67, 48], [54, 25, 81]]
+            }, {
+                data: [[47, 47, 21], [20, 12, 4], [6, 76, 91], [38, 30, 60], [57, 98, 64], [61, 17, 80], [83, 60, 13], [67, 78, 75], [64, 12, 10], [30, 77, 82]]
+            }];
+            //先移除选来的series对象，然后加入
+            while (lineContainer3.series.length > 0) {
+                lineContainer3.series[0].remove(true);
+            }
+            for (var i = 0; i < seriesData3.length; i++) {
+                lineContainer3.addSeries(seriesData3[i]);
+            }
+
+
+            var lineContainer4 = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'lineContainer4',
+                    type: 'area'
+                },
+                title: {
+                    text: 'US and USSR nuclear stockpiles'
+                },
+                subtitle: {
+                    text: 'Source: <a href="http://thebulletin.metapress.com/content/c4120650912x74k7/fulltext.pdf">' +
+                        'thebulletin.metapress.com</a>'
+                },
+                xAxis: {
+                    allowDecimals: false,
+                    labels: {
+                        formatter: function () {
+                            return this.value; // clean, unformatted number for year
+                        }
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Nuclear weapon states'
+                    },
+                    labels: {
+                        formatter: function () {
+                            return this.value / 1000 + 'k';
+                        }
+                    }
+                },
+                tooltip: {
+                    pointFormat: '{series.name} produced <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+                },
+                plotOptions: {
+                    area: {
+                        pointStart: 1940,
+                        marker: {
+                            enabled: false,
+                            symbol: 'circle',
+                            radius: 2,
+                            states: {
+                                hover: {
+                                    enabled: true
+                                }
+                            }
+                        }
+                    }
+                },
+                series: [
+                    //{
+                    //    name: 'USA',
+                    //    data: [null, null, null, null, null, 6, 11, 32, 110, 235, 369, 640,
+                    //        1005, 1436, 2063, 3057, 4618, 6444, 9822, 15468, 20434, 24126,
+                    //        27387, 29459, 31056, 31982, 32040, 31233, 29224, 27342, 26662,
+                    //        26956, 27912, 28999, 28965, 27826, 25579, 25722, 24826, 24605,
+                    //        24304, 23464, 23708, 24099, 24357, 24237, 24401, 24344, 23586,
+                    //        22380, 21004, 17287, 14747, 13076, 12555, 12144, 11009, 10950,
+                    //        10871, 10824, 10577, 10527, 10475, 10421, 10358, 10295, 10104]
+                    //}, {
+                    //    name: 'USSR/Russia',
+                    //    data: [null, null, null, null, null, null, null, null, null, null,
+                    //    5, 25, 50, 120, 150, 200, 426, 660, 869, 1060, 1605, 2471, 3322,
+                    //    4238, 5221, 6129, 7089, 8339, 9399, 10538, 11643, 13092, 14478,
+                    //    15915, 17385, 19055, 21205, 23044, 25393, 27935, 30062, 32049,
+                    //    33952, 35804, 37431, 39197, 45000, 43000, 41000, 39000, 37000,
+                    //    35000, 33000, 31000, 29000, 27000, 25000, 24000, 23000, 22000,
+                    //    21000, 20000, 19000, 18000, 18000, 17000, 16000]
+                    //}
+                ]
+            });
+
+            //设置数据，这里可以通过JSON获取
+            var seriesData4 = [{
+                name: 'USA',
+                data: [null, null, null, null, null, 6, 11, 32, 110, 235, 369, 640,
+                    1005, 1436, 2063, 3057, 4618, 6444, 9822, 15468, 20434, 24126,
+                    27387, 29459, 31056, 31982, 32040, 31233, 29224, 27342, 26662,
+                    26956, 27912, 28999, 28965, 27826, 25579, 25722, 24826, 24605,
+                    24304, 23464, 23708, 24099, 24357, 24237, 24401, 24344, 23586,
+                    22380, 21004, 17287, 14747, 13076, 12555, 12144, 11009, 10950,
+                    10871, 10824, 10577, 10527, 10475, 10421, 10358, 10295, 10104]
+            }, {
+                name: 'USSR/Russia',
+                data: [null, null, null, null, null, null, null, null, null, null,
+                    5, 25, 50, 120, 150, 200, 426, 660, 869, 1060, 1605, 2471, 3322,
+                    4238, 5221, 6129, 7089, 8339, 9399, 10538, 11643, 13092, 14478,
+                    15915, 17385, 19055, 21205, 23044, 25393, 27935, 30062, 32049,
+                    33952, 35804, 37431, 39197, 45000, 43000, 41000, 39000, 37000,
+                    35000, 33000, 31000, 29000, 27000, 25000, 24000, 23000, 22000,
+                    21000, 20000, 19000, 18000, 18000, 17000, 16000]
+            }];
+            //先移除选来的series对象，然后加入
+            while (lineContainer4.series.length > 0) {
+                lineContainer4.series[0].remove(true);
+            }
+            for (var i = 0; i < seriesData4.length; i++) {
+                lineContainer4.addSeries(seriesData4[i]);
+            }
+
+
+            //TAB页面变化的时候，调整图表宽度
+            $('.grid_tab').on('shown.bs.tab', function () {
+                var target = $(this).attr('href');
+                var controls = $(target).find('.tab-char');
+                for (var i = 0; i < controls.length; i++) {
+                    $(controls[i]).highcharts().reflow();
+                }
+            });
+
+            //窗口大小变化的时候，调整图表宽度
+            $(window).resize(function () {
+                var controls = $(document).find('div.tab-char');
+                for (var i = 0; i < controls.length; i++) {
+                    $(controls[i]).highcharts().reflow();
+                }
+            });
+
+            //每隔一段时间执行切换Tab页面，到达Tab数量归零处理
+            var num = 0;
+            function switchTab() {
+                $('.nav-tabs li:eq(' + num + ') a').tab('show');
+                num += 1;
+                var length = $('.nav-tabs li').length;
+                if (num == length) {
+                    num = 0;
+                }
+            }
+            //var t = setInterval(switchTab, 3000);//每秒切换一个Tab
+        });
+
+
+        loadYH04DTotal(bindYH04DTotal);
+
+        function loadYH04DTotal(f) {
+            var url = "/YH_DeviceInfo/FindWithPager?rows=1&page=1&sortOrder=asc&WHC_OLINESTATUS=true&WHC_DeviceType=YH04D";
+            $.getJSON(url, function (res) {
+                //console.log("device total: %o", res);
+                f(res);
+            });
+        }
+
+        function bindYH04DTotal(data) {
+            //console.log("bind device total %o", data);
+            $("#YH04D_total").html(data.total || 0);
+        }
+
+        loadYH04EOnline(bindYH04EOnline);
+        loadYH04ETotal(bindYH04ETotal);
+
+        function loadYH04EOnline(f) {
+            var url = "/YH_DeviceInfo/FindWithPager?rows=1&page=1&sortOrder=asc&WHC_OLINESTATUS=true&WHC_DeviceType=YH04E";
+            $.getJSON(url, function (res) {
+                //console.log("device total: %o", res);
+                f(res);
+            });
+        }
+        function loadYH04ETotal(f) {
+            var url = "/YH_DeviceInfo/FindWithPager?rows=1&page=1&sortOrder=asc&WHC_DeviceType=YH04E";
+            $.getJSON(url, function (res) {
+                //console.log("device total: %o", res);
+                f(res);
+            });
+        }
+
+        function bindYH04EOnline(data) {
+            //console.log("bind device total %o", data);
+            $("#YH04E_online").html(data.total || 0);
+        }
+        function bindYH04ETotal(data) {
+            //console.log("bind device total %o", data);
+            $("#YH04E_total").append(data.total || 0);//html("YH04E数量: %0", data.total || 0);
+        }
+
+        loadYH08ATotal(bindYH08ATotal);
+
+        function loadYH08ATotal(f) {
+            var url = "/YH_DeviceInfo/FindWithPager?rows=1&page=1&sortOrder=asc&WHC_OLINESTATUS=true&WHC_DeviceType=YH08A";
+            $.getJSON(url, function (res) {
+                //console.log("device total: %o", res);
+                f(res);
+            });
+        }
+
+        function bindYH08ATotal(data) {
+            //console.log("bind device total %o", data);
+            $("#YH08A_total").html(data.total || 0);
+        }
+
+        loadYH01ASTotal(bindYH01ASTotal);
+
+        function loadYH01ASTotal(f) {
+            var url = "/YH_DeviceInfo/FindWithPager?rows=1&page=1&sortOrder=asc&WHC_OLINESTATUS=true&WHC_DeviceType=YH01AS";
+            $.getJSON(url, function (res) {
+                //console.log("device total: %o", res);
+                f(res);
+            });
+        }
+
+        function bindYH01ASTotal(data) {
+            //console.log("bind device total %o", data);
+            $("#YH01AS_total").html(data.total || 0);
+        }
+
+
+        function loadMarks(map) {
+            // 取10条
+            var url = "/YH_DeviceInfo/FindWithPager?rnd=0.3876455777993706&WHC_DeviceId=&WHC_DeviceType=&WHC_SimpleName=&WHC_Province=&WHC_City=&WHC_District=&WHC_Area=&WHC_Address=&WHC_ZipCode=&WHC_Telephone=&WHC_Fax=&WHC_Contact=&WHC_ContactPhone=&WHC_ContactMobile=&WHC_Email=&WHC_CustomerType=&WHC_Grade=&WHC_CreditStatus=&WHC_Importance=&WHC_Note=&WHC_IotID=&WHC_Longtitude=&WHC_Latitude=&WHC_OLINESTATUS=true&rows=10&page=1&sortOrder=asc";
+            // 指定仪器编号请求
+            //var url = "/YH_DeviceInfo/FindWithPager?CustomedCondition=OlineStatus = 1 and DeviceId in ('40200005','1219001','210412625','40200001')";
+            $.getJSON(url, function (res) {
+                //console.log(res);
+                if (!(res && res.total && res.total > 0)) return;
+                var markerArr = [];
+                $.each(res.rows, function (index, item) {
+                    markerArr.push({
+                        title: "".concat(item.DeviceType).concat(" ").concat(item.DeviceId),
+                        point: "".concat(item.Longtitude).concat(",").concat(item.Latitude), // "113.264531,23.157003"
+                        address: "".concat(item.Province || "").concat(item.District || "").concat(item.Address || ""),
+                        tel: item.Telephone || ""
+                    });
+                });
+
+                var point = new Array(); //存放标注点经纬信息的数组
+                var marker = new Array(); //存放标注点对象的数组
+                var info = new Array(); //存放提示信息窗口对象的数组
+                var searchInfoWindow = new Array();//存放检索信息窗口对象的数组
+                for (var i = 0; i < markerArr.length; i++) {
+                    var p0 = markerArr[i].point.split(",")[0]; //
+                    var p1 = markerArr[i].point.split(",")[1]; //按照原数组的point格式将地图点坐标的经纬度分别提出来
+                    point[i] = new window.BMap.Point(p0, p1); //循环生成新的地图点
+                    marker[i] = new window.BMap.Marker(point[i]); //按照地图点坐标生成标记
+                    map.addOverlay(marker[i]);
+                    marker[i].setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+                    //显示marker的title，marker多的话可以注释掉
+                    //var label = new window.BMap.Label(markerArr[i].title, { offset: new window.BMap.Size(20, -10) });
+                    //marker[i].setLabel(label);
+
+                    // 创建信息窗口对象
+                    info[i] = `
+        <div style='margin:0;line-height:20px;padding:2px;'>
+            <br/>地址：${markerArr[i].address}
+            <br/>医院电话：${markerArr[i].tel}
+            <br/>经纬度: ${markerArr[i].point}
+            <br/>
+            <br/>
+        </div>`;
+
+                    //创建百度样式检索信息窗口对象
+                    searchInfoWindow[i] = new BMapLib.SearchInfoWindow(map, info[i], {
+                        title: markerArr[i].title, // 标题
+                        width: 290, // 宽度
+                        height: 95, // 高度
+                        panel: "panel",         //检索结果面板
+                        enableAutoPan: true, // 自动平移
+                        searchTypes: [
+                             BMAPLIB_TAB_SEARCH,   //周边检索
+                             BMAPLIB_TAB_TO_HERE,  //到这里去
+                             BMAPLIB_TAB_FROM_HERE //从这里出发
+                        ]
+                    });
+
+                    //添加点击事件
+                    marker[i].addEventListener("click",
+                        (function (k) {
+                            // js 闭包
+                            return function () {
+                                //将被点击marker置为中心
+                                //map.centerAndZoom(point[k], 18);
+                                //在marker上打开检索信息窗口
+                                searchInfoWindow[k].open(marker[k]);
+                            }
+                        })(i)
+                    );
+                }
+            });
+        }
+
+    </script>
+}

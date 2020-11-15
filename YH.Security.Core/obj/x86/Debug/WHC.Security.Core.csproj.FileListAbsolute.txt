@@ -1,0 +1,6 @@
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Security.Core\obj\x86\Debug\WHC.Security.Core.csprojResolveAssemblyReference.cache
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\Lib\WHC.Security.Core.xml
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\Lib\WHC.Security.Core.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\Lib\WHC.Security.Core.pdb
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Security.Core\obj\x86\Debug\WHC.Security.Core.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Security.Core\obj\x86\Debug\WHC.Security.Core.pdb

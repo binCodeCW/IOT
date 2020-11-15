@@ -1,0 +1,5 @@
+D:\web\NFine_VS2105\project\NFine.Iotna\bin\x64\Debug\NFine.Iotna.dll
+D:\web\NFine_VS2105\project\NFine.Iotna\bin\x64\Debug\NFine.Iotna.pdb
+D:\web\NFine_VS2105\project\NFine.Iotna\bin\x64\Debug\Newtonsoft.Json.dll
+D:\web\NFine_VS2105\project\NFine.Iotna\obj\x64\Debug\NFine.Iotna.dll
+D:\web\NFine_VS2105\project\NFine.Iotna\obj\x64\Debug\NFine.Iotna.pdb

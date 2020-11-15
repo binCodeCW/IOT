@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="10/29/2019 10:08:16" ReportInfo.Modified="11/04/2019 15:22:14" ReportInfo.CreatorVersion="2017.1.16.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlq+rW0RkboK+/8CKGGYUID3ctBV8q9SvKYxl3iiE7vBnh7Tgou0+4WFf3NfmPSvHVFMcoUBUu0tjHwlqR1CdPcfykx3oCaJ+s195M+IOlTjhg6EKbIkFYuHxyrZ20Dlw0r0Gs54MFTN3CjjfpFUyHPxoExX25mzNof7RC9cTIpLnVVBLjCSRmJFbOXV+fHoyz/">
+      <TableDataSource Name="T_Asset" DataType="System.Int32" Enabled="true" TableName="T_Asset" SelectCommand="SELECT top 10 * &#13;&#10;FROM &quot;T_Asset&quot; T&#13;&#10;">
+        <Column Name="ID" DataType="System.Decimal"/>
+        <Column Name="Code" DataType="System.String"/>
+        <Column Name="Name" DataType="System.String"/>
+        <Column Name="ClassName" DataType="System.String"/>
+        <Column Name="CurrDept" DataType="System.String"/>
+        <Column Name="ChargeDept" DataType="System.String"/>
+        <Column Name="AddMethod" DataType="System.String"/>
+        <Column Name="UseStatus" DataType="System.String"/>
+        <Column Name="PurchaseDate" DataType="System.DateTime"/>
+        <Column Name="UsePerson" DataType="System.String"/>
+        <Column Name="Spec" DataType="System.String"/>
+        <Column Name="KeepAddr" DataType="System.String"/>
+        <Column Name="Qty" DataType="System.Int32"/>
+        <Column Name="Remark" DataType="System.String"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="Price" DataType="System.Decimal"/>
+        <Column Name="OriginValue" DataType="System.Decimal"/>
+        <Column Name="LimitYears" DataType="System.Int32"/>
+        <Column Name="DueDate" DataType="System.DateTime"/>
+        <Column Name="UseYears" DataType="System.String"/>
+        <Column Name="IsAge" DataType="System.String"/>
+        <Column Name="Status" DataType="System.String"/>
+        <Column Name="UseType" DataType="System.String"/>
+        <Column Name="Keeper" DataType="System.String"/>
+        <Column Name="InvStatus" DataType="System.String"/>
+        <Column Name="InvDate" DataType="System.DateTime"/>
+        <Column Name="Inventory" DataType="System.String"/>
+        <Column Name="Account" DataType="System.String"/>
+        <Column Name="AccDate" DataType="System.DateTime"/>
+        <Column Name="AccHolder" DataType="System.String"/>
+        <Column Name="UserName" DataType="System.String"/>
+        <Column Name="UserDef1" DataType="System.String"/>
+        <Column Name="UserDef2" DataType="System.String"/>
+        <Column Name="UserDef3" DataType="System.String"/>
+        <Column Name="Note" DataType="System.String"/>
+        <Column Name="Operator" DataType="System.String"/>
+        <Column Name="OperateDate" DataType="System.DateTime"/>
+        <Column Name="Dept_ID" DataType="System.String"/>
+        <Column Name="Company_ID" DataType="System.String"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="CompanyName" DataType="System.String"/>
+  </Dictionary>
+  <ReportPage Name="Page1" PaperWidth="80" PaperHeight="60" LeftMargin="0.1" TopMargin="0.1" RightMargin="0.1" BottomMargin="0.1" Guides="2551.5,292.95,264.6">
+    <ReportTitleBand Name="ReportTitle1" Width="301.64"/>
+    <PageHeaderBand Name="PageHeader1" Top="4" Width="301.64"/>
+    <DataBand Name="Data1" Top="8" Width="301.64" Height="217.35" DataSource="T_Asset" RowCount="0" Columns.Count="1">
+      <TableObject Name="Table1" Width="294.83" Height="217.33">
+        <TableColumn Name="Column1" Width="83.17"/>
+        <TableColumn Name="Column2" Width="177.66"/>
+        <TableColumn Name="Column3" Width="17"/>
+        <TableColumn Name="Column4" Width="17"/>
+        <TableRow Name="Row1" Height="35.23">
+          <TableCell Name="Cell1" Text="资产名称：" VertAlign="Center"/>
+          <TableCell Name="Cell2" Text="[T_Asset.Name]" VertAlign="Center"/>
+          <TableCell Name="Cell3" ColSpan="2" RowSpan="5"/>
+          <TableCell Name="Cell4"/>
+        </TableRow>
+        <TableRow Name="Row2" Height="25.78">
+          <TableCell Name="Cell6" Text="管理部门：" VertAlign="Center"/>
+          <TableCell Name="Cell7" Text="[T_Asset.CurrDept]" VertAlign="Center">
+            <BarcodeObject Name="Barcode1" Left="129.7" Top="1.89" Width="81.2" Height="81.2" Anchor="Top, Bottom, Left, Right" Border.ShadowWidth="2" Text="[T_Asset.Code]" ShowText="false" Zoom="0.7" AllowExpressions="true" Barcode="QR Code" Barcode.ErrorCorrection="L" Barcode.Encoding="UTF8" Barcode.QuietZone="true"/>
+          </TableCell>
+          <TableCell Name="Cell8"/>
+          <TableCell Name="Cell9"/>
+        </TableRow>
+        <TableRow Name="Row3" Height="25.78">
+          <TableCell Name="Cell11" Text="使用部门：" VertAlign="Center"/>
+          <TableCell Name="Cell12" Text="[T_Asset.CurrDept]" VertAlign="Center"/>
+          <TableCell Name="Cell13"/>
+          <TableCell Name="Cell14"/>
+        </TableRow>
+        <TableRow Name="Row4" Height="25.78">
+          <TableCell Name="Cell16" Text="使用人：" VertAlign="Center"/>
+          <TableCell Name="Cell17" Text="[T_Asset.UsePerson]" VertAlign="Center"/>
+          <TableCell Name="Cell18"/>
+          <TableCell Name="Cell19"/>
+        </TableRow>
+        <TableRow Name="Row5" Height="44.68">
+          <TableCell Name="Cell21" Text="存放地点：" VertAlign="Center"/>
+          <TableCell Name="Cell22" Text="[T_Asset.KeepAddr]" VertAlign="Center"/>
+          <TableCell Name="Cell23"/>
+          <TableCell Name="Cell24"/>
+        </TableRow>
+        <TableRow Name="Row6" Height="8.77">
+          <TableCell Name="Cell25" HorzAlign="Center" VertAlign="Center" ColSpan="4"/>
+          <TableCell Name="Cell26"/>
+          <TableCell Name="Cell27"/>
+          <TableCell Name="Cell28"/>
+        </TableRow>
+        <TableRow Name="Row7" Height="51.31">
+          <TableCell Name="Cell29" HorzAlign="Center" VertAlign="Center" ColSpan="4">
+            <BarcodeObject Name="Barcode2" Left="37.8" Width="236.25" Height="47.25" Text="[T_Asset.Code]" AllowExpressions="true" Barcode="Code128" Barcode.AutoEncode="true"/>
+          </TableCell>
+          <TableCell Name="Cell30"/>
+          <TableCell Name="Cell31"/>
+          <TableCell Name="Cell32"/>
+        </TableRow>
+      </TableObject>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="229.35" Width="301.64"/>
+  </ReportPage>
+</Report>

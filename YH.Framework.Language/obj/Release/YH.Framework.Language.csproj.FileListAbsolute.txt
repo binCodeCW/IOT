@@ -1,0 +1,6 @@
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Language\bin\Release\YH.Framework.Language.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Language\bin\Release\YH.Framework.Language.pdb
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Language\bin\Release\Newtonsoft.Json.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Language\obj\Release\YH.Framework.Language.csprojResolveAssemblyReference.cache
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Language\obj\Release\YH.Framework.Language.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.Language\obj\Release\YH.Framework.Language.pdb

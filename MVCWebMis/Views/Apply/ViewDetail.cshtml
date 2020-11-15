@@ -1,0 +1,1805 @@
+﻿<!-- BEGIN 表格数据-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-cogs"></i>
+            处理单信息
+        </div>
+        <div class="tools">
+            <button type="button" onclick="ApproveAction()" class="btn btn-circle btn-sm btn-primary" id="btnSubmit" style="display:none">
+                <i class="fa fa-check-square-o icon-state-success"></i>
+                <span id="btnSubmitLable">审批</span>
+            </button>
+            <button type="button" onclick="Cancel()" class="btn btn-circle btn-sm btn-primary" id="btnCancel" style="display:none">
+                <i class="fa fa-share icon-state-danger"></i>
+                撤销
+            </button>
+            <button type="button" onclick="Read()" class="btn btn-circle btn-sm btn-primary" id="btnDispatch" style="display:none">
+                <i class="fa fa-file-text icon-state-primary"></i>
+                阅办
+            </button>
+            <button type="button" onclick="Edit()" class="btn btn-circle btn-sm btn-primary" id="btnEdit" style="display:none">
+                <i class="fa fa-pencil icon-state-primary"></i>
+                修改处理表
+            </button>
+            <button type="button" onclick="ViewLog()" class="btn btn-circle btn-sm btn-primary">
+                <i class="fa fa-server icon-state-success"></i>
+                流程日志
+            </button>
+            <button type="button" onclick="PrintPreview()" class="btn btn-circle btn-sm btn-primary">
+                <i class="fa fa-pencil-square-o icon-state-primary"></i>
+                打印
+            </button>
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <div class="portlet-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="control-label col-md-2">申请单标题</label>
+                        <div class="col-md-10">
+                            <label id="Title2" name="Title" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">审批状态</label>
+                        <div class="col-md-8">
+                            <label id="Status2" name="Status" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">申请人</label>
+                        <div class="col-md-8">
+                            <label id="Editor2" name="Editor" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">申请部门</label>
+                        <div class="col-md-8">
+                            <label id="DeptId2" name="DeptId" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">申请日期</label>
+                        <div class="col-md-8">
+                            <label id="Edittime2" name="Edittime" class="form-control"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="OpinionList">
+                    <!--此处放置审批流程-->
+                    @*<div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">审批信息</label>
+                            <div class="col-md-10">
+                                <label class="form-control"></label>
+                            </div>
+                        </div>
+                    </div>*@
+                </div>
+
+                <div>
+                    <!--记录重要参数-->
+                    <input type="hidden" id="Apply_ID2" name="Apply_ID" />
+                    <input type="hidden" id="FormId2" name="FormId" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--流程日志-->
+<div id="flowLog" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">流程日志</h4>
+            </div>
+            <div class="modal-body">
+                <div class="tabbable-custom nav-justified">
+                    <ul class="nav nav-tabs nav-justified">
+                        <li class="active">
+                            <a href="#tab_1_1" data-toggle="tab">申请单处理流程</a>
+                        </li>
+                        <li>
+                            <a href="#tab_1_2" data-toggle="tab">申请单处理历史信息</a>
+                        </li>
+                        <li>
+                            <a href="#tab_1_3" data-toggle="tab">申请单系统日志信息</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade active in" id="tab_1_1">
+                            <div>
+                                <!--数据显示表格-->
+                                <table id="gridFlow" class="table table-striped table-hover"></table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab_1_2">
+                            <div>
+                                <!--数据显示表格-->
+                                <table id="gridFlowLog" class="table table-striped table-hover"></table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab_1_3">
+                            <div>
+                                <!--数据显示表格-->
+                                <table id="gridLog" class="table table-striped table-hover " cellpadding="0" cellspacing="0" border="0"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--撤销表单-->
+<div id="cancelAction" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">撤销表单</h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffCancel" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">撤销理由</label>
+                            <div class="col-md-10">
+                                <input id="WhyCancel" name="WhyCancel" type="text" class="form-control" placeholder="撤销理由..." style="height:100px" required />
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">常见撤销理由</label>
+                            <div class="col-md-10">
+                                <select id="CommonCancelReason" name="CommonCancelReason" type="text" class="form-control" placeholder="常见撤销理由..."></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn blue">发送</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--审批表单-->
+<div id="SubmitAction" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">审批表单</h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffSubmit" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">常用意见</label>
+                            <div class="col-md-10">
+                                <select id="CommonOpinion" type="text" class="form-control" placeholder="常用意见..."></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">处理意见</label>
+                            <div class="col-md-10">
+                                <input id="SubmitOpinion" type="text" class="form-control" placeholder="处理意见..." style="height:100px" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">审批意见</label>
+                            <div class="input-group col-md-10">
+                                <div class="icheck-inline">
+                                    <label>
+                                        <input type="radio" name="radApprove" id="approveSubmit" class="icheck" data-radio="iradio_square-grey"> 批准申请
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="radApprove" id="approveCancel" class="icheck" data-radio="iradio_square-grey"> 退回拟稿人重新处理
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="radApprove" id="approveBack" class="icheck" data-radio="iradio_square-grey"> 退回上一步处理
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="divApprove">
+                        <div class="form-group">
+                            <div class="input-group col-md-10">
+                                <div class="icheck-inline">
+                                    <label>
+                                        <input type="radio" name="radApproveNext" id="approveNextSubmit" class="icheck" data-radio="iradio_square-grey"> 下一步流程审批
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="radApproveNext" id="approveNextAdd" class="icheck" data-radio="iradio_square-grey"> 增加一步审批
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="divNextUser">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">下一处理人</label>
+                            <div class="col-md-10">
+                                <select id="txtNextUser" type="text" class="form-control" placeholder="下一处理人..."></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="divAddUser">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">增加处理人</label>
+                            <div class="col-md-10">
+                                <select id="txtAddUser" type="text" class="form-control" placeholder="增加处理人..."></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn blue">发送</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--阅办表单-->
+<div id="readAction" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">阅办处理</h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffRead" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">阅办意见</label>
+                            <div class="col-md-10">
+                                <input id="txtReadOpinion" type="text" class="form-control" placeholder="阅办意见..."
+                                       style="height:50px" value="已阅" required />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn blue">发送</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--领导批示分阅表单-->
+<div id="DispatchReadAction" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">审批表单</h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffDispatchRead" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">常用意见</label>
+                            <div class="col-md-10">
+                                <select id="DispatchReadCommonOpinion" type="text" class="form-control" placeholder="常用意见..."></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">处理意见</label>
+                            <div class="col-md-10">
+                                <input id="DispatchReadOpinion" type="text" class="form-control" placeholder="处理意见..." style="height:100px" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">审批意见</label>
+                            <div class="input-group col-md-10">
+                                <div class="icheck-inline">
+                                    <label>
+                                        <input type="radio" name="radDispatchRead" id="DispatchReadSubmit" class="icheck" data-radio="iradio_square-grey"> 批准申请
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="radDispatchRead" id="DispatchReadCancel" class="icheck" data-radio="iradio_square-grey"> 退回拟稿人重新处理
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="radDispatchRead" id="DispatchReadBack" class="icheck" data-radio="iradio_square-grey"> 退回上一步处理
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="divDispatchRead">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">分阅人员</label>
+                            <div class="input-group col-md-10">
+                                <input name="tags" id="tags" value="" />
+                                <button type="button" class="btn green" id="btnSelectUser" onclick="SelectUsers()">选择分阅人员</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <span style="color:red">注：批示分阅处理，只是作为通知相关人员了解，不影响流程的状态，一般放在完成后通知。</span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn blue">发送</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--发起会签表单-->
+<div id="DispatchSignAction" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">会签操作</h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffDispatchSign" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">常用意见</label>
+                            <div class="col-md-10">
+                                <select id="DispatchSignCommonOpinion" type="text" class="form-control" placeholder="常用意见..."></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">处理意见</label>
+                            <div class="col-md-10">
+                                <input id="DispatchSignOpinion" type="text" class="form-control" placeholder="处理意见..." style="height:100px" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">审批意见</label>
+                            <div class="input-group col-md-10">
+                                <div class="icheck-inline">
+                                    <label>
+                                        <input type="radio" name="radDispatchSign" id="DispatchSignSubmit" class="icheck" data-radio="iradio_square-grey"> 批准申请
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="radDispatchSign" id="DispatchSignCancel" class="icheck" data-radio="iradio_square-grey"> 退回拟稿人重新处理
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="radDispatchSign" id="DispatchSignBack" class="icheck" data-radio="iradio_square-grey"> 退回上一步处理
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="divDispatchSign">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">会签人员</label>
+                            <div class="input-group col-md-10">
+                                <input name="tagsSign" id="tagsSign" value="" />
+                                <button type="button" class="btn green" id="btnSelectSignUser" onclick="SelectUsers()">选择会签人员</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <span style="color:red">注：会签处理，需要会签人员同时通过才算最终通过，否则任何审批人员可做退回处理。</span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn blue">发送</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--会签处理表单-->
+<div id="SignAction" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">会签操作</h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffSign" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">常用意见</label>
+                            <div class="col-md-10">
+                                <select id="SignCommonOpinion" type="text" class="form-control" placeholder="常用意见..."></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">处理意见</label>
+                            <div class="col-md-10">
+                                <input id="SignOpinion" type="text" class="form-control" placeholder="处理意见..." style="height:100px" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">审批意见</label>
+                            <div class="input-group col-md-10">
+                                <div class="icheck-inline">
+                                    <label>
+                                        <input type="radio" name="radSign" id="SignSubmit" class="icheck" data-radio="iradio_square-grey"> 批准申请
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="radSign" id="SignRefuse" class="icheck" data-radio="iradio_square-grey"> 不通过申请
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="radSign" id="SignCancel" class="icheck" data-radio="iradio_square-grey"> 退回拟稿人重新处理
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="radSign" id="SignBack" class="icheck" data-radio="iradio_square-grey"> 退回上一步处理
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="divSign">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">会签人员意见</label>
+                            <div class="input-group col-md-10">
+                                <table id="gridSign" class="table table-hover"></table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <span style="color:red">注：会签处理，需要会签人员同时通过才算最终通过，否则任何审批人员可做退回处理。</span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn blue">发送</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@RenderPage("~/Views/Apply/SelectUser.cshtml")
+
+<script type="text/javascript">
+    //页面初始化
+    $(function () {
+        InitStyle();
+        LoadMainData();         //加载数据
+        BindCancelEvent();
+        BindSubmitEvent();
+        BindReadEvent();
+        BindDispathReadEvent();
+        BindDispathSignEvent();
+        BindSignEvent();
+    });
+
+    //根据流程环节的名称，来决定如何处理事件
+    function ApproveAction() {
+        var procTypeName = $("#btnSubmitLable").text();//审批环节名称
+        if (procTypeName == "领导批示分阅") {
+            action = "DispatchRead";
+            DispatchRead();
+        } else if (procTypeName == "发起会签")//发起会签
+        {
+            action = "DispatchSign";
+            DispatchSign();
+        } else if (procTypeName == "会签")//会签处理中
+        {
+            Sign();
+        } else {
+            Submit();//普通审批
+        }
+    }
+
+    //子页面选中用户后，调用的方法
+    var action = "DispatchRead"; //用来区分是批示分阅还是发起会签处理
+    function OnSelectUser(json) {
+        ProcUserJson = json;//存储到ProcUserJson，方便下次打开界面初始化数据
+        if (json != '') {
+            var dict = JSON.parse(json);
+            if (dict != null) {
+                if (action == "DispatchRead") {
+                    $('#tags').importTags('');
+                    for (var key in dict) {
+                        var display = dict[key];
+                        $('#tags').addTag(display);  //加上已选择用户的信息
+                    };
+                } else if (action == "DispatchSign") {
+                    $('#tagsSign').importTags('');
+                    for (var key in dict) {
+                        var display = dict[key];
+                        $('#tagsSign').addTag(display);  //加上已选择用户的信息
+                    };
+                }
+            }
+        }
+    }
+
+    //设置控件的样式
+    function InitStyle() {
+        //初始化标签控件
+        $('#tags').tagsInput({
+            width: 'auto',
+            height: '60px',
+            onRemoveTag: function (tag) {
+                var i = addDisplayList.indexOf(tag);
+                var id = addKeyList[i];
+                removeUser(id, tag);
+                procuserid = "";//移除则清空流程处理人
+            },
+            interactive: false
+        });
+        $('#tagsSign').tagsInput({
+            width: 'auto',
+            height: '60px',
+            onRemoveTag: function (tag) {
+                var i = addDisplayList.indexOf(tag);
+                var id = addKeyList[i];
+                removeUser(id, tag);
+                procuserid = "";//移除则清空流程处理人
+            },
+            interactive: false
+        });
+    }
+    //自定义函数处理queryParams的批量增加
+    $.fn.serializeJsonObject = function () {
+        var json = {};
+        var form = this.serializeArray();
+        $.each(form, function () {
+            if (json[this.name]) {
+                if (!json[this.name].push) {
+                    json[this.name] = [json[this.name]];
+                }
+                json[this.name].push();
+            } else {
+                json[this.name] = this.value || '';
+            }
+        });
+        return json;
+    }
+</script>
+
+<script type="text/javascript">
+    //初始化数据
+    function LoadMainData() {
+
+        var ID = "@Page.applyId";
+        //通用表单信息
+        $.getJSON("/Apply/FindByID?r=" + Math.random() + "&id=" + ID, function (info) {
+            $("#Apply_ID2").val(info.ID);
+            $("#FormId2").val(info.FormId);
+
+            $("#Title2").text(info.Title);
+            $("#Edittime2").text(info.Edittime);
+            $.getJSON("/Apply/GetStatusName?status=" + info.Status, function (result) {
+                $("#Status2").text(result);
+                if (result == '已退回' || result == '已撤消') {
+                    $("#Status2").addClass('text-danger');
+                } else if (result == "已完成") {
+                    $("#Status2").addClass('text-success');
+                }
+            });
+            $.getJSON("/OU/FindByID?id=" + info.Dept_ID, function (ouInfo) {
+                $("#DeptId2").text(ouInfo.Name);
+            });
+            $.getJSON("/User/GetFullNameByID?userId=" + info.Editor, function (result) {
+                $("#Editor2").text(result);
+            });
+        });
+
+
+        //审批流程的意见列表
+        $.getJSON("/ApplyFlow/GetOpinionByApplyId?applyId=" + ID, function (data) {
+            $("#OpinionList").html("");
+
+            $.each(data.rows, function (i, item) {
+                var tr = "<div class='col-md-12' style='border-top:1px dashed #000;border-left:1px dashed #000;border-bottom:1px dashed #000;'><div class='form-group'>";
+                tr += "<label class='control-label col-md-2' style='font-size:18px; font-weight:bold; color:#0000FF;'>" + item.FlowName + "</label>";
+                tr += "<div class='col-md-10'>";
+
+                tr += "<table id='grid' class='table table-striped table-bordered table-hover'>";
+                tr += "<tr><th>处理意见</th><th>处理人</th><th>处理时间</th></tr>";
+                $.each(item.Opinions, function (j, op) {
+                    var subtr = "<tr>";
+                    subtr += "<td>" + op.Opinion + "</td>";
+                    subtr += "<td>" + op.UserName + "</td>";
+                    subtr += "<td>" + op.ProcTime + "</td>";
+                    subtr += "</tr>";
+
+                    tr += subtr;
+                });
+                tr += "</table>";
+
+                tr += "</div>";
+                tr += "</div></div>";
+                $("#OpinionList").append(tr);
+            });
+        });
+
+        //是否可以修改
+        $("#btnEdit").hide();
+        var postData = { id: ID, userId: @Session["UserId"] };
+        postData = JSON.stringify(postData);
+        $.post("/Apply/IsApplyMayBackEdit", postData, function (json) {
+            var data = $.parseJSON(json);
+            if (data.Success) {
+                $("#btnEdit").show();
+            }
+        });
+
+        //是否可以撤销
+        $("#btnCancel").hide();
+        $.post("/Apply/IsApplyMayCancel", postData, function (json) {
+            var data = $.parseJSON(json);
+            if (data.Success) {
+                $("#btnCancel").show();
+            }
+        });
+
+        //阅办
+        $("#btnDispatch").hide();
+        postData = { applyId: ID, userId: @Session["UserId"] };
+        //postData = JSON.stringify(postData);
+        $.get("/ApplyRead/IsReadStatus?applyId=" + ID + "&userId=" + @Session["UserId"], postData, function (json) {
+            var data = $.parseJSON(json);
+            if (data.Success) {
+                $("#btnDispatch").show();
+            }
+        });
+
+        //如果不是当前审批人隐藏审批按钮
+        $("#btnSubmit").hide();
+        $.get("/ApplyUser/IsCheckPermission", postData, function (json) {
+            var data = $.parseJSON(json);
+            if (data.Success) {
+                $.getJSON("/ApplyFlow/GetFirstUnHandledFlow?r=" + Math.random() + "&applyId=" + ID, function (flowInfo) {
+                    if (flowInfo != null) {
+                        $("#btnSubmit").show();//显示审批按钮
+
+                        var procTypeName = "";
+                        //WHC.WorkflowLite.Entity.ProcType.会签 3
+                        if (flowInfo.ProcType == '3') {
+
+                            $.getJSON("/Apply/FindByID?id=" + ID, function (applyInfo) {
+                                //WHC.WorkflowLite.Entity.ProcType.审批 1
+                                if (applyInfo.ProcType == '1') {
+                                    procTypeName = "会签确认";
+                                    $("#btnSubmitLable").text(procTypeName);
+                                } else {
+                                    $.getJSON("/ApplySign/IsSignReady?flowId=" + flowInfo.ID, function (result) {
+                                        procTypeName = result.Success ? "会签" : "发起会签";
+                                        $("#btnSubmitLable").text(procTypeName);
+                                    });
+                                }
+                            });
+                        } else {
+                            $.getJSON("/FormProc/GetProcType?typeId=" + flowInfo.ProcType, function (result) {
+                                procTypeName = result;
+                                $("#btnSubmitLable").text(procTypeName);
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    };
+
+    var $tableFlow, $tableFlowLog, $tableLog;
+    var currentPage = 1, rows = 50;
+    //初始化bootstrap-table的内容
+    function SearchFlow(page) {
+        //记录页面bootstrap-table全局变量$table，方便应用
+        var queryUrl = '/ApplyFlow/GetAllByApplyId?applyId=@Page.applyId&rnd=' + Math.random()
+        $tableFlow = $('#gridFlow').bootstrapTable({
+            url: queryUrl,                   	//请求后台的URL（*）
+            method: 'GET',                      //请求方式（*）
+            //toolbar: '#toolbar',              //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: true,                   //是否显示分页（*）
+            sortable: true,                     //是否启用排序
+            sortOrder: "asc",                   //排序方式
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber: page,                   //初始化加载第一页，默认第一页,并记录
+            pageSize: rows,                     //每页的记录行数（*）
+            pageList: [50, 100],                //可供选择的每页的行数（*）
+            search: false,                      //是否显示表格搜索
+            strictSearch: true,
+            showColumns: true,                  //是否显示所有的列（选择显示的列）
+            showRefresh: true,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+            //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+            showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,                  //是否显示父子表
+            //得到查询的参数
+            queryParams: function (params) {
+                //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+                var temp = {
+                    rows: params.limit,                         //页面大小
+                    page: (params.offset / params.limit) + 1,   //页码
+                    sort: params.sort,      //排序列名
+                    sortOrder: params.order //排位命令（desc，asc）
+                };
+                return temp;
+            },
+            columns: [
+                { checkbox: true, visible: false }, //是否显示复选框
+                { title: '步骤名称', field: 'FlowName' /*, width: 80, sortable: true */ },
+                { title: '流程处理人', field: 'ProcUser' /*, width: 80, sortable: true */ },
+                { title: '是否处理', field: 'IsProc' /*, width: 80, sortable: true */ },
+                { title: '实际处理人', field: 'ProcUid' /*, width: 80, sortable: true */ },
+                { title: '实际处理时间', field: 'ProcTime' /*, width: 80, sortable: true */ },
+                { title: '处理意见', field: 'Opinion' /*, width: 80, sortable: true */ },
+            ],
+            onLoadSuccess: function () {
+                currentPage = page;//存储当前页码
+            },
+            onLoadError: function () {
+                showTips("数据加载失败！");
+            },
+            onDblClickRow: function (row, $element) {
+                //var id = row.Id;
+                //EditViewById(id, 'view');
+            }
+        });
+    };
+
+
+    var currentPageLog = 1, rowsLog = 50;
+    function SearchFlowLog(page) {
+        //记录页面bootstrap-table全局变量$table，方便应用
+        var queryUrl = '/ApplyFlowLog/GetAllByApplyId?applyId=@Page.applyId&rnd=' + Math.random()
+        $tableFlowLog = $('#gridFlowLog').bootstrapTable({
+            url: queryUrl,                   	//请求后台的URL（*）
+            method: 'GET',                      //请求方式（*）
+            //toolbar: '#toolbar',              //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: true,                   //是否显示分页（*）
+            sortable: true,                     //是否启用排序
+            sortOrder: "asc",                   //排序方式
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber: page,                   //初始化加载第一页，默认第一页,并记录
+            pageSize: rowsLog,                     //每页的记录行数（*）
+            pageList: [50, 100],                //可供选择的每页的行数（*）
+            search: false,                      //是否显示表格搜索
+            strictSearch: true,
+            showColumns: true,                  //是否显示所有的列（选择显示的列）
+            showRefresh: true,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+            //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+            showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,                  //是否显示父子表
+            //得到查询的参数
+            queryParams: function (params) {
+                //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+                var temp = {
+                    rows: params.limit,                         //页面大小
+                    page: (params.offset / params.limit) + 1,   //页码
+                    sort: params.sort,      //排序列名
+                    sortOrder: params.order //排位命令（desc，asc）
+                };
+                return temp;
+            },
+            columns: [
+                { checkbox: true, visible: false }, //是否显示复选框
+                { title: '流程名称', field: 'FlowName' /*, width: 80, sortable: true */ },
+                { title: '流程处理人', field: 'ProcUser' /*, width: 80, sortable: true */ },
+                { title: '实际处理时间', field: 'ProcTime' /*, width: 80, sortable: true */ },
+                { title: '处理意见', field: 'Opinion' /*, width: 80, sortable: true */ },
+            ],
+            onLoadSuccess: function () {
+                currentPageLog = page;//存储当前页码
+            },
+            onLoadError: function () {
+                showTips("数据加载失败！");
+            },
+            onDblClickRow: function (row, $element) {
+                //var id = row.Id;
+                //EditViewById(id, 'view');
+            }
+        });
+    };
+    
+    var currentPageLog2 = 1, rowsLog2 = 50;
+    function SearchLog(page) {
+        //记录页面bootstrap-table全局变量$table，方便应用
+        var queryUrl = '/ApplyLog/GetAllByApplyId?applyId=@Page.applyId&rnd=' + Math.random()
+        $tableLog = $('#gridLog').bootstrapTable({
+            url: queryUrl,                   	//请求后台的URL（*）
+            method: 'GET',                      //请求方式（*）
+            //toolbar: '#toolbar',              //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: true,                   //是否显示分页（*）
+            sortable: true,                     //是否启用排序
+            sortOrder: "asc",                   //排序方式
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber: page,                   //初始化加载第一页，默认第一页,并记录
+            pageSize: rowsLog2,                     //每页的记录行数（*）
+            pageList: [50, 100],                //可供选择的每页的行数（*）
+            search: false,                      //是否显示表格搜索
+            strictSearch: true,
+            showColumns: true,                  //是否显示所有的列（选择显示的列）
+            showRefresh: true,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+            //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+            showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,                  //是否显示父子表
+            //得到查询的参数
+            queryParams: function (params) {
+                //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+                var temp = {
+                    rows: params.limit,                         //页面大小
+                    page: (params.offset / params.limit) + 1,   //页码
+                    sort: params.sort,      //排序列名
+                    sortOrder: params.order //排位命令（desc，asc）
+                };
+                return temp;
+            },
+            columns: [
+                { checkbox: true, visible: false }, //是否显示复选框
+                { title: '创建时间', field: 'Addtime' /*, width: 80, sortable: true */ },
+                { title: '对应用户', field: 'UserId' /*, width: 80, sortable: true */ },
+                { title: '日志信息', field: 'Content' /*, width: 80, sortable: true */ },
+            ],
+            onLoadSuccess: function () {
+                currentPageLog2 = page;//存储当前页码
+            },
+            onLoadError: function () {
+                showTips("数据加载失败！");
+            },
+            onDblClickRow: function (row, $element) {
+                //var id = row.Id;
+                //EditViewById(id, 'view');
+            }
+        });
+    };
+</script>
+
+<script>
+    //绑定相关事件
+    function BindCancelEvent() {
+        //判断表单的信息是否通过验证
+        $("#ffCancel").validate({
+            meta: "validate",
+            errorElement: 'span',
+            errorClass: 'help-block help-block-error',
+            focusInvalid: false,
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success: function (label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+            errorPlacement: function (error, element) {
+                element.parent('div').append(error);
+            },
+            submitHandler: function (form) {
+                $("#cancelAction").modal("hide");
+                var result = confirm("您确实要撤消该申请吗？");
+                if (!result) return;
+
+                var url = "/AdminApply/CancelApply";
+                //构造参数发送给后台
+                var postData = {
+                    applyId: "@Page.applyId",
+                    whyCancel: $("#whyCancel").val()
+                };
+                postData = JSON.stringify(postData);
+                $.post(url, postData, function (json) {
+                    var data = $.parseJSON(json);
+                    if (data.Success) {
+                        //可增加其他处理
+                        LoadMainData();         //加载数据
+
+                        //提示处理结果
+                        showTips("您已经撤消了该申请");
+                    }
+                    else {
+                        showError("操作失败:" + data.ErrorMessage, 3000);
+                    }
+                });
+            }
+        });
+    };
+    //撤销
+    function Cancel() {
+        //初始化字典
+        BindDictItem("CommonCancelReason", "常见撤销理由");
+
+        $("#CommonCancelReason").on("change", function (e) {
+            var value = $("#CommonCancelReason").val();
+            $("#WhyCancel").val(value);
+        });
+
+        $("#cancelAction").modal("show");
+    }
+</script>
+
+<script>
+    var applyId = "@Page.applyId";
+    var hasNexUser = false;//判断是否有下一步用户
+    var hasAddUser = false;//判断是否可以添加用户
+    //绑定相关事件
+    function BindSubmitEvent() {
+        $("#ffSubmit").validate({
+            meta: "validate",
+            errorElement: 'span',
+            errorClass: 'help-block help-block-error',
+            focusInvalid: false,
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success: function (label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+            errorPlacement: function (error, element) {
+                element.parent('div').append(error);
+            },
+            submitHandler: function (form) {
+
+                var isSubmit = $("#approveSubmit").is(':checked');
+                var isCancel = $("#approveCancel").is(':checked');
+                var isBack = $("#approveBack").is(':checked');
+
+                var isNext = $("#approveNextSubmit").is(':checked');
+                var isAdd = $("#approveNextAdd").is(':checked');
+
+                //审批前检查
+                $.getJSON("/AdminApply/ApplyCheck?applyId=" + applyId, function (errmsg) {
+                    if (errmsg != null && errmsg != '') {
+                        alert(errmsg);
+                        return;
+                    }
+                });
+
+                //隐藏弹窗
+                $("#SubmitAction").modal("hide");
+                var opinion = $("#SubmitOpinion").val();
+                //如果是审批通过
+                if (isSubmit) {
+                    var tipMessage2 = "数据检查完毕，如确认无误将提交处理，您确实要提交吗？";
+                    var result = confirm(tipMessage2);
+                    if (!result) return;
+
+                    if (isNext) {//下一步审批
+                        var txtNextUser = $("#txtNextUser").val();
+                        if (txtNextUser == '-1' || txtNextUser == '') {
+                            if (hasNexUser) {
+                                alert("下一处理人不能为空");
+                                return;
+                            }
+                        }
+
+                        var url = "/AdminApply/ApproveApply";
+                        //构造参数发送给后台
+                        var postData = {
+                            applyId: "@Page.applyId",
+                            opinion: opinion,
+                            selprocuser: txtNextUser,
+                            msgsendto: ""
+                        };
+                        postData = JSON.stringify(postData);
+                        $.post(url, postData, function (json) {
+                            var data = $.parseJSON(json);
+                            //console.log(data);
+
+                            //可增加其他处理
+                            ToCompletedForm();//如流程结束后，处理表单
+
+                            LoadMainData(); //加载数据
+
+                            //提示处理结果
+                            showTips("您已经审核了该交办工作。");
+                        });
+                    }
+                    else {//增加一步并审批
+                        var txtAddUser = $("#txtAddUser").val();
+                        if (txtAddUser == '-1' || txtAddUser == '') {
+                            if (isAdd) {
+                                alert("增加处理人不能为空");
+                                return;
+                            }
+                        }
+                        var url = "/AdminApply/ApproveApplyWithAddFlow";
+                        //构造参数发送给后台
+                        var postData = {
+                            applyId: "@Page.applyId",
+                            opinion: opinion,
+                            selprocuser: txtAddUser,
+                            msgsendto: ""
+                        };
+                        postData = JSON.stringify(postData);
+                        $.post(url, postData, function (json) {
+                            var data = $.parseJSON(json);
+                            //console.log(data);
+
+                            //可增加其他处理
+                            LoadMainData();         //加载数据
+
+                            //提示处理结果
+                            showTips("您已经审核了该交办工作，并增加了一步审核。");
+                        });
+                    }
+                } else if (isCancel) {
+                    ApplyCancel(opinion);
+                } else if (isBack) {
+                    ApplyBack(opinion);
+                }
+            }
+        });
+
+        //审批意见处理
+        //approveSubmit approveCancel approveBack
+        $("input[name='radApprove']").on('ifChecked', function (event) {
+            var isSubmit = $("#approveSubmit").is(':checked');
+            var isCancel = $("#approveCancel").is(':checked');
+            var isBack = $("#approveBack").is(':checked');
+            var isNext = $("#approveNextSubmit").is(':checked')
+            var isAdd = $("#approveNextAdd").is(':checked');
+
+            //设置处理意见
+            if (isSubmit) {
+                var value = $("#CommonOpinion").val();
+                $("#SubmitOpinion").val(value);
+            } else if (isCancel) {
+                $("#SubmitOpinion").val("退回拟稿人重新处理");
+            } else if (isBack) {
+                $("#SubmitOpinion").val("退回上一步处理");
+            }
+
+            //设置显示的用户
+            if (isSubmit) {
+                $("#divAddUser").hide();
+                $("#divNextUser").hide();
+
+                if (hasNexUser && isNext) {
+                    $("#divNextUser").show();
+                    $("#divAddUser").hide();
+                }
+                if (hasAddUser && isAdd) {
+                    $("#divNextUser").hide();
+                    $("#divAddUser").show();
+                }
+                $("#divApprove").show();
+
+            } else {
+                $("#divAddUser").hide();
+                $("#divNextUser").hide();
+                $("#divApprove").hide();
+            }
+            console.log("radApprove-check");
+        });
+        $("#approveSubmit").iCheck('check');
+
+        //下一步流程审批
+        $("input[name='radApproveNext']").on('ifChecked', function (event) {
+            if ($("#approveNextSubmit").is(':checked')) {//下一步流程审批
+                if (hasNexUser) {
+                    $("#divNextUser").show();
+                    $("#divAddUser").hide();
+                } else {
+                    $("#divNextUser").hide();
+                    $("#divAddUser").hide();
+                }
+            } else {//增加一步审批
+                if (hasAddUser) {
+                    $("#divNextUser").hide();
+                    $("#divAddUser").show();
+                } else {
+                    $("#divNextUser").hide();
+                    $("#divAddUser").hide();
+                }
+            }
+            console.log("radApproveNext-check");
+        });
+        $("#approveNextSubmit").iCheck('check');
+    };
+
+    //审批表单
+    function Submit() {
+        //绑定常用意见
+        var applyid = "@Page.applyId";
+        $.getJSON("/Apply/FindById?id=" + applyid, function (info) {
+            if (info != null) {
+                var formId = info.FormId;//记录FormId
+                //初始化字典
+                BindSelect("CommonOpinion", "/CommonOpinion/GetDictJson?formid=" + formId);
+                $("#CommonOpinion").on("change", function (e) {
+                    var value = $("#CommonOpinion").val();
+                    $("#SubmitOpinion").val(value);
+                });
+                $("#SubmitOpinion").val("同意");//.trigger("change");
+            }
+        });
+
+        //绑定流程用户
+        $.getJSON("/ApplyFlow/GetFirstUnHandledFlow?applyId=" + applyId, function (flowInfo) {
+            if (flowInfo != null) {
+                //绑定增加一步用户
+                BindSelect("txtAddUser", "/User/GetUserDictJson?deptId=" + @Session["Dept_ID"]);
+                hasAddUser = true;
+
+                var flowId = flowInfo.ID;
+                $.getJSON("/ApplyFlow/GetNextUnHandledFlow?applyId=" + applyId + "&flowId=" + flowId, function (nextFlowInfo) {
+                    if (nextFlowInfo != null) {
+                        //绑定下一步用户
+                        BindSelect("txtNextUser", "/User/GetUsersByJson?json=" + nextFlowInfo.ProcUser);
+                        hasNexUser = true;
+
+                        $("#divNextUser").show();
+                    }
+                });
+            } else {
+                $("#divAddUser").hide();
+                $("#divNextUser").hide();
+                $("#divApprove").hide();
+            }
+        });
+
+        $("#SubmitAction").modal("show");
+    }
+</script>
+
+<script>
+    function BindReadEvent() {
+        //判断表单的信息是否通过验证
+        $("#ffRead").validate({
+            meta: "validate",
+            errorElement: 'span',
+            errorClass: 'help-block help-block-error',
+            focusInvalid: false,
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success: function (label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+            errorPlacement: function (error, element) {
+                element.parent('div').append(error);
+            },
+            submitHandler: function (form) {
+                $("#readAction").modal("hide");
+
+                var opinion = $("#txtReadOpinion").val();
+                var url = "/AdminApply/ReadApply";
+                //构造参数发送给后台
+                var postData = {
+                    applyId: "@Page.applyId",
+                    opinion: opinion
+                };
+                postData = JSON.stringify(postData);
+                $.post(url, postData, function (json) {
+                    var data = $.parseJSON(json);
+                    if (data.Success) {
+                        //可增加其他处理
+                        LoadMainData();         //加载数据
+
+                        //提示处理结果
+                        showTips("您已经阅办了该申请");
+                    }
+                    else {
+                        showError("操作失败:" + data.ErrorMessage, 3000);
+                    }
+                });
+            }
+        });
+    }
+
+    //阅办
+    function Read() {
+        $("#readAction").modal("show");
+    }
+
+    //重新编辑
+    function Edit() {
+        var applyid = "@Page.applyId";
+        $.getJSON("/Apply/FindById?id=" + applyid, function (info) {
+            if (info != null) {
+                var formId = info.FormId;//记录FormId
+                $.getJSON("/Form/FindById?id=" + formId, function (formInfo) {
+                    var url = formInfo.ApplyUrl;
+                    if (url != '') {
+                        window.location.href = url + "?formid=" + formId + "&applyid=" + applyid;
+                    } else {
+                        showToast("暂未开通");
+                    }
+                });
+            }
+        });
+    }
+
+    //打印预览 使用PrintThis组件打印
+    function PrintPreview() {
+        $("#pageContent").printThis({
+            debug: false,
+            importCSS: true,
+            importStyle: true,
+            printContainer: true,
+            loadCSS: "/Content/Themes/Default/style.css",
+            pageTitle: "申请单信息",
+            removeInline: false,
+            printDelay: 333,
+            header: null,
+            formValues: true
+        });
+    };
+
+    //流程日志
+    function ViewLog() {
+        var ID = "@Page.applyId";
+        //gridFlow gridFlowLog gridLog
+        SearchFlow(currentPage);
+        SearchFlowLog(currentPage);
+        SearchLog(currentPage);
+
+        $("#flowLog").modal("show");
+    }
+
+</script>
+
+<script>
+    function BindDispathReadEvent() {
+        $("#ffDispatchRead").validate({
+            meta: "validate",
+            errorElement: 'span',
+            errorClass: 'help-block help-block-error',
+            focusInvalid: false,
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success: function (label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+            errorPlacement: function (error, element) {
+                element.parent('div').append(error);
+            },
+            submitHandler: function (form) {
+
+                var isSubmit = $("#DispatchReadSubmit").is(':checked');
+                var isCancel = $("#DispatchReadCancel").is(':checked');
+                var isBack = $("#DispatchReadBack").is(':checked');
+
+                //解析流程处理人
+                var procuserid = "";
+                var dict = JSON.parse(ProcUserJson);
+                if (dict != null) {
+                    for (var key in dict) {
+                        procuserid += key + ",";//加上已选择用户的信息
+                    };
+                }
+                if (procuserid == '') {
+                    alert("请选定分阅人员");
+                    return;
+                }
+
+                //审批前检查
+                $.getJSON("/AdminApply/ApplyCheck?applyId=" + applyId, function (errmsg) {
+                    if (errmsg != null && errmsg != '') {
+                        alert(errmsg);
+                        return;
+                    }
+                });
+
+                //隐藏弹窗
+                $("#DispatchReadAction").modal("hide");
+
+                var opinion = $("#DispatchReadOpinion").val();//审批意见
+
+                //如果是审批通过
+                if (isSubmit) {
+                    var tipMessage2 = "数据检查完毕，如确认无误将发送给选定人员进行【分阅处理】，您确实要提交吗？";
+                    var result = confirm(tipMessage2);
+                    if (!result) return;
+
+                    var url = "/AdminApply/ApproveApplyWithAddReadFlow";
+                    //构造参数发送给后台
+                    var postData = {
+                        applyId: "@Page.applyId",
+                        opinion: opinion,
+                        selprocuser: procuserid,
+                        msgsendto: ""
+                    };
+                    postData = JSON.stringify(postData);
+                    $.post(url, postData, function (json) {
+                        var data = $.parseJSON(json);
+                        //console.log(data);
+
+                        //可增加其他处理
+                        ToCompletedForm();  //如流程结束后，处理表单
+                        LoadMainData();     //加载数据
+
+                        //提示处理结果
+                        showTips("您已经向相关人员分阅该交办工作。");
+                    });
+
+                } else if (isCancel) {
+                    ApplyCancel(opinion);
+                } else if (isBack) {
+                    ApplyBack(opinion);
+                }
+            }
+        });
+
+        //审批意见处理
+        $("input[name='radDispatchRead']").on('ifChecked', function (event) {
+            var isSubmit = $("#DispatchReadSubmit").is(':checked');
+            var isCancel = $("#DispatchReadCancel").is(':checked');
+            var isBack = $("#DispatchReadBack").is(':checked');
+
+            //设置处理意见
+            if (isSubmit) {
+                var value = $("#DispatchReadCommonOpinion").val();
+                $("#DispatchReadOpinion").val(value);
+            } else if (isCancel) {
+                $("#DispatchReadOpinion").val("退回拟稿人重新处理");
+            } else if (isBack) {
+                $("#DispatchReadOpinion").val("退回上一步处理");
+            }
+
+            //设置显示的用户
+            if (isSubmit) {
+                $("#divDispatchRead").show();
+
+            } else {
+                $("#divDispatchRead").hide();
+            }
+        });
+        $("#DispatchReadSubmit").iCheck('check');
+    }
+    function DispatchRead() {
+        //绑定常用意见
+        var applyid = "@Page.applyId";
+        $.getJSON("/Apply/FindById?id=" + applyid, function (info) {
+            if (info != null) {
+                var formId = info.FormId;//记录FormId
+                //初始化字典
+                BindSelect("DispatchReadCommonOpinion", "/CommonOpinion/GetDictJson?formid=" + formId);
+                $("#DispatchReadCommonOpinion").on("change", function (e) {
+                    var value = $("#DispatchReadCommonOpinion").val();
+                    $("#DispatchReadOpinion").val(value);
+                });
+                $("#DispatchReadOpinion").val("同意");//.trigger("change");
+            }
+        });
+
+        $("#DispatchReadAction").modal("show");
+    }
+</script>
+
+<script>
+    function BindDispathSignEvent() {
+        $("#ffDispatchSign").validate({
+            meta: "validate",
+            errorElement: 'span',
+            errorClass: 'help-block help-block-error',
+            focusInvalid: false,
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success: function (label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+            errorPlacement: function (error, element) {
+                element.parent('div').append(error);
+            },
+            submitHandler: function (form) {
+
+                var isSubmit = $("#DispatchSignSubmit").is(':checked');
+                var isCancel = $("#DispatchSignCancel").is(':checked');
+                var isBack = $("#DispatchSignBack").is(':checked');
+
+                //解析流程处理人
+                var procuserid = "";
+                var dict = JSON.parse(ProcUserJson);
+                if (dict != null) {
+                    for (var key in dict) {
+                        procuserid += key + ",";//加上已选择用户的信息
+                    };
+                }
+                if (procuserid == '') {
+                    alert("请选定会签人员");
+                    return;
+                }
+
+                //审批前检查
+                $.getJSON("/AdminApply/ApplyCheck?applyId=" + applyId, function (errmsg) {
+                    if (errmsg != null && errmsg != '') {
+                        alert(errmsg);
+                        return;
+                    }
+                });
+
+                //隐藏弹窗
+                $("#DispatchSignAction").modal("hide");
+
+                var opinion = $("#DispatchSignOpinion").val();//审批意见
+
+                //如果是审批通过
+                if (isSubmit) {
+                    var tipMessage2 = "数据检查完毕，如确认无误将发送给选定人员进行【会签处理】，您确实要提交吗？";
+                    var result = confirm(tipMessage2);
+                    if (!result) return;
+
+                    var url = "/AdminApply/ApproveApplyWithAddSignFlow";
+                    //构造参数发送给后台
+                    var postData = {
+                        applyId: "@Page.applyId",
+                        opinion: opinion,
+                        selprocuser: procuserid,
+                        msgsendto: ""
+                    };
+                    postData = JSON.stringify(postData);
+                    $.post(url, postData, function (json) {
+                        var data = $.parseJSON(json);
+                        //console.log(data);
+                        //可增加其他处理
+                        LoadMainData();         //加载数据
+
+                        //提示处理结果
+                        showTips("您已经向相关人员【发起会签】该交办工作。");
+                    });
+
+                } else if (isCancel) {
+                    ApplyCancel(opinion);
+                } else if (isBack) {
+                    ApplyBack(opinion);
+                }
+            }
+        });
+
+        //审批意见处理
+        $("input[name='radDispatchSign']").on('ifChecked', function (event) {
+            var isSubmit = $("#DispatchSignSubmit").is(':checked');
+            var isCancel = $("#DispatchSignCancel").is(':checked');
+            var isBack = $("#DispatchSignBack").is(':checked');
+
+            //设置处理意见
+            if (isSubmit) {
+                var value = $("#DispatchSignCommonOpinion").val();
+                $("#DispatchSignOpinion").val(value);
+            } else if (isCancel) {
+                $("#DispatchSignOpinion").val("退回拟稿人重新处理");
+            } else if (isBack) {
+                $("#DispatchSignOpinion").val("退回上一步处理");
+            }
+
+            //设置显示的用户
+            if (isSubmit) {
+                $("#divDispatchSign").show();
+
+            } else {
+                $("#divDispatchSign").hide();
+            }
+        });
+        $("#DispatchSignSubmit").iCheck('check');
+    }
+    function DispatchSign() {
+        //绑定常用意见
+        var applyid = "@Page.applyId";
+        $.getJSON("/Apply/FindById?id=" + applyid, function (info) {
+            if (info != null) {
+                var formId = info.FormId;//记录FormId
+                //初始化字典
+                BindSelect("DispatchSignCommonOpinion", "/CommonOpinion/GetDictJson?formid=" + formId);
+                $("#DispatchSignCommonOpinion").on("change", function (e) {
+                    var value = $("#DispatchSignCommonOpinion").val();
+                    $("#DispatchSignOpinion").val(value);
+                });
+                $("#DispatchSignOpinion").val("同意");//.trigger("change");
+            }
+        });
+
+        $("#DispatchSignAction").modal("show");
+    }
+</script>
+
+<script>
+    function BindSignEvent() {
+        $("#ffSign").validate({
+            meta: "validate",
+            errorElement: 'span',
+            errorClass: 'help-block help-block-error',
+            focusInvalid: false,
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success: function (label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+            errorPlacement: function (error, element) {
+                element.parent('div').append(error);
+            },
+            submitHandler: function (form) {
+
+                var isSubmit = $("#SignSubmit").is(':checked');
+                var isRefuse = $("#SignRefuse").is(':checked');
+                var isCancel = $("#SignCancel").is(':checked');
+                var isBack = $("#SignBack").is(':checked');
+
+                //审批前检查
+                $.getJSON("/AdminApply/ApplyCheck?applyId=" + applyId, function (errmsg) {
+                    if (errmsg != null && errmsg != '') {
+                        alert(errmsg);
+                        return;
+                    }
+                });
+
+                //隐藏弹窗
+                $("#SignAction").modal("hide");
+                var opinion = $("#SignOpinion").val();//审批意见
+
+                //如果是审批通过
+                if (isSubmit || isRefuse) {
+                    var actionName = isSubmit ? "会签处理-通过" : "会签处理-拒绝";
+                    var is_proc = isSubmit ? 1 : 2;//通过1， 拒绝2
+                    var tipMessage2 = "数据检查完毕，如确认无误将发送给选定人员进行【" + actionName + "】，您确实要提交吗？";
+
+                    var result = confirm(tipMessage2);
+                    if (!result) return;
+
+                    var url = "/AdminApply/SignApply";
+                    //构造参数发送给后台
+                    var postData = {
+                        applyId: "@Page.applyId",
+                        opinion: opinion,
+                        is_proc: is_proc
+                    };
+                    postData = JSON.stringify(postData);
+                    $.post(url, postData, function (json) {
+                        var data = $.parseJSON(json);
+                        //console.log(data);
+                        //可增加其他处理
+                        ToCompletedForm();  //如流程结束后，处理表单
+                        LoadMainData();     //加载数据
+
+                        //提示处理结果
+                        showTips("您已经【会签】了该交办工作。");
+                    });
+
+                } else if (isCancel) {
+                    ApplyCancel(opinion);
+                } else if (isBack) {
+                    ApplyBack(opinion);
+                }
+            }
+        });
+
+        //审批意见处理
+        $("input[name='radSign']").on('ifChecked', function (event) {
+            var isSubmit = $("#SignSubmit").is(':checked');
+            var isRefuse = $("#SignRefuse").is(':checked');
+            var isCancel = $("#SignCancel").is(':checked');
+            var isBack = $("#SignBack").is(':checked');
+
+            //设置处理意见
+            if (isSubmit) {
+                var value = $("#SignCommonOpinion").val();
+                $("#SignOpinion").val(value);
+            } else if (isRefuse) {
+                $("#SignOpinion").val("不通过申请");
+            } else if (isCancel) {
+                $("#SignOpinion").val("退回拟稿人重新处理");
+            } else if (isBack) {
+                $("#SignOpinion").val("退回上一步处理");
+            }
+
+            //设置显示的用户
+            if (isSubmit || isRefuse) {
+                $("#divSign").show();
+            } else {
+                $("#divSign").hide();
+            }
+        });
+        $("#SignSubmit").iCheck('check');
+        var applyid = "@Page.applyId";
+        $.getJSON("/ApplyFlow/GetFirstUnHandledFlow?r=" + Math.random() + "&applyId=" + applyid, function (flowInfo) {
+            if (flowInfo != null) {
+                var flowId = flowInfo.ID;
+                SearchSign(0, flowId);
+            }
+        });
+    }
+    //绑定显示会签用户
+    function SearchSign(page, flowId) {
+        //记录页面bootstrap-table全局变量$table，方便应用
+        var queryUrl = '/ApplySign/FindByFlowId?flowId=' + flowId + '&rnd=' + Math.random()
+        $tableLog = $('#gridSign').bootstrapTable({
+            url: queryUrl,                   	//请求后台的URL（*）
+            method: 'GET',                      //请求方式（*）
+            //toolbar: '#toolbar',              //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: false,                   //是否显示分页（*）
+            sortable: true,                     //是否启用排序
+            sortOrder: "asc",                   //排序方式
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber: page,                   //初始化加载第一页，默认第一页,并记录
+            pageSize: rows,                     //每页的记录行数（*）
+            pageList: [50, 100],                //可供选择的每页的行数（*）
+            search: false,                      //是否显示表格搜索
+            strictSearch: true,
+            showColumns: false,                  //是否显示所有的列（选择显示的列）
+            showRefresh: false,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+            //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+            showToggle: false,                   //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,                  //是否显示父子表
+            //得到查询的参数
+            queryParams: function (params) {
+                //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+                var temp = {
+                    rows: params.limit,                         //页面大小
+                    page: (params.offset / params.limit) + 1,   //页码
+                    sort: params.sort,      //排序列名
+                    sortOrder: params.order //排位命令（desc，asc）
+                };
+                return temp;
+            },
+            columns: [
+                { checkbox: true, visible: false }, //是否显示复选框
+                { title: '用户名', field: 'UserId' /*, width: 80, sortable: true */ },
+                { title: '处理方式', field: 'IsProc' /*, width: 80, sortable: true */ },
+                { title: '意见', field: 'Opinion' /*, width: 80, sortable: true */ },
+            ],
+            onLoadSuccess: function () {
+                currentPage = page;//存储当前页码
+            },
+            onLoadError: function () {
+                showTips("数据加载失败！");
+            },
+            onDblClickRow: function (row, $element) {
+                //var id = row.Id;
+                //EditViewById(id, 'view');
+            }
+        });
+    };
+    function Sign() {
+        //绑定常用意见
+        var applyid = "@Page.applyId";
+        $.getJSON("/Apply/FindById?id=" + applyid, function (info) {
+            if (info != null) {
+                var formId = info.FormId;//记录FormId
+                //初始化字典
+                BindSelect("SignCommonOpinion", "/CommonOpinion/GetDictJson?formid=" + formId);
+                $("#SignCommonOpinion").on("change", function (e) {
+                    var value = $("#SignCommonOpinion").val();
+                    $("#SignOpinion").val(value);
+                });
+                $("#SignOpinion").val("同意");//.trigger("change");
+            }
+        });
+
+        $("#SignAction").modal("show");
+    }
+</script>
+
+<!--通用函数处理-->
+<script>
+    //退回拟稿人重新处理
+    function ApplyCancel(opinion) {
+        var tipMessage2 = "数据检查完毕，如确认无误将【退回拟稿人重新处理】，您确实要提交吗？";
+        var result = confirm(tipMessage2);
+        if (!result) return;
+
+        var url = "/AdminApply/SkipFirstApply";
+        //构造参数发送给后台
+        var postData = {
+            applyId: "@Page.applyId",
+            opinion: opinion
+        };
+        postData = JSON.stringify(postData);
+        $.post(url, postData, function (json) {
+            var data = $.parseJSON(json);
+            if (data.Success) {
+                //可增加其他处理
+                LoadMainData();         //加载数据
+
+                //提示处理结果
+                showTips("您已经退回经办人进行修改。");
+            }
+            else {
+                showError("操作失败:" + data.ErrorMessage, 3000);
+            }
+        });
+    }
+
+    //退回上一步处理
+    function ApplyBack(opinion) {
+        var tipMessage2 = "数据检查完毕，如确认无误将【退回上一步处理】，您确实要提交吗？";
+        var result = confirm(tipMessage2);
+        if (!result) return;
+
+        var url = "/AdminApply/SkipPreviousApply";
+        //构造参数发送给后台
+        var postData = {
+            applyId: "@Page.applyId",
+            opinion: opinion
+        };
+        postData = JSON.stringify(postData);
+        $.post(url, postData, function (json) {
+            var data = $.parseJSON(json);
+            if (data.Success) {
+                //可增加其他处理
+                LoadMainData();         //加载数据
+
+                //提示处理结果
+                showTips("您已经退回办理人员进行重新处理。");
+            }
+            else {
+                showError("操作失败:" + data.ErrorMessage, 3000);
+            }
+        });
+    }
+
+    //审批处理后的执行操作
+    //该操作一般发生在申请单完成后，需要修改业务表单数据的情况
+    //该函数默认为空，具体逻辑给子视图页面ViewDetail.cs里面实现
+    function ToCompletedForm() {
+        console.log("ToCompletedForm");//留待子类重写函数
+    }
+</script>

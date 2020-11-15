@@ -1,0 +1,5 @@
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Dictionary.Core\obj\x86\Debug\WHC.Dictionary.Core.csprojResolveAssemblyReference.cache
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\Lib\WHC.Dictionary.Core.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\Lib\WHC.Dictionary.Core.pdb
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Dictionary.Core\obj\x86\Debug\WHC.Dictionary.Core.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Dictionary.Core\obj\x86\Debug\WHC.Dictionary.Core.pdb

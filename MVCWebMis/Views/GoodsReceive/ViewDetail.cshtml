@@ -1,0 +1,104 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "查看物品领用申请单";
+}
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+<script src="~/Content/JQueryTools/printThis/printThis.js"></script>
+
+<!--此处放置业务表单的数据呈现，方便隔离，减少复杂性-->
+@RenderPage("~/Views/Apply/ViewDetail.cshtml", new { applyId = Request["id"] })
+
+<!--定义子表单数据呈现-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-cogs"></i>
+            物品领用申请单-表单数据
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <div class="portlet-body">
+            <div class="row">
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">用途</label>
+                                <div class="col-md-8">
+                                    <label id="Usage2" name="Usage" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">物品名称</label>
+                                <div class="col-md-8">
+                                    <label id="ItemName2" name="ItemName" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">数量</label>
+                                <div class="col-md-8">
+                                    <label id="Quantity2" name="Quantity" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">备注信息</label>
+                                <div class="col-md-8">
+                                    <label id="Note2" name="Note" class="form-control"></label>
+                                </div>
+                            </div>
+                        </div>
+       
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">附件组别ID</label>
+                        <div class="col-md-8">
+                            <input id="AttachGUID2" name="AttachGUID" type="hidden" />
+                            <div id="div_files"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <!--记录重要参数-->
+                    <input type="hidden" id="ID2" name="ID" />
+                </div>
+                <div class="col-md-12" style="text-align:right">
+                    <button type="button" class="btn red" onclick="BackToList()">返回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section footerScript {
+    <script>
+    //页面初始化
+    $(function () {
+        LoadSubData();
+    })
+
+    function LoadSubData() {
+        //具体业务表单数据
+        var applyId = '@Request["id"]';
+        $.getJSON("/GoodsReceive/FindByApplyId?r=" + Math.random() + "&applyId=" + applyId, function (info) {
+            $("#Usage2").text(info.Usage);
+            $("#ItemName2").text(info.ItemName);
+            $("#Quantity2").text(info.Quantity);
+            $("#Note2").text(info.Note);
+       
+            //附件处理
+            $("#ID2").val(info.ID);
+            $("#AttachGUID2").text(info.AttachGUID);
+            ViewUpFiles(info.AttachGUID, "div_files");
+        });
+    };
+
+    function BackToList() {
+       history.go(-1);
+    }
+    </script>
+}

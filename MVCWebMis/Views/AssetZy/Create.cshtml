@@ -1,0 +1,940 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "创建资产转移单";
+}
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+
+<!-- BEGIN 表格数据-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-cogs"></i>
+            <span id="lblAddTitle" style="font-weight:bold">创建资产转移单</span>
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <div class="portlet-body">
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffAdd" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">流程标题</label>
+                                <div class="col-md-10">
+                                    <input id="Title" type="text" class="form-control" placeholder="流程标题..." required readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group input-date">
+                                <label class="control-label col-md-4">申请日期</label>
+                                <div class="col-md-8">
+                                    <input id="ApplyDate" name="ApplyDate" class="form-control" placeholder="申请日期..." required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">转移单号</label>
+                                <div class="col-md-8">
+                                    <input id="BillNo" name="BillNo" type="text" class="form-control" placeholder="转移单号..." readonly />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">转移资产</label>
+                                <div class="col-md-8">
+                                    <input id="AssetDesc" name="AssetDesc" type="text" class="form-control" placeholder="转移资产..." />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">资产转出部门（单位）</label>
+                                <div class="col-md-8">
+                                    <select id="OutDept" name="OutDept" type="text" class="form-control" placeholder="资产转出部门（单位）..."></select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">资产转入部门（单位）</label>
+                                <div class="col-md-8">
+                                    <select id="InDept" name="InDept" type="text" class="form-control" placeholder="资产转入部门（单位）..."></select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">资产管理部门（单位）</label>
+                                <div class="col-md-8">
+                                    <select id="ChargeDept" name="ChargeDept" type="text" class="form-control" placeholder="资产管理部门（单位）..."></select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">转出部门资产管理员</label>
+                                <div class="col-md-8">
+                                    <select id="DeptAdmin" name="DeptAdmin" type="text" class="form-control" placeholder="转出部门资产管理员..."></select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">备注信息</label>
+                                <div class="col-md-8">
+                                    <textarea id="Note" name="Note" class="form-control" placeholder="备注信息..."></textarea>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">附件</label>
+                                <div class="col-md-10">
+                                    <input id="AttachGUID" name="AttachGUID" type="hidden" />
+                                    <input id="excelFile" type="file" multiple="multiple">
+                                    <div id="div_files"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                            <div class="portlet light portlet-fit ">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="icon-settings font-red"></i>
+                                        <span class="caption-subject font-red sbold uppercase">明细清单</span>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="table-toolbar">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="btn-group">
+                                                    <button id="detail_editable_1_new" class="btn green">
+                                                        新增记录
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <table class="table table-striped table-hover table-bordered" id="detail_editable_1">
+                                        <thead>
+                                            <tr>
+                                                <th> 资产名称 </th>
+                                                <th style="display:none"> 资产编码 </th>
+                                                <th> 使用部门 </th>
+                                                <th> 使用人 </th>
+                                                <th> 存放地点 </th>
+                                                <th> 原使用人 </th>
+                                                <th> 原存放地点 </th>
+                                                <th> 单位 </th>
+                                                <th> 单价 </th>
+                                                <th> 数量 </th>
+                                                <th> 金额（元） </th>
+                                                <th> 备注 </th>
+                                                <th> 编辑 </th>
+                                                <th> 删除 </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- END EXAMPLE TABLE PORTLET-->
+                        </div>
+                        <div class="portlet box col-md-12">
+                            <input name="tags" id="tags" value="" />
+                            <button type="button" class="btn green" id="btnSelectUser" onclick="SelectUsers()">选择流程处理人[需选择1人]</button>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer bg-info">
+                    <input type="hidden" id="ID" name="ID" />
+                    <input type="hidden" id="Apply_ID" name="Apply_ID" />
+                    <button type="button" class="btn red" onclick="SaveDraft()" style="float:left">
+                        <span class="glyphicon glyphicon-floppy-saved"></span>
+                        存为草稿
+                    </button>
+                    <button type="submit" class="btn blue">确定</button>
+                    <button type="button" class="btn green" onclick="BackToList()">取消</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+@RenderPage("~/Views/Apply/SelectUser.cshtml")
+@RenderPage("~/Views/Asset/SelectAsset.cshtml")
+@section footerScript {
+
+    <script type="text/javascript">
+
+        //页面初始化
+        $(function () {
+            InitStyle();        //设置控件的样式
+            BindEvent();        //绑定事件处理
+            InitDictItem();     //初始化字典信息
+            LoadData();         //加载数据
+        });
+
+        //子页面选中用户后，调用的方法
+        function OnSelectUser(json) {
+            ProcUserJson = json;//存储到ProcUserJson，方便下次打开界面初始化数据
+            if (json != '') {
+                var dict = JSON.parse(json);
+                if (dict != null) {
+                    $('#tags').importTags('');
+                    for (var key in dict) {
+                        var display = dict[key];
+                        $('#tags').addTag(display);  //加上已选择用户的信息
+                    };
+                }
+            }
+        }
+
+        //设置控件的样式
+        function InitStyle() {
+            //统一设置icheck控件的样式
+            $('input[class=icheck]').iCheck({
+                checkboxClass: 'icheckbox_square-red',
+                radioClass: 'iradio_square-red',
+            });
+			//设置日期样式
+            $('.input-daterange input').each(function () {
+                $(this).datepicker({
+                    language: 'zh-CN', //语言
+                    autoclose: true, //选择后自动关闭
+                    clearBtn: true,//清除按钮
+                    format: "yyyy-mm-dd"//日期格式
+                });
+            });
+            $('.input-date input').each(function () {
+                $(this).datepicker({
+                    language: 'zh-CN', //语言
+                    autoclose: true, //选择后自动关闭
+                    clearBtn: true,//清除按钮
+                    format: "yyyy-mm-dd"//日期格式
+                });
+            });
+
+			//初始化标签控件
+            $('#tags').tagsInput({
+                width: 'auto',
+                height: '60px',
+                onRemoveTag: function (tag) {
+                    var i = addDisplayList.indexOf(tag);
+                    var id = addKeyList[i];
+                    removeUser(id, tag);
+
+                    procuserid = "";//移除则清空流程处理人
+                },
+                interactive: false
+            });
+
+            InitExcelFile();    //初始化Excel上传
+        }
+
+        //初始化字典信息（下拉列表）
+        function InitDictItem() {
+            //部分赋值参考
+
+            //绑定字典
+            //BindDictItem("PayType", "付款方式");
+
+            //绑定树列表
+            //BindSelect("PID", "/Menu/GetDictJson");
+
+            //绑定可选多个Tag
+            // $("#Hobby").val({
+            //     tags: ["旅游", "爬山", "篮球", "足球", "乒乓球"]
+            // }).trigger("change");
+
+            //绑定添加界面的公司、部门（联动处理）
+            // BindSelect("Company_ID", "/User/GetMyCompanyDictJson?userId="+@Session["UserId"]);
+            // $("#Company_ID").on("change", function (e) {
+            //     var companyid = $("#Company_ID").val();
+            //     BindSelect("Dept_ID", "/User/GetDeptDictJson?parentId="+ companyid);
+            // });
+
+            var companyid = '@Session["Company_ID"]';
+            var mydetpId = '@Session["Dept_ID"]';
+            BindSelect("OutDept", "/User/GetDeptDictJson?parentId=" + companyid, '', function () {
+                $("#OutDept").val(mydetpId).trigger("change");;
+            });
+            BindSelect("InDept", "/User/GetDeptDictJson?parentId=" + companyid, '', function () {
+                $("#InDept").val(mydetpId).trigger("change");;
+            });
+
+            BindSelect("ChargeDept", "/User/GetDeptDictJson?parentId=" + companyid, '', function () {
+                $("#ChargeDept").val(mydetpId).trigger("change");;
+            });
+
+            BindSelect("DeptAdmin", "/User/GetUserDictJson?deptId=" + mydetpId);
+            $("#ChargeDept").on("change", function (e) {
+                var deptid = $("#ChargeDept").val();
+                if (deptid != null) {
+                    BindSelect("DeptAdmin", "/User/GetUserDictJson?deptId=" + deptid);
+                }
+            });
+        }
+
+        //初始化数据
+        function LoadData() {
+            $("#ffAdd")[0].reset();//清空上次输入
+            $('#ffAdd').validate().resetForm();//去除验证信息
+
+            //共同部分
+            $("#ID").val(newGuid());
+            $("#Apply_ID").val(newGuid());//申请单需要提前指定
+
+            var applyid = '@Request["applyid"]';//记录申请单ID（已有）
+            var draftid = "@Request["draftid"]"; //获取草稿ID
+            var formId = "@Request["formid"]";//记录FormID
+            var title = "资产转移单";
+            if (applyid != '') {
+                $("#lblAddTitle").text("重新修改-" + title);
+
+                //如果是从已有申请单过来，则加载信息
+                $.getJSON("/Apply/FindById?id=" + applyid, function (info) {
+                    if (info != null) {
+                        $("#Title").val(info.Title);//申请单标题
+                        $("#Apply_ID").val(info.ID);//修改为已有ID
+                    }
+                });
+                $.getJSON("/AssetZy/FindByApplyId?applyid=" + applyid, function (info) {
+                    SetInfo(info);//设置内容
+
+                    //显示明细信息
+                    $.getJSON("/AssetZyDetail/FindByBillNo?billNo=" + info.BillNo, function (list) {
+                        if (list != null) {
+                            DetailEditable.BindList(list);
+                        }
+                    });
+                });
+            }
+            else if (draftid != '') {
+                //如果是从草稿页面过来，则加载草稿信息
+                $.getJSON("/ApplyDraft/FindByID?id=" + draftid, function (draftInfo) {
+
+                    $("#Title").val(draftInfo.Title);
+                    var info = $.parseJSON(draftInfo.BizDraftJson);
+                    SetInfo(info);//设置内容
+
+                    //显示明细信息
+                    var list = $.parseJSON(draftInfo.BizDraftJson2);
+                    if (list != null) {
+                        DetailEditable.BindList(list);
+                    }
+                });
+
+            } else {
+                //新建表单初始化
+                var applytitle = "@ViewBag.FullName" + "的" + title + "【" + GetCurrentDate() + "】";
+                $("#Title").val(applytitle);
+                $("#ApplyDate").val(GetCurrentDate());
+                //$("#PayDate").val(GetCurrentDate());
+
+                //获取申请单号
+                $.get("/AssetZy/GetBillNo?r=" + Math.random(), function (result) {
+                    $("#BillNo").val(result);
+                });
+            }
+
+            //初始化部分控件
+            //$('input[name="Gender"][value="男"]').iCheck('check');
+            //$("#PID").val("").trigger("change");
+            //$("#Hobby").val(null).trigger("change");//清空下拉框
+        }
+
+        //统一设置界面控件内容
+        function SetInfo(info) {
+            if (info != null) {
+                $("#ApplyDate").val(getDateStr(info.ApplyDate));
+                 $("#BillNo").val(info.BillNo);
+                 $("#AssetDesc").val(info.AssetDesc);
+                $("#OutDept").val(info.OutDept).trigger("change");
+                $("#InDept").val(info.InDept).trigger("change");
+                $("#ChargeDept").val(info.ChargeDept).trigger("change");
+                $("#DeptAdmin").val(info.DeptAdmin).trigger("change");
+                 $("#Note").val(info.Note);
+
+                //附件处理
+                $("#AttachGUID").val(info.AttachGUID);
+                attachguid = $("#AttachGUID").val();//记录业务的附件字段GUID，用作更新显示附件列表
+                ShowUpFiles(attachguid, "div_files");
+
+                //参考赋值
+                //$("#Company_ID1").val(info.Company_ID).trigger("change");//联动
+                //$("#PID1").val(info.PID).trigger("change");//普通Select2
+                // var array = [info.Hobby];
+                // $("#Hobby").val(array).trigger("change"); //集合
+
+                // $("input[name='Gender']").iCheck('uncheck');
+                // $("input[name='Gender'][value='" + info.Gender + "']").iCheck('check');
+                // $("#BirthDate").val(getDateStr(info.BirthDate));
+            }
+        }
+
+        //自定义函数处理queryParams的批量增加
+        $.fn.serializeJsonObject = function () {
+            var json = {};
+            var form = this.serializeArray();
+            $.each(form, function () {
+                if (json[this.name]) {
+                    if (!json[this.name].push) {
+                        json[this.name] = [json[this.name]];
+                    }
+                    json[this.name].push();
+                } else {
+                    json[this.name] = this.value || '';
+                }
+            });
+            return json;
+        }
+
+        //保存草稿
+        function SaveDraft() {
+            var title = $("#Title").val();
+            if (title == '') {
+                showTips("标题不能为空");
+                return;
+            }
+
+            //var postData = $("#ffAdd").serializeArray();
+            var jsonObj = $("#ffAdd").serializeJsonObject();
+            var mainJson = JSON.stringify(jsonObj);//将JavaScript值转换为JSON字符串
+            //明细数据
+            var detailObj = GetData();
+            var detailJson = JSON.stringify(detailObj);//将JavaScript值转换为JSON字符串
+            var postData = {
+                formId: '@Request["formid"]',
+                title: title,
+                draftId: '@Request["draftid"]',
+                mainJson: mainJson,
+                detailJson: detailJson,
+                detailJson2: null,
+                detailJson3: null,
+            };
+            postData = JSON.stringify(postData);//转换为JSON数据，以POST提交
+            var url = "/ApplyDraft/SaveDraft";
+            $.post(url, postData, function (json) {
+                var data = $.parseJSON(json);
+                if (data.Success) {
+                    //可增加其他处理
+
+                    //保存成功
+                    showTips("保存成功");
+                    setTimeout(function () { window.location.href = "/ApplyDraft/index" }, 3000);
+                }
+                else {
+                    showError("保存失败:" + data.ErrorMessage, 3000);
+                }
+            }).error(function () {
+                showTips("您未被授权使用该功能，请联系管理员进行处理。");
+            });
+        }
+
+        //返回上级页面
+        function BackToList() {
+            history.go(-1);
+        }
+
+        //绑定相关事件
+        function BindEvent() {
+            //判断表单的信息是否通过验证
+            formValidate("ffAdd", function (form) {
+                if (addKeyList.length == 0) {
+                    showTips("请选择流程处理人");
+                    return;
+                } else if (addKeyList.length > 1) {
+                    showTips("只能选择一个流程处理人");
+                    return;
+                }
+
+                //解析流程处理人
+                var dict = JSON.parse(ProcUserJson);
+                if (dict != null) {
+                    for (var key in dict) {
+                        procuserid = key;//加上已选择用户的信息
+                    };
+                }
+                if (procuserid == '') {
+                    showTips("流程处理人不能为空");
+                    return;
+                }
+
+                //构造参数发送给后台,写入业务数据
+                var info = $("#ffAdd").serializeJsonObject();
+                var details = GetData();//获取明细表数据
+                //构建提交后台的数据
+                var postData = {
+                    info: info,
+                    details: details
+                };
+                postData = JSON.stringify(postData);//转换为JSON数据，以POST提交
+
+                //定义保存业务表单的URL
+                var saveDataUrl = "/AssetZy/SaveApply";
+                $.post(saveDataUrl, postData, function (json) {
+                    var data = $.parseJSON(json);
+                    if (data.Success) {
+                        //录入业务表单数据后，继续保存通用申请单数据
+                        SendApply(postData);
+                        RefreshExcel();
+
+                        //保存成功  定时返回我的申请单
+                        showTips("保存成功");
+                        setTimeout(function () { window.location.href = "/Apply/index" }, 3000);
+                    }
+                    else {
+                        showError("保存失败:" + data.ErrorMessage, 3000);
+                    }
+                });
+            });
+        }
+
+        //录入业务表单数据后，继续保存通用申请单数据
+        var procuserid = "";
+        function SendApply(data) {
+            var postData = {
+                //也可以使用data.pop('Apply_ID').value
+                applyid: '@Request["applyid"]',//如果是已有的申请单，则applyid不为空
+                newapplyid: $('#Apply_ID').val(),//新建的时候，使用newapplyid
+                formid: '@Request["formid"]',
+                draftid: '@Request["draftid"]',
+                title: $('#Title').val(),
+                note: $('#Note').val(),
+                procuserid: procuserid,
+            };
+
+            postData = JSON.stringify(postData);
+            var url = "/Apply/SendApply";
+            $.post(url, postData, function (json) {
+                var data = $.parseJSON(json);
+                if (data.Success) {
+
+                    //保存成功
+                    showTips("保存通用申请单数据成功");
+                }
+                else {
+                    showError("保存通用申请单数据失败:" + data.ErrorMessage, 3000);
+                }
+            });
+        }
+
+        //初始化Excel导入的文件
+        function InitExcelFile() {
+            //记录GUID
+            $("#AttachGUID").val(newGuid());
+
+            $("#excelFile").fileinput({
+                uploadUrl: "/FileUpload/Upload",//上传的地址
+                uploadAsync: true,              //异步上传
+                language: "zh",                 //设置语言
+                showCaption: true,              //是否显示标题
+                showUpload: true,               //是否显示上传按钮
+                showRemove: true,               //是否显示移除按钮
+                showPreview : true,             //是否显示预览按钮
+                browseClass: "btn btn-primary", //按钮样式
+                dropZoneEnabled: false,         //是否显示拖拽区域
+                allowedFileExtensions: null, //接收的文件后缀
+                maxFileCount: 3,                        //最大上传文件数限制
+                previewFileIcon: '<i class="glyphicon glyphicon-file"></i>',
+                allowedPreviewTypes: null,
+                previewFileIconSettings: null,
+                uploadExtraData: {  //上传的时候，增加的附加参数
+                    folder: '工作流文件', guid: $("#AttachGUID").val()
+                }
+            })  //文件上传完成后的事件
+           .on('fileuploaded', function (event, data, previewId, index) {
+                var form = data.form, files = data.files, extra = data.extra,
+                    response = data.response, reader = data.reader;
+
+                var res = data.response; //返回结果
+                if (res.Success) {
+                    attachguid = $("#AttachGUID").val();//记录业务的附件字段GUID，用作更新显示附件列表
+                    ShowUpFiles(attachguid, "div_files");
+
+                    $('#file_upload').fileinput('clear');//清空所有文件
+                    showToast("上传完毕！");
+                }
+                else {
+                    showTips('上传失败');
+                }
+           });
+        }
+
+        var attachguid = "";//用来记录附件组的ID，方便更新
+        function deleteAttach(id) {
+            //id 代表附件列表的单个记录ID attachguid代表业务表的附件字段ID
+            DeleteAndRefreshAttach(id, attachguid, "div_files");
+        }
+
+        //重新更新GUID的值，并清空文件
+        function RefreshExcel() {
+            $("#AttachGUID").val(newGuid());
+            $('#excelFile').fileinput('clear');//清空所有文件
+
+            //附加参数初始化后一直不会变化，如果需要发生变化，则需要使用refresh进行更新
+            $('#excelFile').fileinput('refresh', {
+                uploadExtraData: { folder: '工作流文件', guid: $("#AttachGUID").val() },
+            });
+        }
+    </script>
+    <script>
+        var DetailEditable = function () {
+            //定义dataTable对象
+            var table = $('#detail_editable_1');
+            var oTable = table.dataTable({
+                // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+                // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js).
+                // So when dropdowns used the scrollable div should be removed.
+                //"dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
+
+                "lengthMenu": [
+                    [5, 15, 20, -1],
+                    [5, 15, 20, "All"] // 改变每页的行数
+                ],
+                
+                // 使用汉化
+                "language": {
+                    url: '//cdn.datatables.net/plug-ins/3cfcc339e89/i18n/Chinese.json'
+                },
+
+                //初始化
+                "pageLength": 5,
+                "columnDefs": [{ // 设置默认列设置
+                    'orderable': true,
+                    'targets': [0]
+                }, {
+                    "searchable": true,
+                    "targets": [0]
+                }],
+                "order": [
+                    [0, "asc"]
+                ] // 将第一列设置为asc的默认排序
+            });
+
+            var inputLength = 12;//输入的字段数，包括隐藏列
+            var handleTable = function () {
+                //恢复只读模式
+                function restoreRow(oTable, nRow) {
+                    var aData = oTable.fnGetData(nRow);
+                    var jqTds = $('>td', nRow);
+
+                    for (var i = 0, iLen = jqTds.length; i < iLen; i++) {
+                        oTable.fnUpdate(aData[i], nRow, i, false);
+                    }
+                    oTable.fnDraw();
+                }
+                //编辑行
+                function editRow(oTable, nRow) {
+                    var aData = oTable.fnGetData(nRow);
+                    var jqTds = $('>td', nRow); 
+                    //AssetName AssetCode ZyDept CurrUser CurrAddr OldUser OldAddr Unit Price TotalQty TotalAmount Note
+                    var i = 0;
+                    jqTds[i].innerHTML = '<input id="txtAssetName" type="text" class="form-control input-small" onclick="SelectAssets(this)" value="' + aData[i] + '">';//资产名称
+                    i++;
+                    jqTds[i].style.display = 'none';//隐藏该列
+                    jqTds[i].innerHTML = '<input id="txtAssetCode" type="text" class="form-control input-small" readonly value="' + aData[i] + '">';//资产编码
+
+                    i++;
+                    var deptid = aData[i];
+                    jqTds[i].innerHTML = '<select id="txtZyDept" class="form-control input-small" value="' + aData[i] + '"></select>';//使用部门
+                    i++;
+                    var userid = aData[i];
+                    jqTds[i].innerHTML = '<select id="txtCurrUser" class="form-control input-small" value="' + aData[i] + '"></select>';//使用人
+                    i++;
+                    var currAddr = aData[i];
+                    jqTds[i].innerHTML = '<select id="txtCurrAddr" class="form-control input-small select2" value="' + aData[i] + '"></select>';//存放地点
+                    i++; jqTds[i].innerHTML = '<input id="txtOldUser" type="text" class="form-control input-small" readonly value="' + aData[i] + '">';//单位
+                    i++; jqTds[i].innerHTML = '<input id="txtOldAddr" type="text" class="form-control input-small" readonly value="' + aData[i] + '">';//单价
+                    i++; jqTds[i].innerHTML = '<input id="txtUnit" type="text" class="form-control input-small" readonly value="' + aData[i] + '">';//单位
+                    i++; jqTds[i].innerHTML = '<input id="txtPrice" type="text" class="form-control input-small" readonly value="' + aData[i] + '">';//单价
+                    i++; jqTds[i].innerHTML = '<input id="txtTotalQty" type="text" class="form-control input-small" readonly value="' + aData[i] + '">';//数量
+                    i++; jqTds[i].innerHTML = '<input id="txtTotalAmount" type="text" class="form-control input-small" readonly value="' + aData[i] + '">';//金额(元)
+                    i++; jqTds[i].innerHTML = '<input id="txtNote" type="text" class="form-control input-small" value="' + aData[i] + '">';//备注
+
+                    i++; jqTds[i].innerHTML = '<a class="btn btn-xs green edit" href="" title="保存">保存</a>';
+                    i++; jqTds[i].innerHTML = '<a class="btn btn-xs red cancel" href="" title="取消"><span class="glyphicon glyphicon-share-alt "></span></a>';
+
+                    //初始化控件下拉列表
+                    var companyid = '@Session["Company_ID"]';
+                    var mydetpId = deptid != '' ? deptid : '@Session["DeptName"]|@Session["Dept_ID"]';
+                    //初始化部门列表
+                    BindSelect("txtZyDept", "/User/GetDeptDictJson2?parentId=" + companyid, '', function () {
+                        $("#txtZyDept").val(mydetpId).trigger("change");
+                    });
+
+                    //部门编号后，用户列表编号
+                    $("#txtZyDept").on("change", function (e) {
+                        var deptNameId = $("#txtZyDept").val();
+                        if (deptNameId != null) {
+                            var id = deptNameId.substring(deptNameId.lastIndexOf("|") + 1);
+                            BindSelect("txtCurrUser", "/User/GetUserDictJson2?deptId=" + id, '', function () {
+                                $("#txtCurrUser").val(userid).trigger("change");
+                            });
+
+                            //存储位置
+                            BindSelect("txtCurrAddr", "/StoreAddress/GetDictJson?deptId=" + id, '', function () {
+                                $("#txtCurrAddr").val(currAddr).trigger("change");
+                            });
+                        }
+                    });
+                }
+
+                //保存行数据，切换到普通模式
+                function saveRow(oTable, nRow) {
+                    //var jqInputs = $('input', nRow);
+                    var jqInputs = $("[id^='txt']", nRow);//id以txt开始([id^='txt']), id以txt结束([id$='txt'])
+
+                    //更新行中每个input的值
+                    for (var i = 0; i < inputLength; i++) {
+                        oTable.fnUpdate(jqInputs[i].value, nRow, i, false);
+                        iLen = i;
+                    }
+
+                    oTable.fnUpdate('<a class="btn btn-xs green edit" href="" title="编辑"><span class="glyphicon glyphicon-edit"></span></a>', nRow, inputLength, false);
+                    oTable.fnUpdate('<a class="btn btn-xs red delete" href="" title="删除"><span class="glyphicon glyphicon-remove"></span></a>', nRow, inputLength + 1, false);
+                    oTable.fnDraw();
+                }
+                //取消编辑模式
+                function cancelEditRow(oTable, nRow) {
+                    var jqInputs = $('input', nRow);
+                    for (var i = 0; i < inputLength; i++) {
+                        oTable.fnUpdate(jqInputs[i].value, nRow, i, false);
+                        iLen = i;
+                    }
+
+                    oTable.fnUpdate('<a class="edit" href="">编辑</a>', nRow, inputLength, false);
+                    oTable.fnDraw();
+                }
+
+                var nEditing = null;
+                var nNew = false;
+
+                $('#detail_editable_1_new').click(function (e) {
+                    e.preventDefault();
+                    if (nNew && nEditing) {
+                        if (confirm("前面记录没有保存，您是否需要保存?")) {
+                            saveRow(oTable, nEditing);
+                            //$(nEditing).find("td:first").html("未保存");
+                            nEditing = null;
+                            nNew = false;
+                        } else {
+                            oTable.fnDeleteRow(nEditing); // cancel
+                            nEditing = null;
+                            nNew = false;
+                            return;
+                        }
+                    }
+
+                    //动态初始化集合 +2代表增加保存、取消列
+                    let datas = [];
+                    for (let i = 0; i < inputLength + 2; i++) {
+                        datas.push('');
+                    }
+                    //添加一条新的记录
+                    //oTable.fnAddData(['', '', '', '', '', '', '', '', '', '', '', '']);
+                    var aiNew = oTable.fnAddData(datas);//使用动态初始化的数据
+                    var nRow = oTable.fnGetNodes(aiNew[0]);
+                    editRow(oTable, nRow);
+                    nEditing = nRow;
+                    nNew = true;
+                });
+                //删除操作
+                table.on('click', '.delete', function (e) {
+                    e.preventDefault();
+                    if (confirm("您确认要删除该行记录吗?") == false) {
+                        return;
+                    }
+                    //获取上一级tr行的数据
+                    var nRow = $(this).parents('tr')[0];
+                    var aData = oTable.fnGetData(nRow);
+
+                    oTable.fnDeleteRow(nRow);
+                });
+                //取消操作
+                table.on('click', '.cancel', function (e) {
+                    e.preventDefault();
+                    if (nNew) {
+                        oTable.fnDeleteRow(nEditing);
+                        nEditing = null;
+                        nNew = false;
+                    } else {
+                        restoreRow(oTable, nEditing);
+                        nEditing = null;
+                    }
+                });
+                //编辑操作
+                table.on('click', '.edit', function (e) {
+                    e.preventDefault();
+                    nNew = false;
+
+                    /*获取所击连接的行对象*/
+                    var nRow = $(this).parents('tr')[0];
+
+                    if (nEditing !== null && nEditing != nRow) {
+                        /* 当前正在编辑 - 但不是此行 - 在继续编辑模式之前恢复旧版 */
+                        restoreRow(oTable, nEditing);
+                        editRow(oTable, nRow);
+                        nEditing = nRow;
+                    } else if (nEditing == nRow && this.innerHTML == "保存") {
+                        /* 编辑该行，并准备保存记录 */
+                        saveRow(oTable, nEditing);
+                        nEditing = null;
+
+                    } else {
+                        /* No edit in progress - let's start one */
+                        editRow(oTable, nRow);
+                        nEditing = nRow;
+                    }
+                });
+            };
+
+            //获取表格的数据，并返回对象列表
+            function GetData() {
+                var list = [];
+                var trs = table.fnGetNodes();
+                for (var i = 0; i < trs.length; i++) {
+                    var data = table.fnGetData(trs[i]);//获取指定行的数据
+
+                    //构建对象
+                    var obj = {
+                        AssetName: data[0],
+                        AssetCode: data[1],
+                        ZyDept: data[2],
+                        CurrUser: data[3],
+                        CurrAddr: data[4],
+                        OldUser: data[5],
+                        OldAddr: data[6],
+                        Unit: data[7],
+                        Price: data[8],
+                        TotalQty: data[9],
+                        TotalAmount: data[10],
+                        Note: data[11]
+                    };
+                    list.push(obj);
+                }
+                return list;
+            };
+
+            //绑定列表数据
+            function BindList(list) {
+                if (list == null) return;
+
+                oTable.fnClearTable();//清空一下table
+                $.each(list, function (i, item) {
+                    BindData(item);
+                });
+            }
+            //绑定单条记录
+            function BindData(item) {
+                if (item == null) return;
+
+                //AssetName AssetCode ZyDept CurrUser CurrAddr OldUser OldAddr Unit Price TotalQty TotalAmount Note
+                let datas = [];
+                datas.push(item.AssetName);
+                datas.push(item.AssetCode);
+                datas.push(item.ZyDept);
+                datas.push(item.CurrUser);
+                datas.push(item.CurrAddr);
+                datas.push(item.OldUser);
+                datas.push(item.OldAddr);
+                datas.push(item.Unit);
+                datas.push(item.Price);
+                datas.push(item.TotalQty);
+                datas.push(item.TotalAmount);
+                datas.push(item.Note);
+
+                //增加编辑、删除按钮
+                datas.push('<a class="btn btn-xs green edit" href="" title="编辑"><span class="glyphicon glyphicon-edit"></span></a>');
+                datas.push('<a class="btn btn-xs red delete" href="" title="删除"><span class="glyphicon glyphicon-remove"></span></a>');
+
+                //添加一条新的记录
+                var aiNew = oTable.fnAddData(datas);//使用动态初始化的数据
+                var nRow = oTable.fnGetNodes(aiNew[0]);
+                var aData = oTable.fnGetData(nRow);
+
+                var jqTds = $('>td', nRow);
+                jqTds[1].style.display = 'none';//隐藏指定列
+
+                //循环更新每列数据
+                for (var i = 0, iLen = jqTds.length; i < iLen; i++) {
+                    oTable.fnUpdate(aData[i], nRow, i, false);
+                }
+                oTable.fnDraw();
+            };
+
+            //公布对象接口
+            return {
+                //main function to initiate the module
+                init: function () {
+                    handleTable();
+                },
+                GetData: function () {
+                    return GetData();
+                },
+                BindList: function (list) {
+                    BindList(list);
+                }
+            };
+        }();
+
+        //初始化对象相关函数
+        $(function () {
+            DetailEditable.init();
+        });
+
+        //提供函数调用对象接口
+        function GetData() {
+            return DetailEditable.GetData();
+        }
+
+        //选择资产后调用
+        function OnSelectAsset(json) {
+            ProcAssetJson = json;//存储到ProcAssetJson，方便下次打开界面初始化数据
+            if (json != '') {
+                var dict = JSON.parse(json);
+                if (dict != null) {
+                    for (var key in dict) {
+                        var display = dict[key];
+                        assetInput.val(display);
+
+                        //txtKeepAddr txtUnit txtTotalQty txtTotalAmount
+                        //更新数据
+                        $.getJSON("/Asset/FindByCode?code=" + key, function (info) {
+                            if (info != null) {
+                                $("#txtAssetCode").val(info.Code);
+                                $("#txtUnit").val(info.Unit);
+                                $("#txtPrice").val(info.Price);
+                                $("#txtTotalQty").val(info.Qty);
+                                $("#txtTotalAmount").val(info.OriginValue);
+                                //增加的
+                                $("#txtOldUser").val(info.UsePerson);
+                                $("#txtOldAddr").val(info.KeepAddr);
+                            }
+                        });
+                    };
+                }
+            }
+        }
+    </script>
+}

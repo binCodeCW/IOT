@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FCFD05C3-CAC2-4ADE-9EBB-85BE17548E4A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IOT.MVCWebMis</RootNamespace>
+    <AssemblyName>IOT.MVCWebMis.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Aspose.Cells">
+      <HintPath>..\Reference\Aspose.Cells.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=3.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Reference\EnterpriseLibrary\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Reference\EnterpriseLibrary\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BLL\BootstrapIcon.cs" />
+    <Compile Include="BLL\Icon.cs" />
+    <Compile Include="BLL\Information.cs" />
+    <Compile Include="BLL\InformationStatus.cs" />
+    <Compile Include="BLL\PictureAlbum.cs" />
+    <Compile Include="BLL\ReceiveProtocal.cs" />
+    <Compile Include="BLL\TestUser.cs" />
+    <Compile Include="BLL\WebFavorite.cs" />
+    <Compile Include="BLL\YH01_DeviceDataRec.cs" />
+    <Compile Include="BLL\YH01_DeviceInfoRec.cs" />
+    <Compile Include="BLL\YH04_QualityData.cs" />
+    <Compile Include="BLL\YH04_TestData.cs" />
+    <Compile Include="BLL\YH08_DeviceDataRec.cs" />
+    <Compile Include="BLL\YH08_DeviceInfoRec.cs" />
+    <Compile Include="BLL\YH_AlarmMap.cs" />
+    <Compile Include="BLL\YH_DeviceAlarm.cs" />
+    <Compile Include="BLL\YH_DeviceControl.cs" />
+    <Compile Include="BLL\YH_DeviceInfo.cs" />
+    <Compile Include="BLL\YH_New_DeviceList.cs" />
+    <Compile Include="BLL\YH_User_DeviceNo.cs" />
+    <Compile Include="DAL\DALSQL\BootstrapIcon.cs" />
+    <Compile Include="DAL\DALSQL\Icon.cs" />
+    <Compile Include="DAL\DALSQL\Information.cs" />
+    <Compile Include="DAL\DALSQL\InformationStatus.cs" />
+    <Compile Include="DAL\DALSQL\PictureAlbum.cs" />
+    <Compile Include="DAL\DALSQL\ReceiveProtocal.cs" />
+    <Compile Include="DAL\DALSQL\TestUser.cs" />
+    <Compile Include="DAL\DALSQL\WebFavorite.cs" />
+    <Compile Include="DAL\DALSQL\YH01_DeviceDataRec.cs" />
+    <Compile Include="DAL\DALSQL\YH01_DeviceInfoRec.cs" />
+    <Compile Include="DAL\DALSQL\YH04_QualityData.cs" />
+    <Compile Include="DAL\DALSQL\YH04_TestData.cs" />
+    <Compile Include="DAL\DALSQL\YH08_DeviceDataRec.cs" />
+    <Compile Include="DAL\DALSQL\YH08_DeviceInfoRec.cs" />
+    <Compile Include="DAL\DALSQL\YH_AlarmMap.cs" />
+    <Compile Include="DAL\DALSQL\YH_DeviceAlarm.cs" />
+    <Compile Include="DAL\DALSQL\YH_DeviceControl.cs" />
+    <Compile Include="DAL\DALSQL\YH_DeviceInfo.cs" />
+    <Compile Include="DAL\DALSQL\YH_New_DeviceList.cs" />
+    <Compile Include="DAL\DALSQL\YH_User_DeviceNo.cs" />
+    <Compile Include="Entity\AuthorizeKey.cs" />
+    <Compile Include="Entity\BootstrapIconInfo.cs" />
+    <Compile Include="Entity\IconInfo.cs" />
+    <Compile Include="Entity\InformationInfo.cs" />
+    <Compile Include="Entity\InformationStatusInfo.cs" />
+    <Compile Include="Entity\MyDenyAccessException.cs" />
+    <Compile Include="Entity\PictureAlbumInfo.cs" />
+    <Compile Include="Entity\ReceiveProtocalInfo.cs" />
+    <Compile Include="Entity\TestUserInfo.cs" />
+    <Compile Include="Entity\WebFavoriteInfo.cs" />
+    <Compile Include="Entity\YH01_DeviceDataRecInfo.cs" />
+    <Compile Include="Entity\YH01_DeviceInfoRecInfo.cs" />
+    <Compile Include="Entity\YH04_QualityDataInfo.cs" />
+    <Compile Include="Entity\YH04_TestDataInfo.cs" />
+    <Compile Include="Entity\YH08_DeviceDataRecInfo.cs" />
+    <Compile Include="Entity\YH08_DeviceInfoRecInfo.cs" />
+    <Compile Include="Entity\YH_AlarmMapInfo.cs" />
+    <Compile Include="Entity\YH_DeviceAlarmInfo.cs" />
+    <Compile Include="Entity\YH_DeviceControlInfo.cs" />
+    <Compile Include="Entity\YH_DeviceInfoInfo.cs" />
+    <Compile Include="Entity\YH_New_DeviceListInfo.cs" />
+    <Compile Include="Entity\YH_User_DeviceNoInfo.cs" />
+    <Compile Include="IDAL\IBootstrapIcon.cs" />
+    <Compile Include="IDAL\IIcon.cs" />
+    <Compile Include="IDAL\IInformation.cs" />
+    <Compile Include="IDAL\IInformationStatus.cs" />
+    <Compile Include="IDAL\IPictureAlbum.cs" />
+    <Compile Include="IDAL\IReceiveProtocal.cs" />
+    <Compile Include="IDAL\ITestUser.cs" />
+    <Compile Include="IDAL\IWebFavorite.cs" />
+    <Compile Include="IDAL\IYH01_DeviceDataRec.cs" />
+    <Compile Include="IDAL\IYH01_DeviceInfoRec.cs" />
+    <Compile Include="IDAL\IYH04_QualityData.cs" />
+    <Compile Include="IDAL\IYH04_TestData.cs" />
+    <Compile Include="IDAL\IYH08_DeviceDataRec.cs" />
+    <Compile Include="IDAL\IYH08_DeviceInfoRec.cs" />
+    <Compile Include="IDAL\IYH_AlarmMap.cs" />
+    <Compile Include="IDAL\IYH_DeviceAlarm.cs" />
+    <Compile Include="IDAL\IYH_DeviceControl.cs" />
+    <Compile Include="IDAL\IYH_DeviceInfo.cs" />
+    <Compile Include="IDAL\IYH_New_DeviceList.cs" />
+    <Compile Include="IDAL\IYH_User_DeviceNo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YH.Dictionary.Core\YH.Dictionary.Core.csproj">
+      <Project>{5271f727-907a-473b-8c7d-1cdcec8f7006}</Project>
+      <Name>YH.Dictionary.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YH.Framework.Commons\YH.Framework.Commons.csproj">
+      <Project>{53ac195e-dcff-47c4-bc02-7e0241ff520c}</Project>
+      <Name>YH.Framework.Commons</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YH.Framework.ControlUtil\YH.Framework.ControlUtil.csproj">
+      <Project>{d1d3850b-206f-49a9-ba9f-eac0c39de3dd}</Project>
+      <Name>YH.Framework.ControlUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YH.Framework.Language\YH.Framework.Language.csproj">
+      <Project>{4ff53539-d8ee-4ce8-81ba-e7af56a1f566}</Project>
+      <Name>YH.Framework.Language</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YH.Pager.Entity\YH.Pager.Entity.csproj">
+      <Project>{8d58654e-3fdb-4f5f-921a-7832db994dce}</Project>
+      <Name>YH.Pager.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YH.Security.Core\YH.Security.Core.csproj">
+      <Project>{2b6b91be-27d4-46b4-ab4d-fd7fd5897f90}</Project>
+      <Name>YH.Security.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

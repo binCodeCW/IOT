@@ -1,0 +1,128 @@
+﻿<!--审批表单-->
+<div id="SubmitAction" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">审批表单</h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="ffSubmit" action="" data-toggle="validator" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">常用意见</label>
+                            <div class="col-md-10">
+                                <select id="CommonOpinion" type="text" class="form-control" placeholder="常用意见..."></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">处理意见</label>
+                            <div class="col-md-10">
+                                <input id="SubmitOpinion" type="text" class="form-control" placeholder="处理意见..." style="height:100px" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">审批意见</label>
+                            <div class="input-group col-md-10">
+                                <div class="icheck-inline">
+                                    <label>
+                                        <input type="radio" name="radioApprove" checked class="icheck" data-radio="iradio_square-grey"> 批准申请
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="radioApprove" class="icheck" data-radio="iradio_square-grey"> 退回拟稿人重新处理
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="radioApprove" class="icheck" data-radio="iradio_square-grey"> 退回上一步处理
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn blue">发送</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    //页面初始化
+    $(function () {
+        BindSubmitEvent();
+    });
+
+    //审批表单
+    function Submit() {
+        var applyid = "@Page.applyId";
+        $.getJSON("/Apply/FindById?id=" + applyid, function (info) {
+            if (info != null) {
+                var formId = info.FormId;//记录FormId
+
+                //$.getJSON("/Form/FindById?id=" + formId, function (formInfo) {
+                //});
+
+                //初始化字典
+                BindSelect("CommonOpinion", "/CommonOpinion/GetDictJson?formid=" + formId);
+
+                $("#CommonOpinion").on("change", function (e) {
+                    var value = $("#CommonOpinion").val();
+                    $("#SubmitOpinion").val(value);
+                });
+                $("#CommonOpinion").val("同意");
+            }
+        });
+
+        $("#SubmitAction").modal("show");
+    };
+
+    function BindSubmitEvent() {
+        $("#ffSubmit").validate({
+            meta: "validate",
+            errorElement: 'span',
+            errorClass: 'help-block help-block-error',
+            focusInvalid: false,
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success: function (label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+            errorPlacement: function (error, element) {
+                element.parent('div').append(error);
+            },
+            submitHandler: function (form) {
+                $("#SubmitAction").modal("hide");
+                var result = confirm("您确实要撤消该申请吗？");
+                if (!result) return;
+
+                var url = "/AdminApply/ApproveApply";
+                //构造参数发送给后台
+                var postData = {
+                    applyId: "@Page.applyId",
+                    opinion: $("#SubmitOpinion").val()
+                };
+                postData = JSON.stringify(postData);
+                $.post(url, postData, function (json) {
+                    var data = $.parseJSON(json);
+                    if (data.Success) {
+                        //可增加其他处理
+                        LoadMainData();         //加载数据
+
+                        //提示处理结果
+                        showTips("您已经通过了该申请");
+                    }
+                    else {
+                        showError("操作失败:" + data.ErrorMessage, 3000);
+                    }
+                });
+            }
+        });
+    }
+</script>

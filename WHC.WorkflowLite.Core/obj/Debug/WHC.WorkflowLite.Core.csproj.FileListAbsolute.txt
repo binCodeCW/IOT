@@ -1,0 +1,6 @@
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\WHC.WorkflowLite.Core.xml
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\WHC.WorkflowLite.Core.dll
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\Lib\WHC.WorkflowLite.Core.pdb
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\WHC.WorkflowLite.Core\obj\Debug\WHC.WorkflowLite.Core.csprojResolveAssemblyReference.cache
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\WHC.WorkflowLite.Core\obj\Debug\WHC.WorkflowLite.Core.dll
+E:\repository_SrcCode\BootStrap框架\云平台LYY\Bootstrap开发框架3\WHC.WorkflowLite.Core\obj\Debug\WHC.WorkflowLite.Core.pdb

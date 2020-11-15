@@ -1,0 +1,226 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "红外光谱仪数据分析";
+}
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+
+<!-- BEGIN 数据查询-->
+<div class="portlet box green-meadow">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-filter"></i>
+            查询内容
+        </div>
+        <div class="tools">
+            <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="Refresh()">
+                <i class="fa fa-search"></i>
+                查 询
+            </button>
+            <a href="javascript:;" class="collapse" title="折叠内容"></a>
+        </div>
+    </div>
+
+    <div class="portlet-body flip-scroll">
+        <div class="row">
+            <form class="form-horizontal" id="ffSearch">
+                <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class=" input-group input-daterange">
+                        <input id="startTime" name="startTime" class="form-control" placeholder="消息记录时间(起)" value="2020-04-01 00:00:00" />
+                        <span class="input-group-addon">~</span>
+                        <input id="endTime" name="endTime" class="form-control" placeholder="消息记录时间(止)" value="2020-05-01 00:00:00" />
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">仪器编号</label>
+                        <div class="col-md-8">
+                            <input id="deviceNo" name="deviceNo" type="text" class="form-control" value="210412625" />
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END 数据查询-->
+
+<div class="portlet-body flip-scroll">
+    <div class="row">
+        <div id="container" style="width: 1100px; height: 600px; margin: 0 auto"></div>
+    </div>
+</div>
+
+<script src="~/Content/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="~/Content/libs/highcharts/8.0.4/highcharts.js"></script>
+<script src="~/Content/js/dayjs.min.js"></script>
+<script>
+    function Refresh() {
+        var startTime = document.getElementById("startTime").value;
+        var endTime = document.getElementById("endTime").value;
+        var deviceNo = document.getElementById("deviceNo").value;
+        var url = "/YH08_DeviceInfoRec/DeviceInfo1?deviceNo=".concat(deviceNo).concat("&startTime=").concat(startTime).concat("&endTime=").concat(endTime);
+        var data = [];
+        $.getJSON(url, function (res) {
+            $.each(res || [], function (index, item) {
+                data.push({ x: dayjs(item.stamptime).valueOf(), y: parseFloat(item.SE) });
+            })
+
+            var chart = Highcharts.charts[0];
+            chart.update({
+                series: [{
+                    data: data
+                }]
+            });
+        })
+    }
+
+    $(document).ready(function () {
+        var chart = {
+            type: 'spline',
+            animation: Highcharts.svg, // don't animate in IE < IE 10.
+            marginRight: 10,
+            events: {
+                load: function () {
+                    // set up the updating of the chart each second
+                    //var series = this.series[0];
+                    //setInterval(function () {
+                    //    console.log("每秒触发一次" + new Date().toLocaleString());
+                    //    var x = (new Date()).getTime(), // current time
+                    //        y = Math.random();
+                    //    //var x = '2020-03-04 00:00:00.000', y = 0.0018;
+                    //    //var data = [];
+                    //    var url = "/YH08_DeviceInfoRec/FindWithPager?rows=1&page=1&sortOrder=asc&WHC_DeviceNo=210412625";
+                    //    $.getJSON(url, function (res) {
+                    //        //console.log("res: %o", res);
+                    //        //x = res.Recordtime;
+                    //        //y = res.Se;
+                    //        //series.addPoint([x, y], true, true);
+                    //        //series.
+                    //    })
+
+                    //    //series.addPoint([x, y], true, true);
+                    //}, 1000);
+                }
+            }
+        };
+        var title = {
+            text: '数据加载'
+        };
+        var xAxis = {
+            type: 'datetime',
+            dateTimeLabelFormats: {
+                day: '%Y-%m-%d %H:%M:%S'
+            },
+            tickPixelInterval: 150
+        };
+        var yAxis = {
+            title: {
+                text: '标准方差'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        };
+        var tooltip = {
+            formatter: function () {
+                console.log(this.series);
+                return '<b>' + this.series.name + '</b><br/>' +
+                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                    Highcharts.numberFormat(this.y, 2);
+            }
+        };
+        var plotOptions = {
+            series: {
+                marker: {
+                    enabled: true,
+                    radius: 4, //曲线点半径，默认是4
+                    symbol: 'circle' //曲线点类型：”circle”, “square”, “diamond”, “triangle”,”triangle-down”，默认是”circle”
+                }
+            },
+            area: {
+                pointStart: 1940,
+                marker: {
+                    enabled: false,
+                    symbol: 'circle',
+                    radius: 2,
+                    states: {
+                        hover: {
+                            enabled: true
+                        }
+                    }
+                }
+            }
+        };
+        var legend = {
+            enabled: false
+        };
+        var exporting = {
+            enabled: false
+        };
+        var series = [{
+            name: '数据',
+            data: (function () {
+
+                /*
+                // 示例数据
+                var data = [], time = (new Date()).getTime(), i;
+                for (i = -19; i <= 0; i += 1) {
+                    data.push({
+                        x: time + i * 1000,
+                        y: Math.random()
+                    });
+                }
+                console.log("模板data %o", data);
+                return data;
+                */
+
+                /*
+                var data = [{ "x": 1587916800000, "y": 0.8 }, { "x": 1588003200000, "y": 0.5 }, { "x": 1588176000000, "y": 0.7 }];
+                return data;
+                */
+
+                var startTime = document.getElementById("startTime").value;
+                var endTime = document.getElementById("endTime").value;
+                var deviceNo = document.getElementById("deviceNo").value;
+                var url = "/YH08_DeviceInfoRec/DeviceInfo1?deviceNo=".concat(deviceNo).concat("&startTime=").concat(startTime).concat("&endTime=").concat(endTime);
+                $.ajaxSettings.async = false;
+                var data = [];
+                $.getJSON(url, function (res) {
+                    $.each(res || [], function (index, item) {
+                        data.push({ x: dayjs(item.stamptime).valueOf(), y: parseFloat(item.SE) });
+                        //data.push({ x: dayjs(item.recordtime).valueOf(), y: parseFloat(item.SE) });
+                    })
+                })
+                return data;
+            }())
+        }];
+
+        var json = {};
+        json.chart = chart;
+        json.title = title;
+        json.tooltip = tooltip;
+        json.xAxis = xAxis;
+        json.yAxis = yAxis;
+        json.legend = legend;
+        json.exporting = exporting;
+        json.series = series;
+        json.plotOptions = plotOptions;
+
+        Highcharts.setOptions({
+            global: {
+                useUTC: false
+            }
+        });
+        $('#container').highcharts(json);
+    });
+</script>
+
+
+
+
+

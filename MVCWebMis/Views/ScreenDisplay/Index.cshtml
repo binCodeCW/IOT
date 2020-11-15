@@ -1,0 +1,473 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+
+    <script type="text/javascript" src="~/Content/js/rem.js"></script>
+    <link rel="stylesheet" href="~/Content/css/style.css">
+    <script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=1XjLLEhZhQNUzd93EjU5nOGQ"></script>
+    <title>中核海得威云监控</title>
+    <link rel="stylesheet" href="~/Content/device/css/index.css">
+
+    <script src="~/Content/device/js/index.js"></script>
+
+    <link rel="stylesheet" href="~/Content/alert/css/style.css" />
+    <script type="text/javascript" src="~/Content/alert/js/jquery-1.8.0.min.js"></script>
+</head>
+
+
+<body  style="visibility: hidden;">
+    <div id="content" class="container-flex" tabindex="0" hidefocus="true">
+        <div class="box-left">
+            <div class="left-top">
+                <div class="current-num">
+                    <div>设备总数</div>
+                    <p>{{deviceTotal}}</p>
+                </div>
+            </div>
+            <div class="left-center">
+                <div class="title-box">
+                    <h6>设备概况</h6>
+                </div>
+                <div class="chart-box pie-chart" style="">
+                    <!--<div id="pie_fanzui" style="width:100%;"></div>-->
+                    <div id="chart_1" class="echart" style="width: 100%; height: 3.4rem;"></div>
+                </div>
+            </div>
+            <div class="left-bottom" class="select">
+                <div class="title-box">
+                    <h6>设备类型统计</h6>
+                </div>
+                <div class="chart-box" style="width: 95%;">
+                    <table class="table3">
+                        <thead>
+                            <tr>
+                                <th>设备</th>
+                                <th>类型</th>
+                                <th>数量</th>
+                                <th>时间</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tList">
+                            <!--<tr><td colspan="4"><p style="width:9.6rem;">暂无数据</p></td></tr>-->
+
+                            <tr>
+                                <td>养和</td>
+                                <td>YH04D</td>
+                                <td>6</td>
+                                <td>2018-11-01 13:51:23</td>
+                            </tr>
+                            <tr>
+                                <td>养和</td>
+                                <td>YH04E</td>
+                                <td>5</td>
+                                <td>2018-11-01 13:51:23</td>
+                            </tr>
+                            <tr>
+                                <td>养和</td>
+                                <td>YH08A</td>
+                                <td>8</td>
+                                <td>2018-11-01 13:51:23</td>
+                            </tr>
+                            <tr>
+                                <td>养和</td>
+                                <td>YH01AS</td>
+                                <td>16</td>
+                                <td>2018-11-01 13:51:23</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="box-center">
+            <div class="center-top">
+                <!-- <h1><img src="~/Content/images/jinghui.png" style="width:55px;margin-right:20px;" />智慧社区内网比对平台</h1>-->
+                <h1>中核海得威云监控</h1>
+            </div>
+            <!-- <div class="center-center">
+                    <div class="weather-box">
+                        <div class="data">
+                            <p class="time" id="time">00:00:00</p>
+                            <p id="date"></p>
+                        </div>
+                        <div class="weather">
+                            <img id="weatherImg" src="images/weather/weather_img01.png" alt="">
+                            <div id="weather">
+                                <p class="active">多云</p>
+                                <p>16-22℃</p>
+                                <p>安徽省桐城市</p>
+                            </div>
+                        </div>
+                    </div>
+                    <img src="images/line_bg.png" alt="">
+                    <div class="select-box" style="height: 0.3rem;">
+
+                        <div data-type="2">
+                            <div class="select" tabindex="0" hidefocus="true">
+                                <p style="color:#FFFF00;font-weight:bold;">NO.1北京：2543289人</p>
+                                <p style="color:#7FFF00;font-weight:bold;">NO.1天津： 5690人</p>
+                                <p style="color:#7FFFD4;font-weight:bold;">NO.1河北： 456人</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>-->
+            <div class="center-bottom">
+                <div class="chart-box" style="height: 100%;">
+                    <div id="container" style="width:100%;height:100%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-right">
+            <div class="right-top">
+                <div class="title-box">
+                    <h6 id="barTitle">报警统计</h6>
+                </div>
+
+                <div class="chart-box">
+                    <div>
+                        <div class="content_right">
+                            <div class="report">
+                                <div class="report1">
+                                    <p>告警信息</p>
+                                    <small>{{alarm.alarm}}条</small>
+                                </div>
+                                <div class="report2">
+                                    <p>故障信息</p>
+                                    <small>{{alarm.fault}}条</small>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-center">
+                <div class="title-box">
+                    <h6>近期报警</h6>
+                </div>
+                <div class="data_box_right_center">
+                    <div class="data_box_right_center_title"><img src="~/Content/alert/images/icon05.png" /> 报警记录</div>
+                    <div class="news_list">
+                        <ul id="warning_list">
+                            <li class="li02">{{deviceAlarmInfo[0]}}</li>
+                            <li class="li02">{{deviceAlarmInfo[1]}}</li>
+                            <li class="li02">{{deviceAlarmInfo[2]}}</li>
+                            <li class="li02">{{deviceAlarmInfo[3]}}</li>
+                            <li class="li02">{{deviceAlarmInfo[4]}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-bottom">
+                <div class="title-box">
+                    <p id="switchBtn"><span class="active" data-dataType="income">数据记录</span></p>
+                </div>
+                <div class="data_box">
+                    <div class="data_con_3_title"><img src="~/Content/alert/images/icon06.png"/>近7天每日告警数</div>
+                    <div class="data_con_3" id="container4">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="~/Content/alert/js/vue.min.js"></script>
+    <script type="text/javascript" src="~/Content/alert/js/index.js"></script>
+    @*<script type="text/javascript" src="~/Content/alert/js/data.js"></script>*@
+</body>
+
+
+
+</html>
+
+<script type="text/javascript" src="~/Content/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="~/Content/js/layer/layer.min.js"></script>
+<script type="text/javascript" src="~/Content/js/layer/laydate/laydate.js"></script>
+<script type="text/javascript" src="~/Content/js/echarts.min.js"></script>
+<script type="text/javascript" src="~/Content/js/china.js"></script>
+<script type="text/javascript" src="~/Content/js/infographic.js"></script>
+<script type="text/javascript" src="~/Content/js/macarons.js"></script>
+<script type="text/javascript" src="~/Content/js/shine.js"></script>
+<script type="text/javascript" src="~/Content/js/base.js"></script>
+<script src="https://mapv.baidu.com/build/mapv.js"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.js"></script>
+<link rel="stylesheet" href="https://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.css" />
+
+
+
+
+
+<script type="text/javascript">
+    $('document').ready(function () {
+        $("body").css('visibility', 'visible');
+        var localData = [$('#teacher').val(), $('#start').val() + '/' + $('#end').val(), $('#leader').val()]
+        localStorage.setItem("data", localData);
+      
+        var myChart = echarts.init(document.getElementById('chart_1'));       
+
+        //
+        var map = new BMap.Map('container');
+        // 地图自定义样式
+        map.setMapStyle({
+            styleJson: [
+          {
+              "featureType": "water",
+              "elementType": "all",
+              "stylers": {
+                  "color": "#021019"
+              }
+          },
+          {
+              "featureType": "highway",
+              "elementType": "geometry.fill",
+              "stylers": {
+                  "color": "#000000"
+              }
+          },
+          {
+              "featureType": "highway",
+              "elementType": "geometry.stroke",
+              "stylers": {
+                  "color": "#147a92"
+              }
+          },
+          {
+              "featureType": "arterial",
+              "elementType": "geometry.fill",
+              "stylers": {
+                  "color": "#000000"
+              }
+          },
+          {
+              "featureType": "arterial",
+              "elementType": "geometry.stroke",
+              "stylers": {
+                  "color": "#0b3d51"
+              }
+          },
+          {
+              "featureType": "local",
+              "elementType": "geometry",
+              "stylers": {
+                  "color": "#000000"
+              }
+          },
+          {
+              "featureType": "land",
+              "elementType": "all",
+              "stylers": {
+                  "color": "#08304b"
+              }
+          },
+          {
+              "featureType": "railway",
+              "elementType": "geometry.fill",
+              "stylers": {
+                  "color": "#000000"
+              }
+          },
+          {
+              "featureType": "railway",
+              "elementType": "geometry.stroke",
+              "stylers": {
+                  "color": "#08304b"
+              }
+          },
+          {
+              "featureType": "subway",
+              "elementType": "geometry",
+              "stylers": {
+                  "lightness": -70
+              }
+          },
+          {
+              "featureType": "building",
+              "elementType": "geometry.fill",
+              "stylers": {
+                  "color": "#000000"
+              }
+          },
+          {
+              "featureType": "all",
+              "elementType": "labels.text.fill",
+              "stylers": {
+                  "color": "#857f7f"
+              }
+          },
+          {
+              "featureType": "all",
+              "elementType": "labels.text.stroke",
+              "stylers": {
+                  "color": "#000000"
+              }
+          },
+          {
+              "featureType": "building",
+              "elementType": "geometry",
+              "stylers": {
+                  "color": "#022338"
+              }
+          },
+          {
+              "featureType": "green",
+              "elementType": "geometry",
+              "stylers": {
+                  "color": "#062032"
+              }
+          },
+          {
+              "featureType": "boundary",
+              "elementType": "all",
+              "stylers": {
+                  "color": "#1e1c1c"
+              }
+          },
+          {
+              "featureType": "manmade",
+              "elementType": "geometry",
+              "stylers": {
+                  "color": "#022338"
+              }
+          },
+          {
+              "featureType": "poi",
+              "elementType": "all",
+              "stylers": {
+                  "visibility": "on"
+              }
+          },
+          {
+              "featureType": "all",
+              "elementType": "labels.icon",
+              "stylers": {
+                  "visibility": "on"
+              }
+          },
+          {
+              "featureType": "all",
+              "elementType": "labels.text.fill",
+              "stylers": {
+                  "color": "#2da0c6",
+                  "visibility": "on"
+              }
+          }
+            ]
+        });
+        // 创建地图实例
+        var point = new BMap.Point(116.404, 39.915);
+        // 创建点坐标
+        map.centerAndZoom(point, 5);
+        // 初始化地图， 设置中心点坐标和地图级别
+        //var marker = new BMap.Marker(point);
+        map.enableScrollWheelZoom(true); //启用滚轮放大缩小
+        //地图、卫星、混合模式切换
+        map.addControl(new BMap.MapTypeControl({ mapTypes: [BMAP_NORMAL_MAP, BMAP_SATELLITE_MAP, BMAP_HYBRID_MAP] }));
+        //向地图中添加缩放控件
+        var ctrlNav = new window.BMap.NavigationControl({
+            anchor: BMAP_ANCHOR_TOP_LEFT,
+            type: BMAP_NAVIGATION_CONTROL_LARGE
+        });
+        map.addControl(ctrlNav);
+        //向地图中添加缩略图控件
+        var ctrlOve = new window.BMap.OverviewMapControl({
+            anchor: BMAP_ANCHOR_BOTTOM_RIGHT,
+            isOpen: 1
+        });
+        map.addControl(ctrlOve);
+        //向地图中添加比例尺控件
+        var ctrlSca = new window.BMap.ScaleControl({
+            anchor: BMAP_ANCHOR_BOTTOM_LEFT
+        });
+        map.addControl(ctrlSca);
+        //map.addOverlay(marker);
+
+        // 加载动态数据
+        loadMarks(map);
+        //异步调用百度js
+        function map_load() {
+            var load = document.createElement("script");
+            load.src = "http://api.map.baidu.com/api?v=2.0&ak=IDvNBsejl9oqMbPF316iKsXR&callback=map_init";
+            document.body.appendChild(load);
+        }
+        window.onload = map_load;
+    })
+
+    function loadMarks(map) {
+        // 取10条
+        var url = "/YH_DeviceInfo/FindWithPager?rnd=0.3876455777993706&WHC_DeviceId=&WHC_DeviceType=&WHC_SimpleName=&WHC_Province=&WHC_City=&WHC_District=&WHC_Area=&WHC_Address=&WHC_ZipCode=&WHC_Telephone=&WHC_Fax=&WHC_Contact=&WHC_ContactPhone=&WHC_ContactMobile=&WHC_Email=&WHC_CustomerType=&WHC_Grade=&WHC_CreditStatus=&WHC_Importance=&WHC_Note=&WHC_IotID=&WHC_Longtitude=&WHC_Latitude=&WHC_OLINESTATUS=true&rows=10&page=1&sortOrder=asc";
+        // 指定仪器编号请求
+        //var url = "/YH_DeviceInfo/FindWithPager?CustomedCondition=OlineStatus = 1 and DeviceId in ('40200005','1219001','210412625','40200001')";
+        $.getJSON(url, function (res) {
+            //console.log(res);
+            if (!(res && res.total && res.total > 0)) return;
+            var markerArr = [];
+            $.each(res.rows, function (index, item) {
+                markerArr.push({
+                    title: "".concat(item.DeviceType).concat(" ").concat(item.DeviceId),
+                    point: "".concat(item.Longtitude).concat(",").concat(item.Latitude), // "113.264531,23.157003"
+                    address: "".concat(item.Province || "").concat(item.District || "").concat(item.Address || ""),
+                    tel: item.Telephone || ""
+                });
+            });
+
+            var point = new Array(); //存放标注点经纬信息的数组
+            var marker = new Array(); //存放标注点对象的数组
+            var info = new Array(); //存放提示信息窗口对象的数组
+            var searchInfoWindow = new Array();//存放检索信息窗口对象的数组
+            for (var i = 0; i < markerArr.length; i++) {
+                var p0 = markerArr[i].point.split(",")[0]; //
+                var p1 = markerArr[i].point.split(",")[1]; //按照原数组的point格式将地图点坐标的经纬度分别提出来
+                point[i] = new window.BMap.Point(p0, p1); //循环生成新的地图点
+                marker[i] = new window.BMap.Marker(point[i]); //按照地图点坐标生成标记
+                map.addOverlay(marker[i]);
+                marker[i].setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+                //显示marker的title，marker多的话可以注释掉
+                //var label = new window.BMap.Label(markerArr[i].title, { offset: new window.BMap.Size(20, -10) });
+                //marker[i].setLabel(label);
+
+                // 创建信息窗口对象
+                info[i] = `
+<div style='margin:0;line-height:20px;padding:2px;'>
+    <br/>地址：${markerArr[i].address}
+    <br/>医院电话：${markerArr[i].tel}
+    <br/>经纬度: ${markerArr[i].point}
+    <br/>
+    <br/>
+</div>`;
+
+                //创建百度样式检索信息窗口对象
+                searchInfoWindow[i] = new BMapLib.SearchInfoWindow(map, info[i], {
+                    title: markerArr[i].title, // 标题
+                    width: 290, // 宽度
+                    height: 95, // 高度
+                    enableAutoPan: true, // 自动平移
+                    searchTypes: [
+                    ]
+                });
+
+                //添加点击事件
+                marker[i].addEventListener("click",
+                    (function (k) {
+                        // js 闭包
+                        return function () {
+                            //将被点击marker置为中心
+                            //map.centerAndZoom(point[k], 18);
+                            //在marker上打开检索信息窗口
+                            searchInfoWindow[k].open(marker[k]);
+                        }
+                    })(i)
+                );
+            }
+        });
+    }
+</script>
+

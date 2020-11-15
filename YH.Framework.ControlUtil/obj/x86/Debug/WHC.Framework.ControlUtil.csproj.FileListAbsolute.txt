@@ -1,0 +1,6 @@
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.ControlUtil\obj\x86\Debug\WHC.Framework.ControlUtil.csprojResolveAssemblyReference.cache
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\Lib\WHC.Framework.ControlUtil.XML
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\Lib\WHC.Framework.ControlUtil.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\Lib\WHC.Framework.ControlUtil.pdb
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.ControlUtil\obj\x86\Debug\WHC.Framework.ControlUtil.dll
+E:\repository_SrcCode\BootStrap框架\Bootstrap开发框架\WHC.Framework.ControlUtil\obj\x86\Debug\WHC.Framework.ControlUtil.pdb

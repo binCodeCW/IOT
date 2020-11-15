@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{650535FC-2BCB-4B9C-B4B4-2C343381AAC4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WHC.CRM</RootNamespace>
+    <AssemblyName>WHC.CRM.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=3.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Reference\EnterpriseLibrary\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Reference\EnterpriseLibrary\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BLL\CustomerAlarm.cs" />
+    <Compile Include="BLL\CustomerOwnerChange.cs" />
+    <Compile Include="BLL\InformationStatus.cs" />
+    <Compile Include="BLL\Quotation.cs" />
+    <Compile Include="BLL\QuotationDetail.cs" />
+    <Compile Include="BLL\SaleChance.cs" />
+    <Compile Include="BLL\SaleChanceFollow.cs" />
+    <Compile Include="BLL\SaleChanceRemind.cs" />
+    <Compile Include="BLL\Supplier.cs" />
+    <Compile Include="BLL\SupplierGroup.cs" />
+    <Compile Include="BLL\SystemTree.cs" />
+    <Compile Include="BLL\UserTreeSetting.cs" />
+    <Compile Include="DAL\DALSQL\CustomerAlarm.cs" />
+    <Compile Include="DAL\DALSQL\CustomerOwnerChange.cs" />
+    <Compile Include="DAL\DALSQL\InformationStatus.cs" />
+    <Compile Include="DAL\DALSQL\Quotation.cs" />
+    <Compile Include="DAL\DALSQL\QuotationDetail.cs" />
+    <Compile Include="DAL\DALSQL\SaleChance.cs" />
+    <Compile Include="DAL\DALSQL\SaleChanceFollow.cs" />
+    <Compile Include="DAL\DALSQL\SaleChanceRemind.cs" />
+    <Compile Include="DAL\DALSQL\Supplier.cs" />
+    <Compile Include="DAL\DALSQL\SupplierGroup.cs" />
+    <Compile Include="DAL\DALSQL\SystemTree.cs" />
+    <Compile Include="DAL\DALSQL\UserTreeSetting.cs" />
+    <Compile Include="Entity\CustomerAlarmInfo.cs" />
+    <Compile Include="Entity\CustomerOwnerChangeInfo.cs" />
+    <Compile Include="Entity\InformationStatusInfo.cs" />
+    <Compile Include="Entity\QuotationDetailInfo.cs" />
+    <Compile Include="Entity\QuotationInfo.cs" />
+    <Compile Include="Entity\SaleChanceFollowInfo.cs" />
+    <Compile Include="Entity\SaleChanceInfo.cs" />
+    <Compile Include="Entity\SaleChanceRemindInfo.cs" />
+    <Compile Include="Entity\SupplierGroupInfo.cs" />
+    <Compile Include="Entity\SupplierInfo.cs" />
+    <Compile Include="Entity\SystemTreeInfo.cs" />
+    <Compile Include="Entity\UserTreeSettingInfo.cs" />
+    <Compile Include="IDAL\ICustomerAlarm.cs" />
+    <Compile Include="IDAL\ICustomerOwnerChange.cs" />
+    <Compile Include="IDAL\IInformationStatus.cs" />
+    <Compile Include="IDAL\IQuotation.cs" />
+    <Compile Include="IDAL\IQuotationDetail.cs" />
+    <Compile Include="IDAL\ISaleChance.cs" />
+    <Compile Include="IDAL\ISaleChanceFollow.cs" />
+    <Compile Include="IDAL\ISaleChanceRemind.cs" />
+    <Compile Include="IDAL\ISupplier.cs" />
+    <Compile Include="IDAL\ISupplierGroup.cs" />
+    <Compile Include="IDAL\ISystemTree.cs" />
+    <Compile Include="IDAL\IUserTreeSetting.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BLL\Activity.cs" />
+    <Compile Include="BLL\AfterSell.cs" />
+    <Compile Include="BLL\Chance.cs" />
+    <Compile Include="BLL\ComingCall.cs" />
+    <Compile Include="BLL\CompetitiveProduct.cs" />
+    <Compile Include="BLL\Competitor.cs" />
+    <Compile Include="BLL\Complaint.cs" />
+    <Compile Include="BLL\Contact.cs" />
+    <Compile Include="BLL\ContactGroup.cs" />
+    <Compile Include="BLL\Contract.cs" />
+    <Compile Include="BLL\Customer.cs" />
+    <Compile Include="BLL\CustomerGroup.cs" />
+    <Compile Include="BLL\FileData.cs" />
+    <Compile Include="BLL\Follow.cs" />
+    <Compile Include="BLL\Invoice.cs" />
+    <Compile Include="BLL\Maintenace.cs" />
+    <Compile Include="BLL\Manufacturer.cs" />
+    <Compile Include="BLL\MemorialDay.cs" />
+    <Compile Include="BLL\OrderDetail.cs" />
+    <Compile Include="BLL\Product.cs" />
+    <Compile Include="BLL\Sell.cs" />
+    <Compile Include="BLL\Shipping.cs" />
+    <Compile Include="BLL\Visit.cs" />
+    <Compile Include="DAL\DALSQL\Activity.cs" />
+    <Compile Include="DAL\DALSQL\AfterSell.cs" />
+    <Compile Include="DAL\DALSQL\Chance.cs" />
+    <Compile Include="DAL\DALSQL\ComingCall.cs" />
+    <Compile Include="DAL\DALSQL\CompetitiveProduct.cs" />
+    <Compile Include="DAL\DALSQL\Competitor.cs" />
+    <Compile Include="DAL\DALSQL\Complaint.cs" />
+    <Compile Include="DAL\DALSQL\Contact.cs" />
+    <Compile Include="DAL\DALSQL\ContactGroup.cs" />
+    <Compile Include="DAL\DALSQL\Contract.cs" />
+    <Compile Include="DAL\DALSQL\Customer.cs" />
+    <Compile Include="DAL\DALSQL\CustomerGroup.cs" />
+    <Compile Include="DAL\DALSQL\FileData.cs" />
+    <Compile Include="DAL\DALSQL\Follow.cs" />
+    <Compile Include="DAL\DALSQL\Invoice.cs" />
+    <Compile Include="DAL\DALSQL\Maintenace.cs" />
+    <Compile Include="DAL\DALSQL\Manufacturer.cs" />
+    <Compile Include="DAL\DALSQL\MemorialDay.cs" />
+    <Compile Include="DAL\DALSQL\OrderDetail.cs" />
+    <Compile Include="DAL\DALSQL\Product.cs" />
+    <Compile Include="DAL\DALSQL\Sell.cs" />
+    <Compile Include="DAL\DALSQL\Shipping.cs" />
+    <Compile Include="DAL\DALSQL\Visit.cs" />
+    <Compile Include="Entity\ActivityInfo.cs" />
+    <Compile Include="Entity\AfterSellInfo.cs" />
+    <Compile Include="Entity\ChanceInfo.cs" />
+    <Compile Include="Entity\ComingCallInfo.cs" />
+    <Compile Include="Entity\CompetitiveProductInfo.cs" />
+    <Compile Include="Entity\CompetitorInfo.cs" />
+    <Compile Include="Entity\ComplaintInfo.cs" />
+    <Compile Include="Entity\ContactInfo.cs" />
+    <Compile Include="Entity\ContactGroupInfo.cs" />
+    <Compile Include="Entity\ContractInfo.cs" />
+    <Compile Include="Entity\CustomerInfo.cs" />
+    <Compile Include="Entity\CustomerGroupInfo.cs" />
+    <Compile Include="Entity\FileDataInfo.cs" />
+    <Compile Include="Entity\FollowInfo.cs" />
+    <Compile Include="Entity\InvoiceInfo.cs" />
+    <Compile Include="Entity\MaintenaceInfo.cs" />
+    <Compile Include="Entity\ManufacturerInfo.cs" />
+    <Compile Include="Entity\MemorialDayInfo.cs" />
+    <Compile Include="Entity\OrderDetailInfo.cs" />
+    <Compile Include="Entity\ProductInfo.cs" />
+    <Compile Include="Entity\SellInfo.cs" />
+    <Compile Include="Entity\ShippingInfo.cs" />
+    <Compile Include="Entity\VisitInfo.cs" />
+    <Compile Include="IDAL\IActivity.cs" />
+    <Compile Include="IDAL\IAfterSell.cs" />
+    <Compile Include="IDAL\IChance.cs" />
+    <Compile Include="IDAL\IComingCall.cs" />
+    <Compile Include="IDAL\ICompetitiveProduct.cs" />
+    <Compile Include="IDAL\ICompetitor.cs" />
+    <Compile Include="IDAL\IComplaint.cs" />
+    <Compile Include="IDAL\IContact.cs" />
+    <Compile Include="IDAL\IContactGroup.cs" />
+    <Compile Include="IDAL\IContract.cs" />
+    <Compile Include="IDAL\ICustomer.cs" />
+    <Compile Include="IDAL\ICustomerGroup.cs" />
+    <Compile Include="IDAL\IFileData.cs" />
+    <Compile Include="IDAL\IFollow.cs" />
+    <Compile Include="IDAL\IInvoice.cs" />
+    <Compile Include="IDAL\IMaintenace.cs" />
+    <Compile Include="IDAL\IManufacturer.cs" />
+    <Compile Include="IDAL\IMemorialDay.cs" />
+    <Compile Include="IDAL\IOrderDetail.cs" />
+    <Compile Include="IDAL\IProduct.cs" />
+    <Compile Include="IDAL\ISell.cs" />
+    <Compile Include="IDAL\IShipping.cs" />
+    <Compile Include="IDAL\IVisit.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YH.Dictionary.Core\YH.Dictionary.Core.csproj">
+      <Project>{5271f727-907a-473b-8c7d-1cdcec8f7006}</Project>
+      <Name>YH.Dictionary.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YH.Framework.Commons\YH.Framework.Commons.csproj">
+      <Project>{53ac195e-dcff-47c4-bc02-7e0241ff520c}</Project>
+      <Name>YH.Framework.Commons</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YH.Framework.ControlUtil\YH.Framework.ControlUtil.csproj">
+      <Project>{d1d3850b-206f-49a9-ba9f-eac0c39de3dd}</Project>
+      <Name>YH.Framework.ControlUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YH.Pager.Entity\YH.Pager.Entity.csproj">
+      <Project>{8d58654e-3fdb-4f5f-921a-7832db994dce}</Project>
+      <Name>YH.Pager.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YH.Security.Core\YH.Security.Core.csproj">
+      <Project>{2b6b91be-27d4-46b4-ab4d-fd7fd5897f90}</Project>
+      <Name>YH.Security.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

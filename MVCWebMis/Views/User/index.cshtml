@@ -1,0 +1,2206 @@
+﻿@{ 
+ Layout = "~/Views/Shared/_Layout.cshtml";
+ ViewBag.Title = "系统用户信息";
+ }
+
+@*脚本引用放在此处可以实现自定义函数自动提示*@
+<script src="~/Scripts/CommonUtil.js"></script>
+
+<div class="portlet box green-meadow col-md-2 col-sm-3" style="max-width:270px;">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-filter"></i>用户分类
+        </div>
+    </div>
+    <div class="portlet-body flip-scroll">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#tab_1_1" data-toggle="tab">按组织机构查看</a>
+            </li>
+            <li>
+                <a href="#tab_1_2" data-toggle="tab">按角色查看</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade active in" id="tab_1_1">
+                <div class="row" style="padding-left:20px">
+                    <div id="jstree_div"></div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_1_2">
+                <div class="row" style="padding-left:20px">
+                    <div id="jstree_role"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="portlet box col-md-10 col-sm-9">
+    <div class="portlet-body flip-scroll" style="width:99%">
+        <!-- BEGIN 数据查询-->
+        <div class="portlet box green-meadow">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-filter"></i>查询内容
+                </div>
+                <div class="tools">
+                    <div class="btn-group">
+                        <a class="btn btn-sm red" href="javascript:;" data-toggle="dropdown">
+                            <i class="fa fa-user"></i> 过期期限
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+                        <ul class="dropdown-menu pull-right">
+                            <li>
+                                <a class="btn btn-sm red" href="javascript:SearchExpire();">
+                                    <i class="fa fa-ban"></i><span style="color:blue;font-weight:bold">已过期</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="btn btn-sm btn-warning" href="javascript:SearchExpire('oneweek');">
+                                    <i class="glyphicon glyphicon-dashboard"></i><span style="color:blue;font-weight:bold">一周内过期</span> 
+                                </a>
+                            </li>
+                            <li>
+                                <a class="btn btn-sm btn-success" href="javascript:SearchExpire('onemonth');">
+                                    <i class="glyphicon glyphicon-dashboard"></i> <span style="color:blue;font-weight:bold">一个月内过期</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="btn btn-sm btn-info" href="javascript:SearchExpire('oneyear');"> 
+                                    <i class="glyphicon glyphicon-dashboard"></i><span style="color:blue;font-weight:bold">一年内过期</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="Refresh()">
+                        <i class="fa fa-search"></i>
+                        查 询
+                    </button>
+                    <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="ShowImport()">
+                        <i class="fa fa-file-excel-o"></i>
+                        导 入
+                    </button>
+                    <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="ShowExport()">
+                        <i class="fa fa-file-excel-o"></i>
+                        导 出
+                    </button>
+                    <button type="button" class="btn btn-circle btn-sm green-meadow" onclick="javascript:location.href='/User/RDLCReport';">
+                        <i class="fa fa-file-excel-o"></i>
+                        RDLC报表
+                    </button>
+                    <a href="javascript:;" class="collapse" title="折叠内容"></a>
+                </div>
+            </div>
+
+            <div class="portlet-body flip-scroll">
+                <form class="form-horizontal" id="ffSearch">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">用户编码</label>
+                                <div class="col-md-8">
+                                    <input name="WHC_HandNo" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">用户名</label>
+                                <div class="col-md-8">
+                                    <input name="WHC_Name" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">真实姓名</label>
+                                <div class="col-md-8">
+                                    <input name="WHC_FullName" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">移动电话</label>
+                                <div class="col-md-8">
+                                    <input name="WHC_MobilePhone" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">邮件地址</label>
+                                <div class="col-md-8">
+                                    <input name="WHC_Email" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">QQ号码</label>
+                                <div class="col-md-8">
+                                    <input name="WHC_QQ" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- END 数据查询-->
+        <!-- BEGIN 表格数据-->
+        <div class="portlet box green-meadow">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-cogs"></i>数据列表
+                </div>
+                <div class="tools">
+                    <button type="button" onclick="Add()" class="btn btn-circle btn-sm green-meadow">
+                        <i class="fa fa-plus"></i> 新增
+                    </button>
+                    <button type="button" onclick="EditView()" class="btn btn-circle btn-sm green-meadow">
+                        <i class="fa fa-pencil"></i> 修改
+                    </button>
+                    <button type="button" onclick="EditView('view')" class="btn btn-circle btn-sm green-meadow">
+                        <i class="fa fa-table"></i> 查看
+                    </button>
+                    <button type="button" onclick="Delete()" class="btn btn-circle btn-sm green-meadow">
+                        <i class="fa fa-minus"></i> 删除
+                    </button>
+                    <button type="button" onclick="Refresh()" class="btn btn-circle btn-sm green-meadow" data-toggle="modal">
+                        <i class="fa fa-refresh"></i> 刷新
+                    </button>
+                    <button type="button" onclick="BatchExpired()" class="btn btn-circle btn-sm green-meadow" data-toggle="modal">
+                        <i class="fa fa-refresh"></i> 设置账号过期
+                    </button>
+                    <button type="button" class="fullscreen btn btn-circle btn-sm green-meadow" data-original-title="全屏">
+                        <i class="icon-size-fullscreen"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="portlet-body flip-scroll">
+                <div class="portlet-body">
+                    <div>
+                        <table id="grid" class="table table-hover"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--------------------------添加信息的弹出层---------------------------->
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg bs-modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="fa fa-plus"></i>
+                    <span id="lblAddTitle" style="font-weight:bold">添加信息</span>
+                </h4>
+            </div>
+            <form class="form-horizontal" id="ffAdd" action="">
+                <div class="modal-body">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#tab_2_1" data-toggle="tab">基础信息</a>
+                        </li>
+                        <li>
+                            <a href="#tab_2_2" data-toggle="tab">肖像信息</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade active in" id="tab_2_1">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">用户名/登录名<span class="required">*</span></label>
+                                        <div class="input-icon col-md-8">
+                                            <input id="Name" name="Name" type="text" class="form-control" placeholder="用户名..." required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">真实姓名<span class="required">*</span></label>
+                                        <div class="input-icon col-md-8">
+                                            <input id="FullName" name="FullName" type="text" class="form-control" placeholder="真实姓名..." required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">所属公司<span class="required">*</span></label>
+                                        <div class="input-icon col-md-8">
+                                            <select id="Company_ID" name="Company_ID" class="form-control select2" placeholder="所属公司..." required></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">默认部门<span class="required">*</span></label>
+                                        <div class="input-icon col-md-8">
+                                            <select id="Dept_ID" name="Dept_ID" class="form-control select2" placeholder="默认部门..." required></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">邮件地址</label>
+                                        <div class="input-icon col-md-8">
+                                            <input id="Email" name="Email" type="email" class="form-control" placeholder="邮件地址...">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">移动电话</label>
+                                        <div class="input-icon col-md-8">
+                                            <input id="MobilePhone" name="MobilePhone" type="text" class="form-control" placeholder="移动电话...">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">所属经理</label>
+                                        <div class="input-icon col-md-8">
+                                            <select id="PID" name="PID" class="form-control select2" placeholder="所属经理..."></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">性别</label>
+                                        <div class="input-icon col-md-8">
+                                            <label class="icheck-inline">
+                                                <input type="radio" name="Gender" value="男" checked class="icheck" />
+                                                男
+                                            </label>
+                                            <label class="icheck-inline">
+                                                <input type="radio" name="Gender" value="女" class="icheck" />
+                                                女
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel-group accordion" id="accordion0">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a class="accordion-toggle accordion-toggle-styled" data-toggle="collapse" data-parent="#accordion0" href="#collapseZero">
+                                                    打开或折叠更多内容 》》
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseZero" class="panel-collapse collapse" style="height: 0px; ">
+                                            <div class="panel-body">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">职务头衔</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <select id="Title" name="Title" type="text" class="form-control select2" placeholder="职务头衔..."></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">用户编码</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <input id="HandNo" name="HandNo" type="text" class="form-control" placeholder="用户编码...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">排序码</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <input id="SortCode" name="SortCode" type="text" class="form-control" placeholder="排序码...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">用户呢称</label>
+                                                        <div class="input-icon col-md-8">
+
+                                                            <input id="Nickname" name="Nickname" type="text" class="form-control" placeholder="用户呢称...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">QQ号码</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <input id="QQ" name="QQ" type="text" class="form-control" placeholder="QQ号码...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">身份证号码</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <input id="IdentityCard" name="IdentityCard" type="text" class="form-control" placeholder="身份证号码...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">出生日期</label>
+                                                        <div class="input-icon col-md-8 input-date">
+                                                            <input id="Birthday" name="Birthday" class="form-control" placeholder="出生日期...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">办公电话</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <input id="OfficePhone" name="OfficePhone" type="text" class="form-control" placeholder="办公电话...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">家庭电话</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <input id="HomePhone" name="HomePhone" type="text" class="form-control" placeholder="家庭电话...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">家庭住址</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <input id="Address" name="Address" type="text" class="form-control" placeholder="家庭住址...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2">办公地址</label>
+                                                        <div class="input-icon col-md-10">
+                                                            <input id="WorkAddr" name="WorkAddr" type="text" class="form-control" placeholder="办公地址...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2">个性签名</label>
+                                                        <div class="input-icon col-md-10">
+                                                            <textarea id="Signature" name="Signature" class="form-control" placeholder="个性签名..."></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2">备注</label>
+                                                        <div class="input-icon col-md-10">
+                                                            <textarea id="Note" name="Note" class="form-control" placeholder="备注..."></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4"></label>
+                                                        <div class="input-icon col-md-8">
+                                                            <label class="icheck-inline">
+                                                                <input type="checkbox" name="IsExpire" class="icheck" />
+                                                                账户过期
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">过期时间</label>
+                                                        <div class="input-icon col-md-8 input-date">
+                                                            <input id="ExpireDate" name="ExpireDate" class="form-control" placeholder="过期时间...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab_2_2">
+                            <div class="row" style="height: 500px">
+                                <input id="file-Portrait" type="file">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-info">
+                    <input type="hidden" id="ID" name="ID" />
+                    <button type="submit" class="btn blue">确定</button>
+                    <button type="button" class="btn green-meadow" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--------------------------编辑信息的弹出层---------------------------->
+<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg bs-modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-pencil"></i>
+                    <span id="lblEditTitle" style="font-weight:bold">修改信息</span>
+                </h4>
+            </div>
+            <form class="form-horizontal" id="ffEdit" action="">
+                <div class="modal-body">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#tab_3_1" data-toggle="tab">基础信息</a>
+                        </li>
+                         <li>
+                            <a href="#tab_3_2" data-toggle="tab">用户可操作功能</a>
+                        </li>                        
+                        <li>
+                            <a href="#tab_3_3" data-toggle="tab">所属机构角色</a>
+                        </li>
+                        <li>
+                            <a href="#tab_3_4" data-toggle="tab">肖像信息</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade active in" id="tab_3_1">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">用户名/登录名<span class="required">*</span></label>
+                                        <div class="input-icon col-md-8">
+                                            <input id="Name1" name="Name" type="text" class="form-control" placeholder="用户名..." required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">真实姓名<span class="required">*</span></label>
+                                        <div class="input-icon col-md-8">
+                                            <input id="FullName1" name="FullName" type="text" class="form-control" placeholder="真实姓名..." required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">所属公司<span class="required">*</span></label>
+                                        <div class="input-icon col-md-8">
+                                            <select id="Company_ID1" name="Company_ID" class="form-control select2" placeholder="所属公司..." required></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">默认部门<span class="required">*</span></label>
+                                        <div class="input-icon col-md-8">
+                                            <select id="Dept_ID1" name="Dept_ID" class="form-control select2" placeholder="默认部门..." required></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">邮件地址</label>
+                                        <div class="input-icon col-md-8">
+                                            <input id="Email1" name="Email" type="email" class="form-control" placeholder="邮件地址...">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">移动电话</label>
+                                        <div class="input-icon col-md-8">
+                                            <input id="MobilePhone1" name="MobilePhone" type="text" class="form-control" placeholder="移动电话...">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">所属经理</label>
+                                        <div class="input-icon col-md-8">
+                                            <select id="PID1" name="PID" class="form-control select2" placeholder="所属经理..."></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">性别</label>
+                                        <div class="input-icon col-md-8">
+                                            <label class="icheck-inline">
+                                                <input type="radio" name="Gender" value="男" checked class="icheck" />
+                                                男
+                                            </label>
+                                            <label class="icheck-inline">
+                                                <input type="radio" name="Gender" value="女" class="icheck" />
+                                                女
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel-group accordion" id="accordion1">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a class="accordion-toggle accordion-toggle-styled" data-toggle="collapse" data-parent="#accordion1" href="#collapseOne">
+                                                    打开或折叠更多内容 》》
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseOne" class="panel-collapse collapse" style="height: 0px; ">
+                                            <div class="panel-body">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">职务头衔</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <select id="Title1" name="Title" type="text" class="form-control select2" placeholder="职务头衔..."></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">用户编码</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <input id="HandNo1" name="HandNo" type="text" class="form-control" placeholder="用户编码...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">排序码</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <input id="SortCode1" name="SortCode" type="text" class="form-control" placeholder="排序码...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">用户呢称</label>
+                                                        <div class="input-icon col-md-8">
+
+                                                            <input id="Nickname1" name="Nickname" type="text" class="form-control" placeholder="用户呢称...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">QQ号码</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <input id="QQ1" name="QQ" type="text" class="form-control" placeholder="QQ号码...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">身份证号码</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <input id="IdentityCard1" name="IdentityCard" type="text" class="form-control" placeholder="身份证号码...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">出生日期</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <input id="Birthday1" name="Birthday" type="date" class="form-control" placeholder="出生日期...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">办公电话</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <input id="OfficePhone1" name="OfficePhone" type="text" class="form-control" placeholder="办公电话...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">家庭电话</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <input id="HomePhone1" name="HomePhone" type="text" class="form-control" placeholder="家庭电话...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">家庭住址</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <input id="Address1" name="Address" type="text" class="form-control" placeholder="家庭住址...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2">办公地址</label>
+                                                        <div class="input-icon col-md-10">
+                                                            <input id="WorkAddr1" name="WorkAddr" type="text" class="form-control" placeholder="办公地址...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2">个性签名</label>
+                                                        <div class="input-icon col-md-10">
+                                                            <textarea id="Signature1" name="Signature" class="form-control" placeholder="个性签名..."></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2">备注</label>
+                                                        <div class="input-icon col-md-10">
+                                                            <textarea id="Note1" name="Note" class="form-control" placeholder="备注..."></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4"></label>
+                                                        <div class="input-icon col-md-8">
+                                                            <label class="icheck-inline">
+                                                                <input type="checkbox" id="IsExpire1" name="IsExpire" class="icheck" />
+                                                                账户过期
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2">过期时间</label>
+                                                        <div class="input-icon col-md-4 input-date">
+                                                            <input id="ExpireDate1" name="ExpireDate" style="background-color:yellow" class="form-control" placeholder="过期时间...">
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="btn-group">
+                                                                <a class="btn green" href="javascript:;" data-toggle="dropdown">
+                                                                    <i class="fa fa-user"></i> 快速设置过期时间
+                                                                    <i class="fa fa-angle-down"></i>
+                                                                </a>
+                                                                <ul class="dropdown-menu">
+                                                                    <li>
+                                                                        <a href="javascript:setExpireDate('oneweek');">
+                                                                            <i class="icon-calendar"></i> 7天过期
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="javascript:setExpireDate('onemonth');">
+                                                                            <i class="fa fa-calendar"></i> 一月过期
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="javascript:setExpireDate('threemonth');">
+                                                                            <i class="fa fa-calendar"></i> 三个月过期
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="javascript:setExpireDate('halfyear');">
+                                                                            <i class="glyphicon glyphicon-calendar"></i> 半年过期
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="javascript:setExpireDate('oneyear');">
+                                                                            <i class="glyphicon glyphicon-calendar"></i> 一年过期
+                                                                        </a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab_3_2">
+                            <div class="portlet box blue">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-gift"></i>
+                                    </div>
+                                    <div class="actions">
+                                        <a class="btn btn-icon-only btn-default btn-sm fullscreen" href="#" data-original-title="" title="">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="scroller" style="height:500px" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
+                                        <div id="jstree_function"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        
+                        <div class="tab-pane fade" id="tab_3_3">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="portlet box blue ">
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                <i class="fa fa-gift"></i>用户所属机构
+                                            </div>
+                                            <div class="actions">
+                                                <a class="btn btn-icon-only btn-default btn-sm fullscreen" href="#" data-original-title="" title="">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="portlet-body">
+                                            <div class="scroller" style="height:500px" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
+                                                <select id="lbxOUs" multiple  class="form-control" style="height:100%;width=100%"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="portlet box blue">
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                <i class="fa fa-gift"></i>用户所属角色
+                                            </div>
+                                            <div class="actions">
+                                                <a class="btn btn-icon-only btn-default btn-sm fullscreen" href="#" data-original-title="" title="">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="portlet-body">
+                                            <div class="scroller" style="height:500px" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
+                                                <select id="lbxRoles" multiple  class="form-control" style="height:100%;width=100%" ></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab_3_4">
+                            <div class="row" style="height: 500px">
+                                <input id="file-Portrait1" type="file">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-info">
+                    <input type="hidden" id="ID1" name="ID" />
+                    <button type="submit" class="btn blue">确定</button>
+                    <button type="button" class="btn green-meadow" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--------------------------查看信息的弹出层---------------------------->
+<div class="modal fade" id="view" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg bs-modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-book-open"></i>
+                    <span style="font-weight:bold">查看信息</span>
+                </h4>
+            </div>
+            <form class="form-horizontal" id="ffView" action="">
+                <div class="modal-body">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#tab_4_1" data-toggle="tab">基础信息</a>
+                        </li>
+                         <li>
+                            <a href="#tab_4_2" data-toggle="tab">用户可操作功能</a>
+                        </li>                        
+                        <li>
+                            <a href="#tab_4_3" data-toggle="tab">所属机构角色</a>
+                        </li>
+                        <li>
+                            <a href="#tab_4_4" data-toggle="tab">肖像信息</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade active in" id="tab_4_1">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">用户名/登录名</label>
+                                        <div class="col-md-8">
+                                            <label id="Name2" name="Name" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">真实姓名</label>
+                                        <div class="col-md-8">
+                                            <label id="FullName2" name="FullName" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">所属公司</label>
+                                        <div class="col-md-8">
+                                            <label id="Company_ID2" name="Company_ID" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">默认部门</label>
+                                        <div class="col-md-8">
+                                            <label id="Dept_ID2" name="Dept_ID" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">邮件地址</label>
+                                        <div class="col-md-8">
+                                            <label id="Email2" name="Email" type="email" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">移动电话</label>
+                                        <div class="col-md-8">
+                                            <label id="MobilePhone2" name="MobilePhone" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">所属经理</label>
+                                        <div class="col-md-8">
+                                            <label id="PID2" name="PID" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">职务头衔</label>
+                                        <div class="col-md-8">
+                                            <label id="Title2" name="Title" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel-group accordion" id="accordion2">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a class="accordion-toggle accordion-toggle-styled" data-toggle="collapse" data-parent="#accordion2" href="#collapsetwo">
+                                                    打开或折叠更多内容 》》
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapsetwo" class="panel-collapse collapse" style="height: 0px; ">
+                                            <div class="panel-body">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">用户编码</label>
+                                                        <div class="col-md-8">
+                                                            <label id="HandNo2" name="HandNo" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">排序码</label>
+                                                        <div class="col-md-8">
+                                                            <label id="SortCode2" name="SortCode" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">用户呢称</label>
+                                                        <div class="col-md-8">
+                                                            <label id="Nickname2" name="Nickname" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">QQ号码</label>
+                                                        <div class="col-md-8">
+                                                            <label id="QQ2" name="QQ" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">身份证号码</label>
+                                                        <div class="col-md-8">
+                                                            <label id="IdentityCard2" name="IdentityCard" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">性别</label>
+                                                        <div class="col-md-8">
+                                                            <label id="Gender2" name="Gender" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">出生日期</label>
+                                                        <div class="col-md-8">
+                                                            <label id="Birthday2" name="Birthday" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">办公电话</label>
+                                                        <div class="col-md-8">
+                                                            <label id="OfficePhone2" name="OfficePhone" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">家庭电话</label>
+                                                        <div class="col-md-8">
+                                                            <label id="HomePhone2" name="HomePhone" class="form-control" / >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">家庭住址</label>
+                                                        <div class="col-md-8">
+                                                            <label id="Address2" name="Address" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2">办公地址</label>
+                                                        <div class="col-md-10">
+                                                            <label id="WorkAddr2" name="WorkAddr" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2">个性签名</label>
+                                                        <div class="col-md-10">
+                                                            <label id="Signature2" name="Signature" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2">备注</label>
+                                                        <div class="col-md-10">
+                                                            <label id="Note2" name="Note" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">账户过期</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <label id="IsExpire2" name="IsExpire" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">过期时间</label>
+                                                        <div class="input-icon col-md-8">
+                                                            <label id="ExpireDate2" name="ExpireDate" style="background-color:yellow" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab_4_2">
+                            <div class="portlet box blue">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-gift"></i>
+                                    </div>
+                                    <div class="actions">
+                                        <a class="btn btn-icon-only btn-default btn-sm fullscreen" href="#" data-original-title="" title="">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="scroller" style="height:500px" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
+                                        <div id="jstree_function2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        
+                        <div class="tab-pane fade" id="tab_4_3">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="portlet box blue ">
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                <i class="fa fa-gift"></i>用户所属机构
+                                            </div>
+                                            <div class="actions">
+                                                <a class="btn btn-icon-only btn-default btn-sm fullscreen" href="#" data-original-title="" title="">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="portlet-body">
+                                            <div class="scroller" style="height:500px" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
+                                                <select id="lbxOUs2" multiple  class="form-control" style="height:100%;width=100%"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="portlet box blue">
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                <i class="fa fa-gift"></i>用户所属角色
+                                            </div>
+                                            <div class="actions">
+                                                <a class="btn btn-icon-only btn-default btn-sm fullscreen" href="#" data-original-title="" title="">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="portlet-body">
+                                            <div class="scroller" style="height:500px" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
+                                                <select id="lbxRoles2" multiple  class="form-control" style="height:100%;width=100%" ></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab_4_4">
+                            <div class="row" style="height: 500px">
+                                <image src="" id="Portrait2"  style="max-height:128px;max-width=128px"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-info">
+                    <input type="hidden" id="ID2" name="ID" />
+                    <button type="button" class="btn green-meadow" data-dismiss="modal">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--导入数据操作层-->
+<div id="import" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">文件导入</h4>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:right;padding:5px">
+                    <a href="~/Content/Template/User-模板.xls" onclick="javascript:Preview();">
+                        <img alt="文件导入-模板" src="~/Content/images/ico_excel.png" />
+                        <span style="font-size:larger;font-weight:200;color:red">User-模板.xls</span>
+                    </a>
+                </div>
+                <hr />
+                <form id="ffImport" method="post">
+                    <div title="Excel导入操作" style="padding: 5px">
+                        <input type="hidden" id="AttachGUID" name="AttachGUID" />
+                        <input id="excelFile" type="file">
+                    </div>
+                </form>
+
+                <!--数据显示表格-->
+                <table id="gridImport" class="table table-striped table-bordered table-hover" cellpadding="0" cellspacing="0" border="0"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="SaveImport()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--选择导入用户的公司和部门-->
+<div id="selectDept" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <form id="ffSelectDept" method="post">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">选择导入用户的公司和部门</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">所属公司<span class="required">*</span></label>
+                                <div class="input-icon col-md-8">                                            
+                                    <select id="Company_ID3" name="Company_ID" class="form-control select2" placeholder="所属公司..." required></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">默认部门<span class="required">*</span></label>
+                                <div class="input-icon col-md-8">                                            
+                                    <select id="Dept_ID3" name="Dept_ID" class="form-control select2" placeholder="默认部门..." required></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn blue">确定</button>
+                    <button type="button" class="btn green-meadow" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section footerScript{
+
+<script type="text/javascript">
+    var currentPage = 1, rows = 10; //分页参数：当前页，记录数
+
+    var isAddOrEdit = 'add';//标识是新增还是编辑对话框弹出，用于删除附件的操作
+    var url;//新增或者更新的连接
+    var ID;//ID值，新增为空，编辑或者查看为具体ID
+
+    //页面初始化
+    $(function () {
+        InitStyle();        //设置控件的样式
+        initDeptTreeview(); //初始化部门树
+        initRoleTree();     //初始化角色树
+
+        BindEvent();        //绑定事件处理
+        Search(currentPage);//初始化第一页数据
+        InitDictItem();     //初始化字典信息
+    });
+
+    //设置控件的样式
+    function InitStyle() {
+        //统一设置icheck控件的样式
+        $('input[class=icheck]').iCheck({
+            checkboxClass: 'icheckbox_square-red',
+            radioClass: 'iradio_square-red',
+        });
+        $('.input-daterange input').each(function () {
+            $(this).datepicker({
+                language: 'zh-CN', //语言
+                autoclose: true, //选择后自动关闭
+                clearBtn: true,//清除按钮
+                format: "yyyy-mm-dd"//日期格式
+            });
+        });
+
+        $('.input-date input').each(function () {
+            $(this).datepicker({
+                language: 'zh-CN', //语言
+                autoclose: true, //选择后自动关闭
+                clearBtn: true,//清除按钮
+                format: "yyyy-mm-dd"//日期格式
+            });
+        });
+
+        //初始化fileinput控件（第一次初始化）
+        initFileInput("file-Portrait", "/User/EditPortrait");
+        initFileInput("file-Portrait1", "/User/EditPortrait");
+    }
+
+    //初始化组织机构列表
+    function initDeptTreeview() {
+        var treeUrl = '/User/GetMyDeptJsTreeJson?userId=@Session["UserId"]';
+        bindJsTree("jstree_div", treeUrl);
+
+        //树控件的变化事件处理
+        $('#jstree_div').on("changed.jstree", function (e, data) {
+            var icon = data.node.icon;
+            loadDataByOu(data.selected);
+        });
+    }
+    //初始化角色列表
+    function initRoleTree() {
+        var treeUrl = '/Role/GetMyRoleJsTreeJson?userId=@Session["UserId"]';
+        bindJsTree("jstree_role", treeUrl);
+
+        //树控件的变化事件处理
+        $('#jstree_role').on("changed.jstree", function (e, data) {
+            var id = data.selected + '';
+            var dept = "dept";
+            var role = "role";
+
+            if (id.indexOf(dept) == 0) {
+                var newid = id.substring(dept.length, id.length);
+                loadDataByOu(newid);
+            }
+            else if (id.indexOf(role) == 0) {
+                var newid = id.substring(role.length, id.length);
+                loadDataByRole(newid);
+            }
+        });
+    }
+
+    //加载指定的对象数据
+    var clickId = "";
+    var where = {};//树列表条件
+    function loadDataByOu(id) {
+        var condition = { Role_ID: '', Dept_ID: id + '' };
+        where = {};//清空
+        where["Role_ID"] = '';//使用自定义条件
+        where["Dept_ID"] = id + '';//使用自定义条件
+        //修改条件后需要重新刷新
+        $table.bootstrapTable('refresh', { url: queryUrl, query: condition, pageNumber: 1 });
+
+        clickId = id;
+    }
+    //根据角色加载列表
+    function loadDataByRole(id) {
+        var condition = { Dept_ID: '', Role_ID: id + '' };
+        where = {};//清空
+        where["Role_ID"] = id + '';//使用自定义条件
+        where["Dept_ID"] = '';//使用自定义条件
+        //修改条件后需要重新刷新
+        $table.bootstrapTable('refresh', { url: queryUrl, query: condition, pageNumber: 1 });
+
+        clickId = id;
+    }
+
+    var $table;
+    var queryUrl;
+    //初始化bootstrap-table的内容
+    function Search (page) {
+        //记录页面bootstrap-table全局变量$table，方便应用
+        queryUrl = '/User/FindWithPager?rnd=' + Math.random()
+        $table = $('#grid').bootstrapTable({
+            url: queryUrl,                      //请求后台的URL（*）
+            method: 'GET',                      //请求方式（*）
+            //toolbar: '#toolbar',              //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: true,                   //是否显示分页（*）
+            sortable: true,                     //是否启用排序
+            sortOrder: "asc",                   //排序方式
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber: page,                      //初始化加载第一页，默认第一页,并记录
+            pageSize: rows,                     //每页的记录行数（*）
+            pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+            search: false,                      //是否显示表格搜索
+            strictSearch: true,
+            showColumns: true,                  //是否显示所有的列（选择显示的列）
+            showRefresh: true,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+            //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+            showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,                  //是否显示父子表
+            //得到查询的参数
+            queryParams : function (params) {
+                //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+
+                //var temp = {
+                //    rows: params.limit,                         //页面大小
+                //    page: (params.offset / params.limit) + 1,   //页码
+                //    sort: params.sort,      //排序列名
+                //    sortOrder: params.order //排位命令（desc，asc）
+                //};
+                //return temp;
+
+                var temp = $("#ffSearch").serializeJsonObject();
+                temp["rows"] = params.limit;                        //页面大小
+                temp["page"] = (params.offset / params.limit) + 1;  //页码
+                temp["sort"] = params.sort;                         //排序列名
+                temp["sortOrder"] = params.order;                   //排位命令（desc，asc）
+
+                //特殊格式的条件处理
+                temp["WHC_Deleted"] = 0;
+                //如果不是超级管理员，只能看本公司的人员
+                @if (Session["IsSuperAdmin"] == null || !(bool)Session["IsSuperAdmin"])
+                {
+                     @Html.Raw("temp[\"WHC_Company_ID\"] = " + Session["Company_ID"] + ";");
+                }
+
+                //如果自定义条件费用，加入条件
+                $.each(where, function (item) {
+                    console.log(item, where[item]);
+                    temp[item] = where[item];
+                });
+                //temp["WHC_Age"] = $("#WHC_Age").val() + "~" + $("#WHC_Age2").val();
+                //temp["WHC_BirthDate"] = $("#WHC_BirthDate").val() + "~" + $("#WHC_BirthDate2").val();
+
+                return temp;
+            },
+            columns: [{
+                checkbox: true,
+                visible: true                  //是否显示复选框
+            },
+             { title: 'ID', field: 'ID' , width: 60, sortable: true  },
+             { title: '用户编码', field: 'HandNo' , width: 60, sortable: true  },
+             { title: '用户名/登录名', field: 'Name' , width: 100, sortable: true  },
+             { title: '真实姓名', field: 'FullName' , width: 60, sortable: true },
+             { title: '是否过期', field: 'IsExpire', width: 60, sortable: true, formatter:expireFormatter},
+             { title: '过期时间', field: 'ExpireDateDisplay' , width: 60, sortable: true, formatter:expireDateFormatter},
+             { title: '移动电话', field: 'MobilePhone' , width: 80, sortable: true  },
+             { title: '邮件地址', field: 'Email' , width: 80, sortable: true  },
+             { title: '性别', field: 'Gender' , width: 60, sortable: true, formatter:sexFormatter  },
+             { title: '过期设置', field: 'ID', width: 60, align: 'center', valign: 'middle', formatter: setExpiredFormatter },
+             { title: '重置密码',field:'ID', width: 80, align: 'center', valign: 'middle', formatter: resetPassFormatter},
+             { title: '操作', field:'ID', width: 100, align: 'center', valign: 'middle', formatter: actionFormatter},
+            ],
+            onLoadSuccess: function () {
+                currentPage = page;//存储当前页码
+            },
+            onLoadError: function () {
+                showTips("数据加载失败！");
+            },
+            onDblClickRow: function (row, $element) {
+                var id = row.ID;
+                EditViewById(id, 'view');
+            }
+        });
+    };
+
+    //根据条件查询并绑定结果
+    var $import;
+    function InitImport(guid) {
+        var url = "/User/GetExcelData?guid=" + guid;
+        $import = $('#gridImport').bootstrapTable({
+            url: url,                           //请求后台的URL（*）
+            method: 'GET',                      //请求方式（*）
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: false,                  //是否显示分页（*）
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber: 1,                      //初始化加载第一页，默认第一页,并记录
+            pageSize: 100,                     //每页的记录行数（*）
+            pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+            search: false,                      //是否显示表格搜索
+            strictSearch: true,
+            showColumns: true,                  //是否显示所有的列（选择显示的列）
+            showRefresh: true,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,               //是否启用点击选中行
+            uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+            queryParams: function (params) { },
+            columns: [{
+                checkbox: true,
+                visible: true                  //是否显示复选框
+            },
+             { title: '用户编码', field: 'HandNo' /*, width: 80, sortable: true */},
+             { title: '用户名/登录名', field: 'Name' /*, width: 80, sortable: true */},
+             { title: '真实姓名', field: 'FullName' /*, width: 80, sortable: true */},
+             { title: '职务头衔', field: 'Title' /*, width: 80, sortable: true */},
+             { title: '移动电话', field: 'MobilePhone' /*, width: 80, sortable: true */},
+             { title: '办公电话', field: 'OfficePhone' /*, width: 80, sortable: true */},
+             { title: '邮件地址', field: 'Email' /*, width: 80, sortable: true */},
+             { title: '性别', field: 'Gender' /*, width: 80, sortable: true */},
+             { title: 'QQ号码', field: 'QQ' /*, width: 80, sortable: true */},
+             { title: '备注', field: 'Note' , width: 180, sortable: true },
+            ],
+            onLoadSuccess: function () {
+            },
+            onLoadError: function () {
+                showTips("数据加载失败！");
+            },
+        });
+    }
+
+    //图片格式化
+    function imageFormatter(value, row, index) {
+        return "<img src='" + value + "' style='width:50px; height:50px;' />";
+    }
+    //日期字段格式化
+    function dateFormatter(value, row, index) {
+        return getDateStr(value);
+    }
+    //连接字段格式化
+    function linkFormatter(value, row, index) {
+        return "<a href='" + value + "' title='单击打开连接' target='_blank'>" + value + "</a>";
+    }
+    //Email字段格式化
+    function emailFormatter(value, row, index) {
+        return "<a href='mailto:" + value + "' title='单击打开连接'>" + value + "</a>";
+    }
+    //性别字段格式化
+    function sexFormatter(value) {
+        if (value == "女") { color = 'Red'; }
+        else if (value == "男") { color = 'Green'; }
+        else { color = 'Yellow'; }
+
+        return '<div  style="color: ' + color + '">' + value + '</div>';
+    }
+    function expireFormatter(value) {
+        if(value) {
+            return "<span class='label label-danger'>过期</span>";
+        }
+        else {
+            return "<span class='label label-success'>正常</span>";
+        }
+    }
+    function expireDateFormatter(value) {
+        if(value) {
+            return "<span class='label label-danger'>" + value +"</span>";
+        }
+        else {
+            return "<span class='label label-success'>未设置</span>";
+        }
+    }
+    function resetPassFormatter(value, row, index) {
+        return "<a href='javascript:;' onclick=\"resetPassword('" + value + "')\" title='重置密码'><span class='glyphicon glyphicon-lock'></span></a>";
+    }
+    function setExpiredFormatter(value, row, index) {
+        var expired = row.IsExpire;
+        var icon = expired ? "glyphicon glyphicon-ok icon-state-info" : "glyphicon glyphicon-ban-circle icon-state-danger";
+        var title = expired ? "取消过期" : "设置过期";
+        return "<a href='javascript:;' onclick=\"setExpired('" + value + "', " + !expired + ")\" title='" + title +"'><span class='" + icon + "'></span></a>";
+    }
+
+    //操作栏的格式化
+    function actionFormatter(value, row, index) {
+        var id = value;
+        var result = "";
+        result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + id + "', view='view')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditViewById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"DeleteByIds('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+
+        return result;
+    }
+
+    //自定义函数处理queryParams的批量增加
+    $.fn.serializeJsonObject = function () {
+        var json = {};
+        var form = this.serializeArray();
+        $.each(form, function () {
+            if (json[this.name]) {
+                if (!json[this.name].push) {
+                    json[this.name] = [json[this.name]];
+                }
+                json[this.name].push();
+            } else {
+                json[this.name] = this.value || '';
+            }
+        });
+        return json;
+    }
+
+    /*
+     * var now = new Date();
+     * var newDate = DateAdd( "d", 5, now);
+     * DateAdd(interval,number,date) 
+     */
+    function DateAdd(interval, number, date) {
+        switch (interval) {
+            case "y": {
+                date.setFullYear(date.getFullYear() + number);
+                return date;
+                break;
+            }
+            case "m": {
+                date.setMonth(date.getMonth() + number);
+                return date;
+                break;
+            }
+            case "w": {
+                date.setDate(date.getDate() + number * 7);
+                return date;
+                break;
+            }
+            case "d": {
+                date.setDate(date.getDate() + number);
+                return date;
+                break;
+            }
+            default: {
+                date.setDate(date.getDate() + number);
+                return date;
+                break;
+            }
+        }
+    }
+    function GetDateFormat(date) {
+        var month = date.getMonth() + 1;
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        var format = date.getFullYear() + '-' + month + '-' + date.getDate();
+        return format;
+    }
+
+    //根据条件查询
+    function SearchExpire(type) {
+        var now = new Date();
+        where = {};//清空
+
+        if (type == undefined || type == '') {
+            var format = GetDateFormat(now);
+            var condition = { WHC_IsExpire: 1, WHC_ExpireDate: "~" + format };           
+            //修改条件后需要重新刷新
+            $table.bootstrapTable('refresh', { url: queryUrl, query: condition, pageNumber: 1 });
+        } else {
+            var weekdate = DateAdd("d", 7, new Date());
+            var monthdate = DateAdd("m", 1, new Date());
+            var yeardate = DateAdd("y", 1, new Date());
+
+            var format1 = '';
+            var format2 = '';
+            if (type == 'oneweek') {
+                format2 = GetDateFormat(weekdate);
+            } else if (type == 'onemonth') {
+                format1 = GetDateFormat(weekdate);
+                format2 = GetDateFormat(monthdate);
+            } else if (type == 'oneyear') {
+                format1 = GetDateFormat(monthdate);
+                format2 = GetDateFormat(yeardate);
+            }
+
+            var condition = { WHC_ExpireDate: format1 + "~" + format2 };
+            //修改条件后需要重新刷新
+            $table.bootstrapTable('refresh', { url: queryUrl, query: condition, pageNumber: 1 }); 
+        }
+    }
+        //设置账号过期
+        function BatchExpired() {
+            var rows = $table.bootstrapTable('getSelections');
+            var idlist = [];
+            for (var i = 0; i < rows.length; i++) {
+                idlist.push(rows[i].ID);
+            }
+
+            if (idlist != 'undefined' && idlist.length > 0) {
+                var tips = "您确认设置选定的账号过期吗？"
+                ConfirmAction(function () {
+                    var postData = { idlist: idlist, expired: true };
+                    $.post('/User/BatchExpire?r=' + Math.random(), postData, function (json) {
+                        var data = $.parseJSON(json);
+                        if (data.Success) {
+                            showTips("设置账号过期成功");
+                        }
+                        else {
+                            showError("设置账号过期失败:" + data.ErrorMessage);
+                        }
+                    });
+
+                    //刷新界面
+                    Refresh();
+                }, tips);
+            }
+        }
+
+        //设置过期
+        function setExpired(id, expired) {
+            if (id != 'undefined' && id != '') {
+                var action = expired ? "设置" : "取消";
+                var tips = "您确认" + action  + "选定的账号过期吗？"
+                ConfirmAction(function () {
+                    var postData = { id: id, expired: expired};
+                    $.post('/User/SetExpire?r=' + Math.random(), postData, function (json) {
+                        var data = $.parseJSON(json);
+                        if (data.Success) {
+                            showTips(expired ? "设置账号过期成功" :"取消账号过期成功");
+                        }
+                        else {
+                            showError("设置账号过期失败:" + data.ErrorMessage);
+                        }
+                    });
+
+                    //刷新界面
+                    Refresh();
+                }, tips);
+            }
+    }
+    function addMoth(d, m) {
+        var ds = d.split('-'), _d = ds[2] - 0;
+        var nextM = new Date(ds[0], ds[1] - 1 + m + 1, 0);
+        var max = nextM.getDate();
+        d = new Date(ds[0], ds[1] - 1 + m, _d > max ? max : _d);
+        return d.toLocaleDateString().match(/\d+/g).join('-')
+    }
+    function setExpireDate(type) {
+        var d = new Date();
+        if (type == 'oneweek') {
+            d.setDate(d.getDate() + 7);
+        } else if (type == 'onemonth') {
+            d.setMonth(d.getMonth() + 1);
+        } else if (type == 'threemonth') {
+            d.setMonth(d.getMonth() + 3);
+        } else if (type == 'halfyear') {
+            d.setMonth(d.getMonth() + 6);
+        } else if (type == 'oneyear') {
+            d.setMonth(d.getMonth() + 12);
+        } 
+        var month = d.getMonth() + 1;
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        var format = d.getFullYear() + '-' + month + '-' + d.getDate();
+        $("#ExpireDate1").val(format);
+    }
+
+        //初始化用户密码
+        function resetPassword(id) {
+            if (id != 'undefined' && id != '') {
+                var tips = "您确认重置密码吗？";
+                var confirmTips = "是的，重置密码！";
+                ConfirmAction(function () {
+                    var postData = { ID: id };
+                    $.post('/User/ResetPassword?r=' + Math.random(), postData, function (json) {
+                        var data = $.parseJSON(json);
+                        if (data.Success) {
+                            showTips("重置密码成功");
+                        }
+                        else {
+                            showError("重置密码失败:" + data.ErrorMessage);
+                        }
+                    });
+                }, tips, confirmTips);
+            } else {
+                showTips("请选择记录");
+            }
+        }
+
+        //设置一页显示多少条
+        function ChangeRows() {
+            rows = $("#rows").val();
+            Refresh();
+        }
+
+        //刷新列表
+        function Refresh() {
+            where = {};
+            $table.bootstrapTable('refresh');
+        }
+
+        //初始化字典信息（下拉列表）
+        function InitDictItem() {
+            //BindDictItem("Titles", "职称");
+            //BindDictItem("Rank", "职务");
+
+        $("#Title").select2({
+            tags: ["", "总经理", "副总", "技术总监", "财务总监", "部门经理"]
+        });
+        $("#Title1").select2({
+            tags: ["", "总经理", "副总", "技术总监", "财务总监", "部门经理"]
+        });
+
+            //绑定添加界面的公司、部门、直属经理
+            BindSelect("Company_ID", "/User/GetMyCompanyDictJson?userId="+@Session["UserId"]);
+            $("#Company_ID").on("change", function (e) {
+                var companyid = $("#Company_ID").val();
+                BindSelect("Dept_ID", "/User/GetDeptDictJson?parentId=" + companyid);
+            });
+            $("#Dept_ID").on("change", function (e) {
+                var deptid = $("#Dept_ID").val();
+                BindSelect("PID", "/User/GetUserDictJson?deptId=" + deptid);
+            });
+
+            //绑定编辑界面的公司、部门、直属经理
+            BindSelect("Company_ID1", "/User/GetMyCompanyDictJson?userId="+@Session["UserId"]);
+            $("#Company_ID1").on("change", function (e) {
+                var companyid = $("#Company_ID1").val();
+                BindSelect("Dept_ID1", "/User/GetDeptDictJson?parentId="+ companyid);
+            });
+            $("#Dept_ID1").on("change", function (e) {
+                var deptid = $("#Dept_ID1").val();
+                BindSelect("PID1", "/User/GetUserDictJson?deptId="+ deptid);
+            });
+
+            //绑定导入界面的公司、部门
+            BindSelect("Company_ID3", "/User/GetMyCompanyDictJson?userId="+@Session["UserId"]);
+            $("#Company_ID3").on("change", function (e) {
+                var companyid = $("#Company_ID3").val();
+                BindSelect("Dept_ID3", "/User/GetDeptDictJson?parentId="+ companyid);
+            });
+        }
+
+    //实现删除数据的方法
+    function Delete() {
+        var ids = "";//得到用户选择的数据的ID
+        var rows = $table.bootstrapTable('getSelections');
+        for (var i = 0; i < rows.length; i++) {
+            ids += rows[i].ID + ',';
+        }
+        ids = ids.substring(0, ids.length - 1);
+
+        DeleteByIds(ids);
+    }
+
+    //删除指定的记录
+    function DeleteByIds(ids) {
+        if (ids != "") {
+            showDelete(function () {
+                //最后去掉最后的逗号,
+                ids = ids.replace(/,\s*$/, '');
+
+                //然后发送异步请求的信息到后台删除数据
+                //ConfirmDeleteByIds 为彻底删除
+                var postData = { ids: ids };
+                $.post("/User/ConfirmDeleteByIds", postData, function (json) {
+                    var data = $.parseJSON(json);
+                    if (data.Success) {
+                        showTips("删除选定的记录成功");
+                        Refresh();//刷新页面数据
+                    }
+                    else {
+                        showTips(data.ErrorMessage);
+                    }
+                });
+            });
+        } else {
+            showTips("请选择你要删除的数据");
+        }
+    }
+
+    //初始化图像信息
+    function initPortrait(ctrlName, id) {
+        var control = $('#' + ctrlName);
+        var imageurl = '/User/GetPortrait?id=' + id +'&r=' + Math.random();
+
+        //重要，需要更新控件的附加参数内容，以及图片初始化显示
+        control.fileinput('refresh', {
+            uploadExtraData: { id: id },
+            initialPreview: [ //预览图片的设置
+                "<img src='" + imageurl + "' class='file-preview-image' alt='肖像图片' title='肖像图片'>",
+            ],
+        });
+    }
+
+    //弹出新增对话框
+    function Add() {
+        isAddOrEdit = 'add';//新增对话框标识
+        $("#ffAdd")[0].reset();//清空上次输入
+        $('#ffAdd').validate().resetForm();//去除验证信息
+
+        url = '/User/Insert2';//使用写入后返回ID的做法，方便更新图形
+        initPortrait('file-Portrait', -1);
+
+        //初始化部分控件
+        $('input[name="Gender"][value="男"]').iCheck('check');
+
+        //清空Select2控件的值
+        $("#PID").val('').trigger("change");
+        $("#Company_ID").val("").trigger("change");
+        $("#Dept_ID").val("").trigger("change");
+
+        $("#lblAddTitle").text("添加信息");
+        $("#add").modal("show");
+    }
+
+    //修改或查看明细信息（绑定显示数据）
+    function EditView(view) {
+        ID = "";//重置ID的值
+        var rows = $table.bootstrapTable('getSelections');
+        if (rows.length > 0) {
+            ID = rows[0].ID;
+        }
+
+        EditViewById(ID, view);
+    }
+
+    //编辑或者查看指定记录
+    function EditViewById(ID, view) {
+        if (ID == "") {
+            showTips("请选择一条记录");
+            return;
+        }
+
+        if (view == null) {
+            //处理修改的信息
+            $("#lblEditTitle").text("修改信息");
+            $("#edit").modal("show");
+            url = '/User/Update?ID=' + ID;
+            //绑定修改详细信息的方法
+            BindEditInfo(ID);
+        }
+        else {
+            //处理查看详细
+            $("#view").modal("show");
+            //绑定查看详细信息方法
+            BindViewInfo(ID);
+        }
+    }
+
+    //绑定编辑详细信息的方法
+    function BindEditInfo(ID) {
+        //使用同步方式，使得联动的控件正常显示
+        $.ajaxSettings.async = false;
+
+        $('#ffAdd').validate().resetForm();//去除验证信息
+
+        //首先用户发送一个异步请求去后台实现方法
+        $.getJSON("/User/FindByID?r=" + Math.random() + "&id=" + ID, function (info) {
+
+            $("#ID1").val(info.ID);
+            $("#HandNo1").val(info.HandNo);
+            $("#Name1").val(info.Name);
+            $("#FullName1").val(info.FullName);
+            $("#Nickname1").val(info.Nickname);
+            $("#Title1").val(info.Title);
+            $("#IdentityCard1").val(info.IdentityCard);
+            $("#MobilePhone1").val(info.MobilePhone);
+            $("#OfficePhone1").val(info.OfficePhone);
+            $("#HomePhone1").val(info.HomePhone);
+            $("#Email1").val(info.Email);
+            $("#Address1").val(info.Address);
+            $("#WorkAddr1").val(info.WorkAddr);
+            // $("#Gender1").val(info.Gender);
+            $("#Birthday1").val(getDateStr(info.Birthday));
+            $("#QQ1").val(info.QQ);
+            $("#Signature1").val(info.Signature);
+            $("#Note1").val(info.Note);
+            $("#CustomField1").val(info.CustomField);
+            $("#SortCode1").val(info.SortCode);
+
+            $("input[name='Gender']").iCheck('uncheck');
+            $("input[name='Gender'][value='" + info.Gender + "']").iCheck('check');
+
+            if (info.IsExpire) {
+                $("input[name='IsExpire']").iCheck('check');
+            } else {
+                $("input[name='IsExpire']").iCheck('uncheck');
+            }
+
+            $("#ExpireDate1").val(getDateStr(info.ExpireDate));
+
+            $("#Company_ID1").val(info.Company_ID).trigger("change");
+            $("#Dept_ID1").val(info.Dept_ID).trigger("change");
+            $("#PID1").val(info.PID).trigger("change");
+
+            initPortrait('file-Portrait1', ID);
+
+            var treeUrl = '/Function/GetFunctionJsTreeJsonByUser?userId=' + info.ID;
+            bindJsTree("jstree_function", treeUrl);
+
+            $('#lbxRoles').empty();
+            $.getJSON("/Role/GetRolesByUser?r=" + Math.random() + "&userid=" + info.ID, function (json) {
+                $.each(json, function (i, item) {
+                    $('#lbxRoles').append('<option value="' + item.ID + '">' + item.Name + '</option>');
+                });
+            });
+
+            $('#lbxOUs').empty();
+            $.getJSON("/Ou/GetOUsByUser?r=" + Math.random() + "&userid=" + info.ID, function (json) {
+                $.each(json, function (i, item) {
+                    $('#lbxOUs').append('<option value="' + item.ID + '">' + item.Name + '</option>');
+                });
+            });
+
+            isAddOrEdit = 'edit';//新增对话框标识
+        });
+    }
+
+    //绑定查看详细信息的方法
+    function BindViewInfo(ID) {
+        //发送请求
+        $.getJSON("/User/FindByID?r=" + Math.random() + "&id=" + ID, function (info) {
+            $("#ID2").text(info.ID);
+            $("#HandNo2").text(info.HandNo);
+            $("#Name2").text(info.Name);
+            $("#FullName2").text(info.FullName);
+            $("#Nickname2").text(info.Nickname);
+            $("#Title2").text(info.Title);
+            $("#IdentityCard2").text(info.IdentityCard);
+            $("#MobilePhone2").text(info.MobilePhone);
+            $("#OfficePhone2").text(info.OfficePhone);
+            $("#HomePhone2").text(info.HomePhone);
+            $("#Email2").text(info.Email);
+            $("#Address2").text(info.Address);
+            $("#WorkAddr2").text(info.WorkAddr);
+            $("#Gender2").text(info.Gender);
+            $("#Birthday2").text(getDateStr(info.Birthday));
+            $("#QQ2").text(info.QQ);
+            $("#Signature2").text(info.Signature);
+            $("#Note2").text(info.Note);
+            $("#CustomField2").text(info.CustomField);
+            $("#SortCode2").text(info.SortCode);
+
+            $("#IsExpire2").text(info.IsExpire ? "已过期" : "正常");
+            if (info.IsExpire) {
+                $("#IsExpire2").attr({ style: "color:red" });
+            } else {
+                $("#IsExpire2").removeAttr("style");
+            }
+            $("#ExpireDate2").text(getDateStr(info.ExpireDate));
+
+            $("#Dept_ID2").text(info.DeptName);
+            $("#Company_ID2").text(info.CompanyName);
+
+            $('#lbxRoles2').empty();
+            $.getJSON("/Role/GetRolesByUser?r=" + Math.random() + "&userid=" + info.ID, function (json) {
+                $.each(json, function (i, item) {
+                    $('#lbxRoles2').append('<option value="' + item.ID + '">' + item.Name + '</option>');
+                });
+            });
+
+            $('#lbxOUs2').empty();
+            $.getJSON("/Ou/GetOUsByUser?r=" + Math.random() + "&userid=" + info.ID, function (json) {
+                $.each(json, function (i, item) {
+                    $('#lbxOUs2').append('<option value="' + item.ID + '">' + item.Name + '</option>');
+                });
+            });
+
+            $('#PID2').text("无");
+            $.getJSON("/User/FindByID?r=" + Math.random() + "&id=" + info.PID, function (parentInfo) {
+                if (parentInfo != undefined) {
+                    $('#PID2').val(parentInfo.Name);
+                }
+            });
+
+            var imageUrl = '/User/GetPortrait?id=' + ID +'&r=' + Math.random();
+            $("#Portrait2").attr('src', imageUrl);
+
+            var treeUrl = '/Function/GetFunctionJsTreeJsonByUser?userId=' + info.ID;
+            bindJsTree("jstree_function2", treeUrl);
+        });
+    }
+
+    //显示导入界面
+    function ShowImport() {
+        $("#import").modal("show");
+    }
+
+    //导出Excel数据
+    function ShowExport() {
+        var url = "/User/Export";
+        var condition = $("#ffSearch").serialize();//获取条件
+
+        executeExport(url, condition);//执行导出
+    }
+
+    //绑定相关事件
+    function BindEvent() {
+        //添加记录的窗体处理
+        formValidate("ffAdd", function (form) {
+            $("#add").modal("hide");
+            //构造参数发送给后台
+            var postData = $("#ffAdd").serializeArray();
+            $.post(url, postData, function (json) {
+                var data = $.parseJSON(json);
+                if (data.Success) {
+                    //增加肖像的上传处理
+                    initPortrait(data.Data1);//使用写入的ID进行更新
+                    $('#file-Portrait').fileinput('upload');
+
+                    //保存成功  1.关闭弹出层，2.刷新表格数据
+                    showTips("保存成功");
+                    Refresh();
+                }
+                else {
+                    showError("保存失败:" + data.ErrorMessage, 3000);
+                }
+            }).error(function () {
+                showTips("您未被授权使用该功能，请联系管理员进行处理。");
+            });
+        });
+
+        //编辑记录的窗体处理
+        formValidate("ffEdit", function (form) {
+            $("#edit").modal("hide");
+            //构造参数发送给后台
+            var postData = $("#ffEdit").serializeArray();
+            $.post(url, postData, function (json) {
+                var data = $.parseJSON(json);
+                if (data.Success) {
+                    //增加肖像的上传处理
+                    $('#file-Portrait1').fileinput('upload');
+
+                    //保存成功  1.关闭弹出层，2.刷新表格数据
+                    showTips("保存成功");
+                    Refresh();
+                }
+                else {
+                    showError("保存失败:" + data.ErrorMessage, 3000);
+                }
+            }).error(function () {
+                showTips("您未被授权使用该功能，请联系管理员进行处理。");
+            });
+        });
+
+        //选择公司、部门的窗体处理
+        formValidate("ffSelectDept", function (form) {
+            $("#selectDept").modal("hide");
+            //构造参数发送给后台
+            ConfirmSaveImport();
+        });
+
+        //回车进行查询
+        if (document.addEventListener) {
+            //如果是Firefox
+            document.getElementById("ffSearch").addEventListener("keypress", enterEvent, true);
+        } else {
+            //如果是IE
+            document.getElementById("ffSearch").attachEvent("onkeypress", enterEvent);
+        }
+    }
+    //按下Enter搜索
+    function enterEvent(evt) {
+        if (evt.keyCode == 13) {
+            //$("#btnSearch").click();
+            Refresh();        
+            evt.preventDefault();  //阻止事件冒泡
+        }
+    }
+
+</script>
+
+    <!--添加对 fileinput 控件的支持-->
+<script type="text/javascript">
+    $(function () {
+        InitExcelFile();
+    });
+
+    //初始化Excel导入的文件
+    function InitExcelFile() {
+        //记录GUID
+        $("#AttachGUID").val(newGuid());
+
+        $("#excelFile").fileinput({
+            uploadUrl: "/FileUpload/Upload",//上传的地址
+            uploadAsync: true,              //异步上传
+            language: "zh",                 //设置语言
+            showCaption: true,              //是否显示标题
+            showUpload: true,               //是否显示上传按钮
+            showRemove: true,               //是否显示移除按钮
+            showPreview : true,             //是否显示预览按钮
+            browseClass: "btn btn-primary", //按钮样式
+            dropZoneEnabled: false,         //是否显示拖拽区域
+            allowedFileExtensions: ["xls", "xlsx"], //接收的文件后缀
+            maxFileCount: 1,                        //最大上传文件数限制
+            previewFileIcon: '<i class="glyphicon glyphicon-file"></i>',
+            allowedPreviewTypes: null,
+            previewFileIconSettings: {
+                'docx': '<i class="glyphicon glyphicon-file"></i>',
+                'xlsx': '<i class="glyphicon glyphicon-file"></i>',
+                'pptx': '<i class="glyphicon glyphicon-file"></i>',
+                'jpg': '<i class="glyphicon glyphicon-picture"></i>',
+                'pdf': '<i class="glyphicon glyphicon-file"></i>',
+                'zip': '<i class="glyphicon glyphicon-file"></i>',
+            },
+            uploadExtraData: {  //上传的时候，增加的附加参数
+                folder: '数据导入文件', guid: $("#AttachGUID").val()
+            }
+        })  //文件上传完成后的事件
+       .on('fileuploaded', function (event, data, previewId, index) {
+           var form = data.form, files = data.files, extra = data.extra,
+               response = data.response, reader = data.reader;
+
+           var res = data.response; //返回结果
+           if (res.Success) {
+               showTips('上传成功');
+               var guid = $("#AttachGUID").val();
+
+               //提示用户Excel格式是否正常，如果正常加载数据
+               $.ajax({
+                   url: '/User/CheckExcelColumns?guid=' + guid,
+                   type: 'get',
+                   dataType: 'json',
+                   success: function (data) {
+                       if (data.Success) {
+                           InitImport(guid); //重新刷新表格数据
+                           showToast("文件已上传，数据加载完毕！");
+
+                           //重新刷新GUID，以及清空文件，方便下一次处理
+                           RefreshExcel();
+                       }
+                       else {
+                           showToast("上传的Excel文件检查不通过。请根据页面右上角的Excel模板格式进行数据录入。", "error");
+                       }
+                   }
+               });
+           }
+           else {
+               showTips('上传失败');
+           }
+       });
+    }
+    //重新更新GUID的值，并清空文件
+    function RefreshExcel() {
+        $("#AttachGUID").val(newGuid());
+        $('#excelFile').fileinput('clear');//清空所有文件
+
+        //附加参数初始化后一直不会变化，如果需要发生变化，则需要使用refresh进行更新
+        $('#excelFile').fileinput('refresh', {
+            uploadExtraData: { folder: '数据导入文件', guid: $("#AttachGUID").val() },
+        });
+    }
+
+    //保存导入的数据
+    function SaveImport() {
+        //赋值给对象
+        $("#Company_ID3").val(@Session["Company_ID"]).trigger("change");
+        $("#Dept_ID3").val(@Session["Dept_ID"]).trigger('change');
+
+
+        $("#selectDept").modal("show");
+    }
+
+    //选择公司部门后，确认保存导入
+    function ConfirmSaveImport() {
+
+        var list = [];//构造集合对象
+        var rows = $import.bootstrapTable('getSelections');
+        for (var i = 0; i < rows.length; i++) {
+            list.push({
+                'PID': rows[i].PID,'HandNo': rows[i].HandNo,'Name': rows[i].Name,'Password': rows[i].Password,'FullName': rows[i].FullName,'Nickname': rows[i].Nickname,'IsExpire': rows[i].IsExpire,'Title': rows[i].Title,'IdentityCard': rows[i].IdentityCard,'MobilePhone': rows[i].MobilePhone,'OfficePhone': rows[i].OfficePhone,'HomePhone': rows[i].HomePhone,'Email': rows[i].Email,'Address': rows[i].Address,'WorkAddr': rows[i].WorkAddr,'Gender': rows[i].Gender,'Birthday': rows[i].Birthday,'QQ': rows[i].QQ,'Signature': rows[i].Signature,'AuditStatus': rows[i].AuditStatus,'Portrait': rows[i].Portrait,'Note': rows[i].Note,'CustomField': rows[i].CustomField,'DeptName': rows[i].DeptName,'CompanyName': rows[i].CompanyName,'SortCode': rows[i].SortCode,'Creator_ID': rows[i].Creator_ID,'Editor_ID': rows[i].Editor_ID,'Deleted': rows[i].Deleted,'Question': rows[i].Question,'Answer': rows[i].Answer,'LastLoginIP': rows[i].LastLoginIP,'LastLoginTime': rows[i].LastLoginTime,'LastMacAddress': rows[i].LastMacAddress,'CurrentLoginIP': rows[i].CurrentLoginIP,'CurrentLoginTime': rows[i].CurrentLoginTime,'CurrentMacAddress': rows[i].CurrentMacAddress,'LastPasswordTime': rows[i].LastPasswordTime
+            });
+        }
+
+        if (list.length == 0) {
+            showToast("请选择一条记录", "warning");
+            return;
+        }
+        
+        var companyid = $("#Company_ID3").val();
+        var deptid = $("#Dept_ID3").val();
+        var postData = { 'list': list, 'companyid': companyid, deptid: deptid  };//可以增加其他参数，如{ 'list': list, 'Rucanghao': $("#Rucanghao").val() };
+        postData = JSON.stringify(postData);
+
+        $.ajax({
+            url: '/User/SaveExcelData',
+            type: 'post',
+            dataType: 'json',
+            contentType: 'application/json;charset=utf-8',
+            traditional: true,
+            success: function (data) {
+                if (data.Success) {
+                    //保存成功  1.关闭弹出层，2.清空记录显示 3.刷新主列表
+                    showToast("保存成功");
+
+                    $("#import").modal("hide");
+                    $(bodyTag).html("");
+                    Refresh();
+                }
+                else {
+                    showToast("保存失败:" + data.ErrorMessage, "error");
+                }
+            },
+            data: postData
+        });
+    }
+</script>
+
+}
